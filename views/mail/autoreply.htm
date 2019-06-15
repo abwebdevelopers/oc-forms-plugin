@@ -1,0 +1,32 @@
+subject = "Thank you for contacting us"
+description = "ABWebDevelopers Form Automatic reply for form submissions (requires email field as recipient)"
+==
+
+This is an automated confirmation message from Site Name
+
+{% if fields|length %}
+Original message:
+{% for field in fields %}
+{{ field.label }}: {{ field.value }}
+
+{% endfor %}
+{% endif %}
+
+==
+
+<p>This is an automated confirmation message from Site Name</p>
+
+{% if fields|length %}
+<p>Original message:</p>
+
+<table border="0">
+    <tbody>
+        {% for field in fields %}
+        <tr>
+            <th style="vertical-align: top; text-align: left; padding-right: 10px;">{{ field.label }}</th>
+            <td style="text-align: left;">{{ field.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

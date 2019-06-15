@@ -1,0 +1,12 @@
+{% if field.options|length %}
+{% for opt, id in field.options %}
+<label for="{{ field.getId(form) }}_{{ id }}">
+    <input type="checkbox" name="{{ field.code }}[{{ id }}]" id="{{ field.getId(form) }}_{{ id }}" value="1"
+        {% if field.required %}required{% endif %}>
+    <span>{{ opt }}</span>
+</label>
+{% endfor %}
+{% else %}
+<input type="checkbox" name="{{ field.code }}" id="{{ field.getId(form) }}" class="{{ form.fieldClass(field) }}"
+    value="1" {% if field.required %}required{% endif %}>
+{% endif %}

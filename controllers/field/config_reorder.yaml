@@ -1,0 +1,5 @@
+title: Field
+modelClass: ABWebDevelopers\Forms\Models\Field
+nameFrom: sort_order
+toolbar:
+    buttons: reorder_toolbar

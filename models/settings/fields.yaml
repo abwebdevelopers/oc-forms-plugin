@@ -1,0 +1,233 @@
+tabs:
+    fields:
+        # Anti-spam
+        enable_recaptcha:
+            label: abwebdevelopers.forms::lang.models.settings.enable_recaptcha.label
+            comment: abwebdevelopers.forms::lang.models.settings.enable_recaptcha.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: full
+            type: switch
+        recaptcha_public_key:
+            label: abwebdevelopers.forms::lang.models.settings.recaptcha_public_key.label
+            comment: abwebdevelopers.forms::lang.models.settings.recaptcha_public_key.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: left
+            type: text
+            trigger:
+                action: show
+                field: enable_recaptcha
+                condition: checked
+        recaptcha_secret_key:
+            label: abwebdevelopers.forms::lang.models.settings.recaptcha_secret_key.label
+            comment: abwebdevelopers.forms::lang.models.settings.recaptcha_secret_key.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: right
+            type: text
+            trigger:
+                action: show
+                field: enable_recaptcha
+                condition: checked
+        _furtherProtection:
+            label: abwebdevelopers.forms::lang.models.settings._furtherProtection.label
+            comment: abwebdevelopers.forms::lang.models.all.overriden.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            type: section
+        enable_ip_restriction:
+            label: abwebdevelopers.forms::lang.models.settings.enable_ip_restriction.label
+            comment: abwebdevelopers.forms::lang.models.settings.enable_ip_restriction.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: full
+            type: switch
+        max_requests_per_day:
+            label: abwebdevelopers.forms::lang.models.settings.max_requests_per_day.label
+            comment: abwebdevelopers.forms::lang.models.settings.max_requests_per_day.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: left
+            type: number
+            placeholder: 'e.g. 5'
+            trigger:
+                action: show
+                field: enable_ip_restriction
+                condition: checked
+        throttle_message:
+            label: abwebdevelopers.forms::lang.models.settings.throttle_message.label
+            comment: abwebdevelopers.forms::lang.models.settings.throttle_message.comment
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: right
+            type: text
+            placeholder: 'Failed to send due to too many requests.'
+            trigger:
+                action: show
+                field: enable_ip_restriction
+                condition: checked
+        
+        # Privacy
+        saves_data:
+            label: abwebdevelopers.forms::lang.models.settings.saves_data.label
+            comment: abwebdevelopers.forms::lang.models.settings.saves_data.comment
+            tab: abwebdevelopers.forms::lang.tabs.privacy
+            span: left
+            default: 1
+            type: switch
+        store_ips:
+            label: abwebdevelopers.forms::lang.models.settings.store_ips.label
+            comment: abwebdevelopers.forms::lang.models.settings.store_ips.comment
+            tab: abwebdevelopers.forms::lang.tabs.privacy
+            type: switch
+            span: left
+
+        # Emailing
+        queue_emails:
+            label: abwebdevelopers.forms::lang.models.settings.queue_emails.label
+            comment: abwebdevelopers.forms::lang.models.settings.queue_emails.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: left
+            type: switch
+        send_notifications:
+            label: abwebdevelopers.forms::lang.models.settings.send_notifications.label
+            comment: abwebdevelopers.forms::lang.models.settings.send_notifications.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: right
+            type: switch
+        auto_reply:
+            label: abwebdevelopers.forms::lang.models.settings.auto_reply.label
+            comment: abwebdevelopers.forms::lang.models.settings.auto_reply.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: left
+            type: switch
+        notification_recipients:
+            label: abwebdevelopers.forms::lang.models.settings.notification_recipients.label
+            comment: abwebdevelopers.forms::lang.models.settings.notification_recipients.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: right
+            type: text
+            trigger:
+                action: show
+                field: send_notifications
+                condition: checked
+        
+        # Styling
+        _styleSection:
+            label: abwebdevelopers.forms::lang.models.settings._styleSection.label
+            comment: abwebdevelopers.forms::lang.models.settings._styleSection.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: section
+        form_class:
+            label: abwebdevelopers.forms::lang.models.settings.form_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.form_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: form-control
+        field_class:
+            label: abwebdevelopers.forms::lang.models.settings.field_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.field_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: form-control
+        row_class:
+            label: abwebdevelopers.forms::lang.models.settings.row_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.row_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: row
+        group_class:
+            label: abwebdevelopers.forms::lang.models.settings.group_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.group_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: form-group col-12
+        label_class:
+            label: abwebdevelopers.forms::lang.models.settings.label_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.label_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: form-label
+        field_error_class:
+            label: abwebdevelopers.forms::lang.models.settings.field_error_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.field_error_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: is-invalid
+        field_success_class:
+            label: abwebdevelopers.forms::lang.models.settings.field_success_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.field_success_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: is-valid
+        label_error_class:
+            label: abwebdevelopers.forms::lang.models.settings.label_error_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.label_error_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: invalid-feedback
+        label_success_class:
+            label: abwebdevelopers.forms::lang.models.settings.label_success_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.label_success_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: valid-feedback
+        form_error_class:
+            label: abwebdevelopers.forms::lang.models.settings.form_error_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.form_error_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: invalid-feedback
+        form_success_class:
+            label: abwebdevelopers.forms::lang.models.settings.form_success_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.form_success_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: valid-feedback
+        submit_class:
+            label: abwebdevelopers.forms::lang.models.settings.submit_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.submit_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: btn btn-primary
+        submit_text:
+            label: abwebdevelopers.forms::lang.models.settings.submit_text.label
+            comment: abwebdevelopers.forms::lang.models.settings.submit_text.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: Submit
+        enable_cancel:
+            label: abwebdevelopers.forms::lang.models.settings.enable_cancel.label
+            comment: abwebdevelopers.forms::lang.models.settings.enable_cancel.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: switch
+            span: full
+        cancel_class:
+            label: abwebdevelopers.forms::lang.models.settings.cancel_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.cancel_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            default: btn btn-danger
+            trigger:
+                action: show
+                field: enable_cancel
+                condition: checked
+        cancel_text:
+            label: abwebdevelopers.forms::lang.models.settings.cancel_text.label
+            comment: abwebdevelopers.forms::lang.models.settings.cancel_text.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: right
+            default: Cancel
+            trigger:
+                action: show
+                field: enable_cancel
+                condition: checked

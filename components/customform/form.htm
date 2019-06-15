@@ -1,0 +1,88 @@
+{% set form = __SELF__.form %}
+{% set that = __SELF__ %}
+
+<form id="form_{{ form.code }}">
+    <div class="form-error-message" style="display: none;"></div>
+
+    <div class="{{ form.rowClass() }}">
+        {% for field in form.fields %}
+        <div class="{{ form.groupClass(field) }}">
+            <label for="{{ form.id(field) }}" class="{{ form.labelClass(field) }}">
+                {{ field.name }}
+                {% if field.required %}<span class="required"></span>{% endif %}
+            </label>
+            {% partial field.partial form=form field=field %}
+            <div class="form-field-error-message text-danger" style="display: none;"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if form.recaptchaEnabled %}
+    <div class="{{ form.rowClass() }}">
+        <div class="{{ form.groupClass() }}">
+            <div class="g-recaptcha" data-sitekey="{{ that.recpatchaPublicKey }}" style="margin-bottom: 10px;"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="{{ form.rowClass() }}">
+        <div class="{{ form.groupClass() }}">
+            {% if form.enable_cancel %}
+            <button class="{{ form.cancelClass() }}" onclick="javascript:;">{{ form.cancelText() }}</button>
+            {% endif %}
+            <button class="{{ form.submitClass() }}" type="submit">{{ form.submitText() }}</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    document.querySelector('#form_{{ form.code }}').onsubmit = function () {
+        var form = $(this);
+        form.find('.form-field-error-message, .form-error-message').html('').hide();
+
+        form.request('onFormSubmit', {
+            success: function (d) {
+                console.log(d);
+                if (d.success) {
+
+                } else {
+                    var classes = [
+                        '{{ that.setting("label_error_class") }}',
+                        '{{ that.setting("field_error_class") }}',
+                        '{{ that.setting("label_success_class") }}',
+                        '{{ that.setting("field_success_class") }}',
+                        '{{ that.setting("form_success_class") }}',
+                        '{{ that.setting("form_error_class") }}',
+                    ];
+                    form.find('.' + classes.join(' ').replace(/\s/g, ',.')).removeClass(classes.join(' '));
+
+                    if (d.errors !== undefined) {
+                        for (var fieldName in d.errors) {
+                            var error = d.errors[fieldName];
+                            var field = form.find('[name="' + fieldName + '"]');
+                            var msg = field.parent().find('.form-field-error-message');
+
+                            field.addClass('{{ that.setting("field_error_class") }}');
+                            msg.show().html(error).addClass('{{ that.setting("label_error_class") }}');
+                        }
+                    } else if (d.error !== undefined) {
+                        var msg = form.find('.form-error-message');
+                        msg.show().html(d.error).addClass('{{ that.setting("form_error_class") }}');
+                    } else {
+
+                    }
+                }
+            },
+            error: function (xhr) {
+                var msg = form.find('.form-error-message');
+                msg.show().html(xhr.responseText).addClass('{{ that.setting("form_error_class") }}');
+            }
+        });
+
+        return false;
+    };
+</script>
+
+{% if form.recaptchaEnabled %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endif %}

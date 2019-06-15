@@ -1,0 +1,25 @@
+<div data-control="toolbar" data-disposable>
+    <a
+        href="javascript:;"
+        class="btn btn-primary btn-sm oc-icon-plus"
+        data-control="popup"
+        data-size="huge"
+        data-handler="onRelationButtonCreate"
+        data-disposable>
+        Create a new Field
+    </a>
+    <button
+        class="btn btn-default btn-sm oc-icon-trash-o"
+        onclick="$(this).data('request-data', {
+            checked: $('#Parks-update-RelationController-accommodationTypes-view .control-list').listWidget('getChecked')
+        })"
+        data-request="onRelationButtonDelete"
+        data-request-confirm="Are you sure?"
+        data-trigger-action="enable"
+        data-trigger="#Parks-update-RelationController-accommodationTypes-view .control-list input[type=checkbox]"
+        data-trigger-condition="checked"
+        data-stripe-load-indicator=""
+        disabled="">
+            Deleted selected
+    </button>
+</div>

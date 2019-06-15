@@ -1,0 +1,32 @@
+columns:
+    name:
+        label: abwebdevelopers.forms::lang.models.field.name.label
+        type: text
+        searchable: true
+        sortable: true
+    code:
+        label: abwebdevelopers.forms::lang.models.field.code.label
+        type: text
+        searchable: true
+        sortable: true
+    type:
+        label: abwebdevelopers.forms::lang.models.field.type.label
+        type: text
+        searchable: true
+        sortable: true
+    required:
+        label: abwebdevelopers.forms::lang.models.field.required.label
+        type: switch
+        sortable: true
+    created_at:
+        label: abwebdevelopers.forms::lang.models.all.created_at.label
+        type: datetime
+        sortable: true
+    updated_at:
+        label: abwebdevelopers.forms::lang.models.all.updated_at.label
+        type: datetime
+        sortable: true
+    sort_order:
+        label: abwebdevelopers.forms::lang.models.all.sort_order.label
+        type: number
+        sortable: true

@@ -1,0 +1,8 @@
+fields:
+    label: Fields
+    manage:
+        form: $/abwebdevelopers/forms/models/field/fields.yaml
+        list: $/abwebdevelopers/forms/models/field/columns.yaml
+    view:
+        list: $/abwebdevelopers/forms/models/field/columns.yaml
+        toolbarButtons: create|delete

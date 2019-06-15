@@ -1,0 +1,54 @@
+<section class="details-header">
+    <h1>
+        Submission #<?=$submission->id?>
+        <small> via
+            <a
+                href="<?= Backend::url('abwebdevelopers/forms/form/update/' . $submission->form_id) ?>"><?= $submission->form->title ?></a>
+        </small>
+    </h1>
+</section>
+
+<section class="details-body">
+    <div>
+        <ul>
+            <li>
+                <b class="inline-data">Submitted on:</b>
+                <pre class="inline-data"><?= $submission->created_at->format('jS F Y, \a\t H:i A') ?></pre>
+            </li>
+
+            <li>
+                <b class="inline-data">Page:</b>
+                <pre
+                    class="inline-data"><a href="<?= $submission->url ?>" target="_blank" title="Go to this page"><?= $submission->url ?></a></pre>
+            </li>
+
+            <?php if (!empty($submission->ip)): ?>
+            <li>
+                <b class="inline-data">Request IP:</b>
+                <pre
+                    class="inline-data"><?= $submission->ip ?> (<a href="<?= Backend::url('abwebdevelopers/forms/submission?q=' . $submission->ip) ?>" title="Filter submissions by IP">Filter by this IP</a>)</pre>
+            </li>
+            <?php endif; ?>
+
+            <li>
+                <b>Form Data:</b>
+                <ul>
+                    <?php foreach ($submission->data as $field => $value): ?>
+                    <li>
+                        <b class="inline-data"><?= ucwords(str_replace('_', ' ', $field)) ?>:</b>
+                        <pre class="inline-data"><?= htmlspecialchars($value) ?></pre>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<style>
+    .inline-data {
+        display: inline-block;
+        margin: 0;
+        vertical-align: top;
+    }
+</style>

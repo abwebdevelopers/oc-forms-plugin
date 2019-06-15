@@ -1,0 +1,15 @@
+title: Form
+modelClass: ABWebDevelopers\Forms\Models\Form
+list: $/abwebdevelopers/forms/models/form/columns.yaml
+recordUrl: 'abwebdevelopers/forms/form/update/:id'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: 20
+showSetup: true
+showCheckboxes: true
+defaultSort:
+    column: id
+    direction: asc
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'

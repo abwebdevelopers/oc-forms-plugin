@@ -1,0 +1,15 @@
+columns:
+    ip:
+        label: 'IP Address'
+        type: text
+        searchable: true
+        sortable: true
+    url:
+        label: URL
+        type: text
+        searchable: false
+        sortable: true
+    created_at:
+        label: 'Created At'
+        type: datetime
+        sortable: true

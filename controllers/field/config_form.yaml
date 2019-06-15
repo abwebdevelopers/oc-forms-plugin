@@ -1,0 +1,11 @@
+name: Field
+modelClass: ABWebDevelopers\Forms\Models\Field
+form: $/abwebdevelopers/forms/models/field/fields.yaml
+defaultRedirect: abwebdevelopers/forms/field
+create:
+    redirect: 'abwebdevelopers/forms/field/update/:id'
+    redirectClose: abwebdevelopers/forms/field
+update:
+    redirect: abwebdevelopers/forms/field
+    redirectClose: abwebdevelopers/forms/field
+preview: {  }

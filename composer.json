@@ -1,0 +1,26 @@
+{
+    "name": "abwebdevelopers/oc-forms-plugin",
+    "description": "Custom form builder for OctoberCMS",
+    "type": "october-plugin",
+    "keywords": [
+        "october",
+        "cms",
+        "forms",
+        "contact",
+        "custom",
+        "newsletter",
+        "subscription"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AB Web Developers",
+            "email": "info@abweb.com.au",
+            "role": "Web Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "composer/installers": "~1.0"
+    }
+}

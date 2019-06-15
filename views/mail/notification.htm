@@ -1,0 +1,37 @@
+subject = "ABWebDevelopers Form Notification"
+==
+
+This is an automated notification from {{ form.title }}
+
+{% if fields|length %}
+Sent form content:
+
+{% for field in fields %}
+{{ field.name }}: {{ field.value | raw }}
+{% endfor %}
+{% endif %}
+
+For more information please go to {{ moreInfoLink }}
+==
+
+<p>This is an automated notification: New <b>{{ form.title }}</b> submission.</p>
+
+{% if fields|length %}
+<br>
+
+<table border="0">
+	<tbody>
+		{% for field in fields %}
+		<tr>
+			<th style="vertical-align: top; text-align: left; padding-right: 10px;">{{ field.name }}</th>
+			<td style="text-align: left;">{{ field.value }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endif %}
+
+{% if moreInfoLink %}
+<p>For more information please go to <a href="{{ moreInfoLink }}">{{ moreInfoLink }}</a></p>
+{% endif %}

@@ -1,0 +1,21 @@
+plugin:
+    name: 'abwebdevelopers.forms::lang.plugin.name'
+    description: 'abwebdevelopers.forms::lang.plugin.description'
+    author: 'Bradie Tilley'
+    icon: oc-icon-list-alt
+    homepage: ''
+navigation:
+    bradie-forms:
+        label: 'Custom Forms'
+        url: abwebdevelopers/forms/form
+        icon: icon-list-alt
+        order: 500
+        sideMenu:
+            bradie-forms-forms:
+                label: Forms
+                url: abwebdevelopers/forms/form
+                icon: icon-sitemap
+            bradie-forms-submissions:
+                label: Submissions
+                url: abwebdevelopers/forms/submission
+                icon: icon-database

@@ -1,0 +1,16 @@
+name: Form
+modelClass: ABWebDevelopers\Forms\Models\Form
+form: $/abwebdevelopers/forms/models/form/fields.yaml
+defaultRedirect: abwebdevelopers/forms/form
+create:
+    title: 'Create New Form'
+    redirect: 'abwebdevelopers/forms/form/update/:id'
+    redirectClose: abwebdevelopers/forms/form
+    flashSave: 'Your form has been successfully created'
+update:
+    title: 'Update Form'
+    redirect: abwebdevelopers/forms/form
+    redirectClose: abwebdevelopers/forms/form
+    flashSave: 'Your form has been successfully updated'
+    flashDelete: 'Your form has been successfully deleted'
+preview: {  }
