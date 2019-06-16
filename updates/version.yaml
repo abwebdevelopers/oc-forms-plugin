@@ -1,3 +1,5 @@
 1.0.1:
     - 'Initialize plugin.'
     - initialise_database.php
+1.0.2:
+    - 'Stable release'
