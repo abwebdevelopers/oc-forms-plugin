@@ -10,6 +10,7 @@
         'styling' => 'Styling',
         'emailing' => 'Emailing',
         'caching' => 'Caching',
+        'action' => 'Action',
     ],
     'sections' => [
         'buttons' => [
@@ -212,6 +213,25 @@
                 'label' => 'Form Success Class',
                 'comment' => 'CSS Class to apply to a form on success',
             ],
+            'on_success' => [
+                'label' => 'On Success Action',
+                'comment' => 'Choose what to do when the form is successfully submitted',
+                'options' => [
+                    'hide' => 'Hide form',
+                    'clear' => 'Clear/reset the form',
+                    'redirect' => 'Redirect to URL'
+                ],
+            ],
+            'on_success_message' => [
+                'label' => 'On Success Message',
+                'comment' => 'Choose what to flash when the form is successfully submitted',
+                'placeholder' => 'Message successfully sent'
+            ],
+            'on_success_redirect' => [
+                'label' => 'On Success Redirect',
+                'comment' => 'Choose what URL to redirect to when the form is successfully submitted',
+                'placeholder' => '/thank-you'
+            ]
         ],
         'form' => [
             'title' => [

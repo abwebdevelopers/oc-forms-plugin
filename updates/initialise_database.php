@@ -21,6 +21,11 @@ class InitialiseDatabase extends Migration
             $table->boolean('enable_caching')->nullable()->default(null);
             $table->integer('cache_lifetime')->unsigned()->nullable()->default(null);
 
+            // Action
+            $table->string('on_success')->nullable()->default(null);
+            $table->string('on_success_message')->nullable()->default(null);
+            $table->string('on_success_redirect')->nullable()->default(null);
+
             // Styling
             $table->string('form_class')->nullable()->default(null);
             $table->string('field_class')->nullable()->default(null);

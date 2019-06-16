@@ -1,8 +1,19 @@
 {% set form = __SELF__.form %}
 {% set that = __SELF__ %}
 
-<form id="form_{{ form.code }}">
-    <div class="form-error-message" style="display: none;"></div>
+<form id="form_{{ form.code }}" data-request-flash>
+    <div class="loading-indicator">
+        <div>
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+        </div>
+    </div>
+    {% flash %}
+    <p data-control="flash-message" class="flash-message fade {{ type }}" data-interval="5">
+        {{ message }}
+    </p>
+    {% endflash %}
 
     <div class="{{ form.rowClass() }}">
         {% for field in form.fields %}
@@ -21,6 +32,7 @@
     <div class="{{ form.rowClass() }}">
         <div class="{{ form.groupClass() }}">
             <div class="g-recaptcha" data-sitekey="{{ that.recpatchaPublicKey }}" style="margin-bottom: 10px;"></div>
+            <div class="form-field-error-message text-danger" style="display: none;"></div>
         </div>
     </div>
     {% endif %}
@@ -38,14 +50,32 @@
 <script type="text/javascript">
     document.querySelector('#form_{{ form.code }}').onsubmit = function () {
         var form = $(this);
+        if (form.is('.form-submitting')) {
+            return false;
+        }
+
         form.find('.form-field-error-message, .form-error-message').html('').hide();
+        form.addClass('form-submitting');
 
         form.request('onFormSubmit', {
             success: function (d) {
                 console.log(d);
                 if (d.success) {
-
+                    if (d.action === 'redirect') {
+                        location.replace(d.url);
+                    } else if (d.action === 'hide') {
+                        form.slideUp('fast');
+                        form.removeClass('form-submitting');
+                        $.oc.flashMsg({ 'text': d.message, 'class': 'success' });
+                    } else {
+                        // clear
+                        form.find('input, select, textarea').val('');
+                        form.find('input').val('');
+                        form.removeClass('form-submitting');
+                        $.oc.flashMsg({ 'text': d.message, 'class': 'success' });
+                    }
                 } else {
+                    form.removeClass('form-submitting');
                     var classes = [
                         '{{ that.setting("label_error_class") }}',
                         '{{ that.setting("field_error_class") }}',
@@ -60,22 +90,26 @@
                         for (var fieldName in d.errors) {
                             var error = d.errors[fieldName];
                             var field = form.find('[name="' + fieldName + '"]');
+
+                            if (fieldName === 'g-recaptcha-response') {
+                                field = $('#g-recaptcha-response').closest('[data-sitekey]');
+                            }
+
                             var msg = field.parent().find('.form-field-error-message');
 
                             field.addClass('{{ that.setting("field_error_class") }}');
-                            msg.show().html(error).addClass('{{ that.setting("label_error_class") }}');
+                            msg.css('display', 'block').html(error).addClass('{{ that.setting("label_error_class") }}');
                         }
                     } else if (d.error !== undefined) {
-                        var msg = form.find('.form-error-message');
-                        msg.show().html(d.error).addClass('{{ that.setting("form_error_class") }}');
+                        $.oc.flashMsg({ 'text': d.error, 'class': 'error' });
                     } else {
-
+                        $.oc.flashMsg({ 'text': 'An unexpected error occurred.', 'class': 'error' });
                     }
                 }
             },
             error: function (xhr) {
-                var msg = form.find('.form-error-message');
-                msg.show().html(xhr.responseText).addClass('{{ that.setting("form_error_class") }}');
+                form.removeClass('form-submitting');
+                $.oc.flashMsg({ 'text': xhr.responseText, 'class': 'error' });
             }
         });
 

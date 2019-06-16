@@ -659,4 +659,70 @@ class SettingsTest extends PluginTestCase
         $this->assertEquals($override, $form->cacheLifetime());
     }
 
+    public function testCanOverrideOnSuccess()
+    {
+        // Get form
+        $form = $this->getForm();
+
+        // Set value and override value
+        $value = 'hide';
+        $override = 'redirect';
+
+        // Set global value, expect to be able to retrieve it
+        Settings::set('on_success', $value);
+        $this->assertEquals($value, $form->onSuccess());
+
+        // Override global value without allowing override, expect same as before
+        $form->on_success = $override;
+        $this->assertEquals($value, $form->onSuccess());
+
+        // Now allow overriding, expect form value to take effect
+        $form->override_on_success = true;
+        $this->assertEquals($override, $form->onSuccess());
+    }
+
+    public function testCanOverrideOnSuccessMessage()
+    {
+        // Get form
+        $form = $this->getForm();
+
+        // Set value and override value
+        $value = 'Thanks';
+        $override = 'Chur';
+
+        // Set global value, expect to be able to retrieve it
+        Settings::set('on_success_message', $value);
+        $this->assertEquals($value, $form->onSuccessMessage());
+
+        // Override global value without allowing override, expect same as before
+        $form->on_success_message = $override;
+        $this->assertEquals($value, $form->onSuccessMessage());
+
+        // Now allow overriding, expect form value to take effect
+        $form->override_on_success_message = true;
+        $this->assertEquals($override, $form->onSuccessMessage());
+    }
+
+    public function testCanOverrideOnSuccessRedirect()
+    {
+        // Get form
+        $form = $this->getForm();
+
+        // Set value and override value
+        $value = '/thank-you';
+        $override = '/chur';
+
+        // Set global value, expect to be able to retrieve it
+        Settings::set('on_success_redirect', $value);
+        $this->assertEquals($value, $form->onSuccessRedirect());
+
+        // Override global value without allowing override, expect same as before
+        $form->on_success_redirect = $override;
+        $this->assertEquals($value, $form->onSuccessRedirect());
+
+        // Now allow overriding, expect form value to take effect
+        $form->override_on_success_redirect = true;
+        $this->assertEquals($override, $form->onSuccessRedirect());
+    }
+
 }

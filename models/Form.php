@@ -61,6 +61,9 @@ class Form extends Model
         'auto_reply_email_field_id',
         'auto_reply_name_field_id',
         'auto_reply_template',
+        'on_success',
+        'on_success_message',
+        'on_success_redirect',
     ];
 
     /**
@@ -93,6 +96,9 @@ class Form extends Model
         'auto_reply_template' => 'nullable|string|max:255',
         'enable_caching' => 'nullable|boolean',
         'cache_lifetime' => 'nullable|integer|min:0',
+        'on_success' => 'nullable|in:hide,clear,redirect',
+        'on_success_message' => 'nullable|string|max:255',
+        'on_success_redirect' => 'nullable|string|max:255'
     ];
 
     /**
@@ -123,6 +129,9 @@ class Form extends Model
         'auto_reply_email_field_id',
         'auto_reply_name_field_id',
         'auto_reply_template',
+        'on_success',
+        'on_success_message',
+        'on_success_redirect',
     ];
 
     /**
@@ -550,6 +559,45 @@ class Form extends Model
         }
 
         return (int) Settings::get('cache_lifetime', 60);
+    }
+    
+    /**
+     * Determine what to do on success
+     * 
+     * @return string
+     */
+    public function onSuccess() {
+        if ($this->override_on_success) {
+            return (string) $this->on_success;
+        }
+
+        return (string) Settings::get('on_success', 'hide');
+    }
+    
+    /**
+     * Retrieve the message to display in a flash on success
+     * 
+     * @return string
+     */
+    public function onSuccessMessage() {
+        if ($this->override_on_success_message) {
+            return (string) $this->on_success_message;
+        }
+
+        return (string) Settings::get('on_success_message', 'Successfully sent');
+    }
+    
+    /**
+     * Retrieve the URL to redirect to on success
+     * 
+     * @return string
+     */
+    public function onSuccessRedirect() {
+        if ($this->override_on_success_redirect) {
+            return (string) $this->on_success_redirect;
+        }
+
+        return (string) Settings::get('on_success_redirect', '/');
     }
 
 }

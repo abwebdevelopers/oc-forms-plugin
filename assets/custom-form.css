@@ -1,0 +1,67 @@
+.form-submitting {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.loading-indicator {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20px;
+    z-index: 20;
+    text-align: center;
+}
+
+.loading-indicator > div {
+    height: 20px;
+    width: 50%;
+    margin: 0 auto;
+    top: calc(50% - 10px);
+    position: relative;
+}
+
+.loading-indicator > div > span {
+    display: inline-block;
+    vertical-align: top;
+    width: 6px;
+    text-align: center;
+    height: 6px;
+    line-height: 10px;
+    font-size: 0;
+    background: #333;
+    border-radius: 50%;
+}
+
+@keyframes formload {
+    0% {
+        opacity: 0.25;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.25;
+    }
+}
+
+.form-submitting .loading-indicator {
+    display: block !important;
+}
+
+.form-submitting .loading-indicator > div > span {
+    animation-name: formload;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+}
+
+.form-submitting .loading-indicator > div > span:nth-child(2) {
+    animation-delay: .25s;
+}
+
+.form-submitting .loading-indicator > div > span:nth-child(3) {
+    animation-delay: .5s;
+}

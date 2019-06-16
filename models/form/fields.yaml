@@ -54,6 +54,60 @@ tabs:
             tab: abwebdevelopers.forms::lang.tabs.caching
             span: right
             type: checkbox
+
+        # Action
+        on_success:
+            label: abwebdevelopers.forms::lang.models.settings.on_success.label
+            comment: abwebdevelopers.forms::lang.models.settings.on_success.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: left
+            type: dropdown
+            options:
+                hide: abwebdevelopers.forms::lang.models.settings.on_success.options.hide
+                clear: abwebdevelopers.forms::lang.models.settings.on_success.options.clear
+                redirect: abwebdevelopers.forms::lang.models.settings.on_success.options.redirect
+            trigger:
+                action: enable
+                field: override_on_success
+                condition: checked
+        override_on_success:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: right
+            type: checkbox
+        on_success_message:
+            label: abwebdevelopers.forms::lang.models.settings.on_success_message.label
+            comment: abwebdevelopers.forms::lang.models.settings.on_success_message.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: left
+            type: text
+            trigger:
+                action: enable
+                field: override_on_success_message
+                condition: checked
+        override_on_success_message:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: right
+            type: checkbox
+        on_success_redirect:
+            label: abwebdevelopers.forms::lang.models.settings.on_success_redirect.label
+            comment: abwebdevelopers.forms::lang.models.settings.on_success_redirect.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: left
+            type: text
+            trigger:
+                action: enable
+                field: override_on_success_redirect
+                condition: checked
+        override_on_success_redirect:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: right
+            type: checkbox
         
         # Styling
         form_class:

@@ -17,6 +17,33 @@ tabs:
                 action: enable
                 field: enable_caching
                 condition: checked
+        
+
+        # Action
+        on_success:
+            label: abwebdevelopers.forms::lang.models.settings.on_success.label
+            comment: abwebdevelopers.forms::lang.models.settings.on_success.comment
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: left
+            type: dropdown
+            options:
+                hide: abwebdevelopers.forms::lang.models.settings.on_success.options.hide
+                clear: abwebdevelopers.forms::lang.models.settings.on_success.options.clear
+                redirect: abwebdevelopers.forms::lang.models.settings.on_success.options.redirect
+        on_success_message:
+            label: abwebdevelopers.forms::lang.models.settings.on_success_message.label
+            comment: abwebdevelopers.forms::lang.models.settings.on_success_message.comment
+            placeholder: abwebdevelopers.forms::lang.models.settings.on_success_message.placeholder
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: left
+            type: text
+        on_success_redirect:
+            label: abwebdevelopers.forms::lang.models.settings.on_success_redirect.label
+            comment: abwebdevelopers.forms::lang.models.settings.on_success_redirect.comment
+            placeholder: abwebdevelopers.forms::lang.models.settings.on_success_redirect.placeholder
+            tab: abwebdevelopers.forms::lang.tabs.action
+            span: left
+            type: text
 
         # Anti-spam
         _recaptcha:

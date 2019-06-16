@@ -14,6 +14,7 @@ use Mail;
 use Backend;
 use Response;
 use Lang;
+use Flash;
 
 class CustomForm extends ComponentBase
 {
@@ -96,6 +97,8 @@ class CustomForm extends ComponentBase
     {
         // Autoload the form
         $this->loadForm();
+
+        $this->addCss('/plugins/abwebdevelopers/forms/assets/custom-form.css');
     }
 
     /**
@@ -182,13 +185,26 @@ class CustomForm extends ComponentBase
 
         // Send notification
         if ($this->form->sendsNotifications()) {
-            $this->sendNotification($data);
+            $response = $this->sendNotification($data);
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                return $response;
+            }
         }
 
         // Send auto reply
         if ($this->form->autoReply()) {
             $this->sendAutoReply($data);
         }
+
+        $message = $this->form->onSuccessMessage();
+        Flash::success($message);
+
+        return Response::json([
+            'success' => true,
+            'action' => $this->form->onSuccess(),
+            'url' => $this->form->onSuccessRedirect(),
+            'message' => $message
+        ]);
     }
 
     private function passesRecaptcha($response) {
@@ -430,5 +446,5 @@ class CustomForm extends ComponentBase
     public function setting(string $key) {
         return Settings::get($key);
     }
-    
+
 }
