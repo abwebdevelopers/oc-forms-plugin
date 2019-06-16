@@ -17,8 +17,11 @@ class InitialiseDatabase extends Migration
             $table->string('code', 80);
             $table->string('description', 191)->default('');
 
+            // Caching
+            $table->boolean('enable_caching')->nullable()->default(null);
+            $table->integer('cache_lifetime')->unsigned()->nullable()->default(null);
+
             // Styling
-            $table->boolean('override_styling')->default(false);
             $table->string('form_class')->nullable()->default(null);
             $table->string('field_class')->nullable()->default(null);
             $table->string('row_class')->nullable()->default(null);
@@ -27,29 +30,26 @@ class InitialiseDatabase extends Migration
             $table->string('submit_class')->nullable()->default(null);
             $table->string('submit_text')->nullable()->default(null);
             // ---
-            $table->boolean('enable_cancel')->default(false);
+            $table->boolean('enable_cancel')->nullable()->default(null);
             $table->string('cancel_class')->nullable()->default(null);
             $table->string('cancel_text')->nullable()->default(null);
 
             // Anti-spam
-            $table->boolean('enable_recaptcha')->default(false);
-            $table->boolean('override_antispam')->default(false);
-            $table->boolean('enable_ip_restriction')->default(false);
+            $table->boolean('enable_recaptcha')->nullable()->default(null);
+            $table->boolean('enable_ip_restriction')->nullable()->default(null);
             $table->integer('max_requests_per_day')->nullable()->default(null);
             $table->string('throttle_message')->nullable()->default(null);
 
             // Privacy
-            $table->boolean('override_privacy')->default(false);
-            $table->boolean('saves_data')->default(1);
+            $table->boolean('saves_data')->nullable()->default(null);
 
             // Emailing
-            $table->boolean('override_emailing')->default(false);
-            $table->boolean('auto_reply')->default(0);
+            $table->boolean('auto_reply')->nullable()->default(null);
             $table->integer('auto_reply_name_field_id')->unsigned()->nullable()->default(null);
             $table->integer('auto_reply_email_field_id')->unsigned()->nullable()->default(null);
             $table->string('auto_reply_template')->nullable()->default(null);
             // ---
-            $table->boolean('send_notifications')->default(0);
+            $table->boolean('send_notifications')->nullable()->default(null);
             $table->string('notification_template')->nullable()->default(null);
             $table->string('notification_recipients')->nullable()->default(null);
 

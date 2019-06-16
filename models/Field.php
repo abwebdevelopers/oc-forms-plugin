@@ -45,17 +45,55 @@ class Field extends Model
     ];
 
     /**
-     * Before the Field's Save event.
-     * Dynamically set the required field if "required" is in the validation rules
+     * @var array List of fields which have an occumpanied "Override" checkbox configuration
+     */
+    public $overrides = [
+        'field_class',
+        'row_class',
+        'group_class',
+        'label_class',
+    ];
+
+    /**
+     * After fetching the Field event
+     * Create override_{field} Fields which represent the fields' states on whether or not
+     * to inherit the setting value - used in the forms.
      * 
      * @return void
      */
-    public function beforeSave()
-    {
+    public function afterFetch() {
+        if (!empty($this->overrides)) {
+            // Create virtual fields for auto selecting override checkboxes in backend form
+            foreach ($this->overrides as $field) {
+                $override = 'override_' . $field;
+                $this->{$override} = $v = ($this->{$field} !== null);
+            }
+        }
+    }
+
+    /**
+     * Before the Field's Save event.
+     * Dynamically set the required field if "required" is in the validation rules
+     * Remove override_{field} Fields
+     * 
+     * @return void
+     */
+    public function beforeSave() {
+        if (!empty($this->overrides)) {
+            // Convert inherited values to null
+            foreach ($this->overrides as $field) {
+                $override = 'override_' . $field;
+                if (!$this->{$override}) {
+                    $this->{$field} = null;
+                }
+                unset($this->{$override});
+            }
+        }
+
         // If validation rules are present, but the field is not required..
         if (!empty($this->validation_rules) && !$this->required) {
             // Set required to whether or not required is in the validation rules
-            $this->required = (bool)in_array('required', explode('|', $this->validation_rules));
+            $this->required = (bool) in_array('required', explode('|', $this->validation_rules));
         }
     }
 

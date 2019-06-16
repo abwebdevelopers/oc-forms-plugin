@@ -55,30 +55,70 @@ tabs:
         
         # Styling
         field_class:
-            tab: Styling
+            label: abwebdevelopers.forms::lang.models.settings.field_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.field_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
             type: text
-            label: abwebdevelopers.forms::lang.models.field.field_class.label
-            comment: abwebdevelopers.forms::lang.models.field.field_class.comment
             span: left
             placeholder: Inherit
+            trigger:
+                action: enable
+                field: override_field_class
+                condition: checked
+        override_field_class:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            span: right
+            type: checkbox
         row_class:
-            tab: Styling
+            label: abwebdevelopers.forms::lang.models.settings.row_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.row_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
             type: text
-            label: abwebdevelopers.forms::lang.models.field.row_class.label
-            comment: abwebdevelopers.forms::lang.models.field.row_class.comment
-            span: right
-            placeholder: Inherit
-        group_class:
-            tab: Styling
-            type: text
-            label: abwebdevelopers.forms::lang.models.field.group_class.label
-            comment: abwebdevelopers.forms::lang.models.field.group_class.comment
             span: left
             placeholder: Inherit
-        label_class:
-            tab: Styling
-            type: text
-            label: abwebdevelopers.forms::lang.models.field.label_class.label
-            comment: abwebdevelopers.forms::lang.models.field.label_class.comment
+            trigger:
+                action: enable
+                field: override_row_class
+                condition: checked
+        override_row_class:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
             span: right
+            type: checkbox
+        group_class:
+            label: abwebdevelopers.forms::lang.models.settings.group_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.group_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
             placeholder: Inherit
+            trigger:
+                action: enable
+                field: override_group_class
+                condition: checked
+        override_group_class:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            span: right
+            type: checkbox
+        label_class:
+            label: abwebdevelopers.forms::lang.models.settings.label_class.label
+            comment: abwebdevelopers.forms::lang.models.settings.label_class.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: text
+            span: left
+            placeholder: Inherit
+            trigger:
+                action: enable
+                field: override_label_class
+                condition: checked
+        override_label_class:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            span: right
+            type: checkbox

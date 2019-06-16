@@ -9,6 +9,32 @@
         'antispam' => 'Antispam',
         'styling' => 'Styling',
         'emailing' => 'Emailing',
+        'caching' => 'Caching',
+    ],
+    'sections' => [
+        'buttons' => [
+            'label' => 'Button Styling',
+        ],
+        'recaptcha' => [
+            'label' => 'Google ReCAPTCHA',
+        ],
+        'ip_restriction' => [
+            'label' => 'IP Restrictions',
+        ],
+        'auto_eply' => [
+            'label' => 'Automatic Replies',
+        ],
+        'styling' => [
+            'label' => 'Form Styling',
+            'comment' => 'All of the below can be overridden, per form and/or field',
+        ],
+        'validation' => [
+            'label' => 'Validation Styling',
+            'comment' => 'All of the below can be overridden, per form'
+        ],
+        'notifications' => [
+            'label' => 'Automatic Notifications',
+        ],
     ],
     'forms' => [
         'field' => [
@@ -26,14 +52,6 @@
         'formCode' => [
             'title' => 'Use Form',
             'description' => 'Define the form to use by its code',
-        ],
-        'cacheView' => [
-            'title' => 'Cache the Form',
-            'description' => 'Should the rendered view be cached?',
-        ],
-        'cacheLifetime' => [
-            'title' => 'Cache Lifetime',
-            'description' => 'The amount of minutes the cache should last for',
         ],
         'validation' => [
             'recaptchaFailed' => 'You must complete the reCAPTCHA verification',
@@ -53,14 +71,19 @@
                 'label' => 'Display Order',
             ],
             'override' => [
-                'label' => 'Override system defaults',
+                'label' => 'Override system value',
                 'comment' => 'On: Override | Off: Inherit'
             ],
-            'overriden' => [
-                'comment' => 'Can be overridden per form'
-            ]
         ],
         'settings' => [
+            'enable_caching' => [
+                'label' => 'Enable Caching',
+                'comment' => 'Choose whether or not cache the rendered form'
+            ],
+            'cache_lifetime' => [
+                'label' => 'Cache Lifetime',
+                'comment' => 'Amount of minutes to cache the rendered form for'
+            ],
             'form_class' => [
                 'label' => 'Form Class',
                 'comment' => 'CSS Class for the Form',
@@ -121,9 +144,6 @@
                 'label' => 'ReCAPTCHA Secret Key',
                 'comment' => 'Google ReCAPTCHA (Private) API Key',
             ],
-            '_furtherProtection' => [
-                'label' => 'Further Protection',
-            ],
             'enable_ip_restriction' => [
                 'label' => 'Enable IP Restriction',
                 'comment' => 'Choose to enable an IP restriction for this form',
@@ -140,12 +160,9 @@
                 'label' => 'Queue Emails?',
                 'comment' => 'Choose whether or not to add emails to the queue rather than sending synchronously (recommened)'
             ],
-            '_notifications' => [
-                'label' => 'Automatic Notifications',
-            ],
             'send_notifications' => [
                 'label' => 'Send Notifications',
-                'comment' => 'Decide if you would like to receive notifications for each submission. Can be overriden, per form',
+                'comment' => 'Decide if you would like to receive notifications for each submission. Can be overridden, per form',
             ],
             'notification_template' => [
                 'label' => 'Notification Template',
@@ -154,9 +171,6 @@
             'notification_recipients' => [
                 'label' => 'Notification Recipients',
                 'comment' => 'Comma separated email addresses',
-            ],
-            '_autoReply' => [
-                'label' => 'Automatic Replies',
             ],
             'auto_reply' => [
                 'label' => 'Auto Reply?',
@@ -173,10 +187,6 @@
             'auto_reply_template' => [
                 'label' => 'Auto Reply Template',
                 'comment' => 'Custom email template code (Settings > Email templates)',
-            ],
-            '_styleSection' => [
-                'label' => 'Styles',
-                'comment' => 'All of the below can be overriden, per form and/or field',
             ],
             'field_error_class' => [
                 'label' => 'Field Error Class',
@@ -216,100 +226,6 @@
                 'label' => 'Form Description',
                 'comment' => 'A little description about the forms purpose'
             ],
-            'form_class' => [
-                'label' => 'Form Class',
-                'comment' => 'CSS Class for the Form',
-            ],
-            'field_class' => [
-                'label' => 'Field Class',
-                'comment' => 'CSS Class for the Field',
-            ],
-            'row_class' => [
-                'label' => 'Row Class',
-                'comment' => 'CSS Class for the Row',
-            ],
-            'group_class' => [
-                'label' => 'Group Class',
-                'comment' => 'CSS Class for the Group',
-            ],
-            'label_class' => [
-                'label' => 'Label Class',
-                'comment' => 'CSS Class for the Label',
-            ],
-            'submit_class' => [
-                'label' => 'Submit Class',
-                'comment' => 'CSS Class of the submit button',
-            ],
-            'submit_text' => [
-                'label' => 'Submit Text',
-                'comment' => 'Text to display in the submit button',
-            ],
-            'enable_cancel' => [
-                'label' => 'Enable Cancel',
-                'comment' => 'Will go back to referer if clicked',
-            ],
-            'cancel_class' => [
-                'label' => 'Cancel Class',
-                'comment' => 'CSS Class of the cancel button (if enabled)',
-            ],
-            'cancel_text' => [
-                'label' => 'Cancel Text',
-                'comment' => 'Text to display in the cancel button (if enabled)',
-            ],
-            'saves_data' => [
-                'label' => 'Save Data?',
-                'comment' => 'Choose whether or not to save submission data to the database (recommended)',
-            ],
-            'enable_recaptcha' => [
-                'label' => 'Enable Recpatcha',
-                'comment' => 'Should this Form require recpatcha?',
-            ],
-            'enable_ip_restriction' => [
-                'label' => 'Enable IP Restriction',
-                'comment' => 'Choose to enable an IP restriction for this form',
-            ],
-            'max_requests_per_day' => [
-                'label' => 'Max Requests Per Day',
-                'comment' => 'Maximum amount of daily submissions',
-            ],
-            'throttle_message' => [
-                'label' => 'Throttle Message',
-                'comment' => 'Choose what to display to a user who has exceeded their daily submissions',
-            ],
-            '_notifications' => [
-                'label' => 'Automatic Notifications',
-            ],
-            'send_notifications' => [
-                'label' => 'Send Notifications',
-                'comment' => 'Decide if you would like to receive notifications for each submission',
-            ],
-            'notification_template' => [
-                'label' => 'Notification Template',
-                'comment' => 'Custom email template code (Settings > Email templates)',
-            ],
-            'notification_recipients' => [
-                'label' => 'Notification Recipients',
-                'comment' => 'Comma separated email addresses',
-            ],
-            '_autoReply' => [
-                'label' => 'Automatic Replies',
-            ],
-            'auto_reply' => [
-                'label' => 'Auto Reply?',
-                'comment' => 'Send automated reply to user who submits this form',
-            ],
-            'auto_reply_email_field_id' => [
-                'label' => 'Auto Reply Email Field',
-                'comment' => 'Select the field to use as the email address to auto reply to',
-            ],
-            'auto_reply_name_field_id' => [
-                'label' => 'Auto Reply Name Field',
-                'comment' => 'Select the field to use as the name when auto replying',
-            ],
-            'auto_reply_template' => [
-                'label' => 'Auto Reply Template',
-                'comment' => 'Custom email template code (Settings > Email templates)',
-            ],
         ],
         'field' => [
             'name' => [
@@ -343,22 +259,6 @@
             'validation_message' => [
                 'label' => 'Validation Message',
                 'comment' => 'What message should be shown on failure',
-            ],
-            'field_class' => [
-                'label' => 'Field Class',
-                'comment' => 'Overrides any form / global settings',
-            ],
-            'row_class' => [
-                'label' => 'Row Class',
-                'comment' => 'Overrides any form / global settings',
-            ],
-            'group_class' => [
-                'label' => 'Group Class',
-                'comment' => 'Overrides any form / global settings',
-            ],
-            'label_class' => [
-                'label' => 'Label Class',
-                'comment' => 'Overrides any form / global settings',
             ],
         ]
     ]

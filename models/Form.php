@@ -37,7 +37,8 @@ class Form extends Model
     public $fillable = [
         'title',
         'code',
-        'override_styling',
+        'enable_caching',
+        'cache_lifetime',
         'form_class',
         'field_class',
         'row_class',
@@ -48,14 +49,11 @@ class Form extends Model
         'enable_cancel',
         'cancel_class',
         'cancel_text',
-        'override_privacy',
         'saves_data',
-        'override_antispam',
         'enable_recaptcha',
         'enable_ip_restriction',
         'max_requests_per_day',
         'throttle_message',
-        'override_emailing',
         'send_notifications',
         'notification_template',
         'notification_recipients',
@@ -71,33 +69,99 @@ class Form extends Model
     public $rules = [
         'title' => 'required|string|max:255',
         'code' => 'required|string|max:255',
-        'override_styling' => 'boolean',
-        'form_class' => 'string|max:255',
-        'field_class' => 'string|max:255',
-        'row_class' => 'string|max:255',
-        'group_class' => 'string|max:255',
-        'label_class' => 'string|max:255',
-        'submit_class' => 'string|max:255',
-        'submit_text' => 'string|max:255',
-        'enable_cancel' => 'boolean',
-        'cancel_class' => 'string|max:255',
-        'cancel_text' => 'string|max:255',
-        'override_privacy' => 'boolean',
-        'saves_data' => 'boolean',
-        'override_antispam' => 'boolean',
-        'enable_recaptcha' => 'boolean',
-        'enable_ip_restriction' => 'boolean',
-        'max_requests_per_day' => 'int|min:1',
-        'throttle_message' => 'string|max:255',
-        'override_emailing' => 'boolean',
-        'send_notifications' => 'boolean',
-        'notification_template' => 'string|max:255',
-        'notification_recipients' => 'string|max:255',
-        'auto_reply' => 'boolean',
-        'auto_reply_email_field_id' => '',
-        'auto_reply_name_field_id' => '',
-        'auto_reply_template' => 'string|max:255',
+        'form_class' => 'nullable|string|max:255',
+        'field_class' => 'nullable|string|max:255',
+        'row_class' => 'nullable|string|max:255',
+        'group_class' => 'nullable|string|max:255',
+        'label_class' => 'nullable|string|max:255',
+        'submit_class' => 'nullable|string|max:255',
+        'submit_text' => 'nullable|string|max:255',
+        'enable_cancel' => 'nullable|boolean',
+        'cancel_class' => 'nullable|string|max:255',
+        'cancel_text' => 'nullable|string|max:255',
+        'saves_data' => 'nullable|boolean',
+        'enable_recaptcha' => 'nullable|boolean',
+        'enable_ip_restriction' => 'nullable|boolean',
+        'max_requests_per_day' => 'nullable|int|min:1',
+        'throttle_message' => 'nullable|string|max:255',
+        'send_notifications' => 'nullable|boolean',
+        'notification_template' => 'nullable|string|max:255',
+        'notification_recipients' => 'nullable|string|max:255',
+        'auto_reply' => 'nullable|boolean',
+        'auto_reply_email_field_id' => 'nullable',
+        'auto_reply_name_field_id' => 'nullable',
+        'auto_reply_template' => 'nullable|string|max:255',
+        'enable_caching' => 'nullable|boolean',
+        'cache_lifetime' => 'nullable|integer|min:0',
     ];
+
+    /**
+     * @var array List of fields which have an occumpanied "Override" checkbox configuration
+     */
+    public $overrides = [
+        'enable_caching',
+        'cache_lifetime',
+        'form_class',
+        'field_class',
+        'row_class',
+        'group_class',
+        'label_class',
+        'submit_class',
+        'submit_text',
+        'enable_cancel',
+        'cancel_class',
+        'cancel_text',
+        'saves_data',
+        'enable_recaptcha',
+        'enable_ip_restriction',
+        'max_requests_per_day',
+        'throttle_message',
+        'send_notifications',
+        'notification_template',
+        'notification_recipients',
+        'auto_reply',
+        'auto_reply_email_field_id',
+        'auto_reply_name_field_id',
+        'auto_reply_template',
+    ];
+
+    /**
+     * After fetching the Field event
+     * Create override_{field} Fields which represent the fields' states on whether or not
+     * to inherit the setting value - used in the forms.
+     * 
+     * @return void
+     */
+    public function afterFetch() {
+        if (!empty($this->overrides)) {
+            // Create virtual fields for auto selecting override checkboxes in backend form
+            foreach ($this->overrides as $field) {
+                $override = 'override_' . $field;
+                $this->{$override} = $v = ($this->{$field} !== null);
+            }
+        }
+    }
+
+    /**
+     * Before the Field's Save event.
+     * Remove override_{field} Fields
+     * 
+     * @return void
+     */
+    public function beforeSave() {
+        if (!empty($this->overrides)) {
+            // Convert inherited values to null
+            foreach ($this->overrides as $field) {
+                $override = 'override_' . $field;
+                if ($this->{$override} !== null) {
+                    if (!$this->{$override}) {
+                        $this->{$field} = null;
+                    }
+                }
+                unset($this->{$override});
+            }
+        }
+    }
 
     /**
      * Return the available options for auto reply name field dropdown
@@ -158,7 +222,7 @@ class Form extends Model
      * @return bool
      */
     public function recaptchaEnabled() {
-        if ($this->override_antispam) {
+        if ($this->override_enable_recaptcha) {
             return (bool) $this->enable_recaptcha;
         }
 
@@ -171,7 +235,7 @@ class Form extends Model
      * @return bool
      */
     public function hasIpRestriction() {
-        if ($this->override_antispam) {
+        if ($this->override_enable_ip_restriction) {
             return (bool) $this->enable_ip_restriction;
         }
 
@@ -184,7 +248,7 @@ class Form extends Model
      * @return int
      */
     public function maxRequestsPerDay() {
-        if ($this->override_antispam) {
+        if ($this->override_max_requests_per_day) {
             return max((int) $this->max_requests_per_day, 1);
         }
 
@@ -197,7 +261,7 @@ class Form extends Model
      * @return string
      */
     public function throttleMessage() {
-        if ($this->override_antispam) {
+        if ($this->override_throttle_message) {
             return (string) $this->throttle_message;
         }
 
@@ -212,7 +276,7 @@ class Form extends Model
      * @return bool
      */
     public function savesData() {
-        if ($this->override_privacy) {
+        if ($this->override_saves_data) {
             return (bool) $this->saves_data;
         }
 
@@ -225,7 +289,7 @@ class Form extends Model
      * @return bool
      */
     public function sendsNotifications() {
-        if ($this->override_emailing) {
+        if ($this->override_send_notifications) {
             return (bool) $this->send_notifications;
         }
 
@@ -238,7 +302,7 @@ class Form extends Model
      * @return string
      */
     public function notificationTemplate() {
-        if ($this->override_emailing && !empty($this->notification_template)) {
+        if ($this->override_notification_template) {
             return (string) $this->notification_template;
         }
 
@@ -251,7 +315,7 @@ class Form extends Model
      * @return string
      */
     public function notificationRecipients() {
-        if ($this->override_emailing) {
+        if ($this->override_notification_recipients) {
             return (string) $this->notification_recipients;
         }
 
@@ -264,7 +328,7 @@ class Form extends Model
      * @return bool
      */
     public function autoReply() {
-        if ($this->override_emailing) {
+        if ($this->override_auto_reply) {
             return (bool) $this->auto_reply;
         }
 
@@ -295,7 +359,7 @@ class Form extends Model
      * @return string
      */
     public function autoReplyTemplate() {
-        if ($this->override_emailing && !empty($this->auto_reply_template)) {
+        if ($this->override_auto_reply_template) {
             return (string) $this->auto_reply_template;
         }
 
@@ -310,7 +374,7 @@ class Form extends Model
      * @return string
      */
     public function formClass() {
-        if ($this->override_styling) {
+        if ($this->override_form_class) {
             return (string) $this->form_class;
         }
 
@@ -325,12 +389,12 @@ class Form extends Model
      */
     public function fieldClass(Field $field = null) {
         if ($field !== null) {
-            if (!empty($field->field_class)) {
+            if ($field->override_field_class) {
                 return $field->field_class;
             }
         }
 
-        if ($this->override_styling) {
+        if ($this->override_field_class) {
             return (string) $this->field_class;
         }
 
@@ -345,12 +409,12 @@ class Form extends Model
      */
     public function rowClass(Field $field = null) {
         if ($field !== null) {
-            if (!empty($field->row_class)) {
+            if ($field->override_row_class) {
                 return $field->row_class;
             }
         }
 
-        if ($this->override_styling) {
+        if ($this->override_row_class) {
             return (string) $this->row_class;
         }
 
@@ -365,12 +429,12 @@ class Form extends Model
      */
     public function groupClass(Field $field = null) {
         if ($field !== null) {
-            if (!empty($field->group_class)) {
+            if ($field->override_group_class) {
                 return $field->group_class;
             }
         }
 
-        if ($this->override_styling) {
+        if ($this->override_group_class) {
             return (string) $this->group_class;
         }
 
@@ -385,12 +449,12 @@ class Form extends Model
      */
     public function labelClass(Field $field = null) {
         if ($field !== null) {
-            if (!empty($field->label_class)) {
+            if ($field->override_label_class) {
                 return $field->label_class;
             }
         }
 
-        if ($this->override_styling) {
+        if ($this->override_label_class) {
             return (string) $this->label_class;
         }
 
@@ -403,7 +467,7 @@ class Form extends Model
      * @return string
      */
     public function submitClass() {
-        if ($this->override_styling) {
+        if ($this->override_submit_class) {
             return (string) $this->submit_class;
         }
 
@@ -416,7 +480,7 @@ class Form extends Model
      * @return string
      */
     public function submitText() {
-        if ($this->override_styling) {
+        if ($this->override_submit_text) {
             return (string) $this->submit_text;
         }
 
@@ -429,7 +493,7 @@ class Form extends Model
      * @return string
      */
     public function enableCancel() {
-        if ($this->override_styling) {
+        if ($this->override_enable_cancel) {
             return (bool) $this->enable_cancel;
         }
 
@@ -442,7 +506,7 @@ class Form extends Model
      * @return string
      */
     public function cancelClass() {
-        if ($this->override_styling) {
+        if ($this->override_cancel_class) {
             return (string) $this->cancel_class;
         }
 
@@ -455,11 +519,37 @@ class Form extends Model
      * @return string
      */
     public function cancelText() {
-        if ($this->override_styling) {
+        if ($this->override_cancel_text) {
             return (string) $this->cancel_text;
         }
 
         return (string) Settings::get('cancel_text', 'Cancel');
+    }
+    
+    /**
+     * Determine if caching is enabled
+     * 
+     * @return bool
+     */
+    public function enableCaching() {
+        if ($this->override_enable_caching) {
+            return (bool) $this->enable_caching;
+        }
+
+        return (bool) Settings::get('enable_caching', false);
+    }
+    
+    /**
+     * Retrieve the amount of minutes to cache the form for
+     * 
+     * @return int
+     */
+    public function cacheLifetime() {
+        if ($this->override_cache_lifetime) {
+            return (int) $this->cache_lifetime;
+        }
+
+        return (int) Settings::get('cache_lifetime', 60);
     }
 
 }

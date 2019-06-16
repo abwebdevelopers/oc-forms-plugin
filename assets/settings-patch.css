@@ -1,0 +1,22 @@
+/* Equalise the heights of the form-groups */
+.form-group {
+    min-height: 110px;
+}
+
+/* Except sections, keep them small */
+.form-group.section-field {
+    min-height: 40px;
+    padding-bottom: 0px !important;
+}
+
+/* Pad the top of checkbox and switch fields so that the checkboxes are inline with where a text-field is */
+.switch-field,
+.checkbox-field {
+    padding-top: 25px;
+}
+
+/* JS will bring these help labels to life */
+label[for] + .help-block,
+.field-switch label {
+    cursor: pointer;
+}

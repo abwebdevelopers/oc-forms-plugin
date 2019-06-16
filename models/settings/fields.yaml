@@ -1,6 +1,29 @@
 tabs:
     fields:
+        # Caching
+        enable_caching:
+            label: abwebdevelopers.forms::lang.models.settings.enable_caching.label
+            comment: abwebdevelopers.forms::lang.models.settings.enable_caching.comment
+            tab: abwebdevelopers.forms::lang.tabs.caching
+            span: left
+            type: switch
+        cache_lifetime:
+            label: abwebdevelopers.forms::lang.models.settings.cache_lifetime.label
+            comment: abwebdevelopers.forms::lang.models.settings.cache_lifetime.comment
+            tab: abwebdevelopers.forms::lang.tabs.caching
+            span: right
+            type: text
+            trigger:
+                action: enable
+                field: enable_caching
+                condition: checked
+
         # Anti-spam
+        _recaptcha:
+            label: abwebdevelopers.forms::lang.sections.recaptcha.label
+            tab: abwebdevelopers.forms::lang.tabs.antispam
+            span: full
+            type: section
         enable_recaptcha:
             label: abwebdevelopers.forms::lang.models.settings.enable_recaptcha.label
             comment: abwebdevelopers.forms::lang.models.settings.enable_recaptcha.comment
@@ -14,7 +37,7 @@ tabs:
             span: left
             type: text
             trigger:
-                action: show
+                action: enable
                 field: enable_recaptcha
                 condition: checked
         recaptcha_secret_key:
@@ -24,12 +47,11 @@ tabs:
             span: right
             type: text
             trigger:
-                action: show
+                action: enable
                 field: enable_recaptcha
                 condition: checked
-        _furtherProtection:
-            label: abwebdevelopers.forms::lang.models.settings._furtherProtection.label
-            comment: abwebdevelopers.forms::lang.models.all.overriden.comment
+        _ip_restriction:
+            label: abwebdevelopers.forms::lang.sections.ip_restriction.label
             tab: abwebdevelopers.forms::lang.tabs.antispam
             type: section
         enable_ip_restriction:
@@ -46,7 +68,7 @@ tabs:
             type: number
             placeholder: 'e.g. 5'
             trigger:
-                action: show
+                action: enable
                 field: enable_ip_restriction
                 condition: checked
         throttle_message:
@@ -57,7 +79,7 @@ tabs:
             type: text
             placeholder: 'Failed to send due to too many requests.'
             trigger:
-                action: show
+                action: enable
                 field: enable_ip_restriction
                 condition: checked
         
@@ -83,15 +105,20 @@ tabs:
             tab: abwebdevelopers.forms::lang.tabs.emailing
             span: left
             type: switch
-        send_notifications:
-            label: abwebdevelopers.forms::lang.models.settings.send_notifications.label
-            comment: abwebdevelopers.forms::lang.models.settings.send_notifications.comment
-            tab: abwebdevelopers.forms::lang.tabs.emailing
-            span: right
-            type: switch
         auto_reply:
             label: abwebdevelopers.forms::lang.models.settings.auto_reply.label
             comment: abwebdevelopers.forms::lang.models.settings.auto_reply.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: left
+            type: switch
+        _notifications:
+            label: abwebdevelopers.forms::lang.sections.notifications.label
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: full
+            type: section
+        send_notifications:
+            label: abwebdevelopers.forms::lang.models.settings.send_notifications.label
+            comment: abwebdevelopers.forms::lang.models.settings.send_notifications.comment
             tab: abwebdevelopers.forms::lang.tabs.emailing
             span: left
             type: switch
@@ -99,17 +126,17 @@ tabs:
             label: abwebdevelopers.forms::lang.models.settings.notification_recipients.label
             comment: abwebdevelopers.forms::lang.models.settings.notification_recipients.comment
             tab: abwebdevelopers.forms::lang.tabs.emailing
-            span: right
+            span: left
             type: text
             trigger:
-                action: show
+                action: enable
                 field: send_notifications
                 condition: checked
         
         # Styling
         _styleSection:
-            label: abwebdevelopers.forms::lang.models.settings._styleSection.label
-            comment: abwebdevelopers.forms::lang.models.settings._styleSection.comment
+            label: abwebdevelopers.forms::lang.sections.styling.label
+            comment: abwebdevelopers.forms::lang.sections.styling.comment
             tab: abwebdevelopers.forms::lang.tabs.styling
             type: section
         form_class:
@@ -118,7 +145,7 @@ tabs:
             tab: abwebdevelopers.forms::lang.tabs.styling
             type: text
             span: left
-            default: form-control
+            default: form
         field_class:
             label: abwebdevelopers.forms::lang.models.settings.field_class.label
             comment: abwebdevelopers.forms::lang.models.settings.field_class.comment
@@ -147,6 +174,11 @@ tabs:
             type: text
             span: left
             default: form-label
+        _validation:
+            label: abwebdevelopers.forms::lang.sections.validation.label
+            comment: abwebdevelopers.forms::lang.sections.validation.comment
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: section
         field_error_class:
             label: abwebdevelopers.forms::lang.models.settings.field_error_class.label
             comment: abwebdevelopers.forms::lang.models.settings.field_error_class.comment
@@ -189,6 +221,10 @@ tabs:
             type: text
             span: right
             default: valid-feedback
+        _buttons:
+            label: abwebdevelopers.forms::lang.sections.buttons.label
+            tab: abwebdevelopers.forms::lang.tabs.styling
+            type: section
         submit_class:
             label: abwebdevelopers.forms::lang.models.settings.submit_class.label
             comment: abwebdevelopers.forms::lang.models.settings.submit_class.comment
@@ -217,7 +253,7 @@ tabs:
             span: left
             default: btn btn-danger
             trigger:
-                action: show
+                action: enable
                 field: enable_cancel
                 condition: checked
         cancel_text:
@@ -228,6 +264,6 @@ tabs:
             span: right
             default: Cancel
             trigger:
-                action: show
+                action: enable
                 field: enable_cancel
                 condition: checked

@@ -61,18 +61,6 @@ class CustomForm extends ComponentBase
                 'type'              => 'string',
                 'required'          => true,
             ],
-            'cacheView' => [
-                'title'             => 'abwebdevelopers.forms::lang.customForm.cacheView.title',
-                'description'       => 'abwebdevelopers.forms::lang.customForm.cacheView.description',
-                'default'           => false,
-                'type'              => 'checkbox',
-            ],
-            'cacheLifetime' => [
-                'title'             => 'abwebdevelopers.forms::lang.customForm.cacheLifetime.title',
-                'description'       => 'abwebdevelopers.forms::lang.customForm.cacheLifetime.description',
-                'default'           => 60,
-                'type'              => 'string',
-            ]
         ];
     }
 
@@ -236,6 +224,12 @@ class CustomForm extends ComponentBase
      */
     public function getRenderedPartial()
     {
+        if ($this->form->enableCaching()) {
+            return Cache::remember('abwebdevelopers_form_' . $this->form->code, $this->form->cacheLifetime(), function() {
+                return $this->renderForm();
+            });
+        }
+
         return $this->renderForm();
     }
 
@@ -436,4 +430,5 @@ class CustomForm extends ComponentBase
     public function setting(string $key) {
         return Settings::get($key);
     }
+    
 }
