@@ -3,17 +3,8 @@
 
 <form id="form_{{ form.code }}" data-request-flash>
     <div class="loading-indicator">
-        <div>
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-        </div>
+        <div><span>.</span><span>.</span><span>.</span></div>
     </div>
-    {% flash %}
-    <p data-control="flash-message" class="flash-message fade {{ type }}" data-interval="5">
-        {{ message }}
-    </p>
-    {% endflash %}
 
     <div class="{{ form.rowClass() }}">
         {% for field in form.fields %}

@@ -14,7 +14,6 @@ use Mail;
 use Backend;
 use Response;
 use Lang;
-use Flash;
 
 class CustomForm extends ComponentBase
 {
@@ -98,6 +97,7 @@ class CustomForm extends ComponentBase
         // Autoload the form
         $this->loadForm();
 
+        // Load required CSS
         $this->addCss('/plugins/abwebdevelopers/forms/assets/custom-form.css');
     }
 
@@ -193,17 +193,17 @@ class CustomForm extends ComponentBase
 
         // Send auto reply
         if ($this->form->autoReply()) {
-            $this->sendAutoReply($data);
+            $response = $this->sendAutoReply($data);
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                return $response;
+            }
         }
-
-        $message = $this->form->onSuccessMessage();
-        Flash::success($message);
 
         return Response::json([
             'success' => true,
             'action' => $this->form->onSuccess(),
             'url' => $this->form->onSuccessRedirect(),
-            'message' => $message
+            'message' => $this->form->onSuccessMessage()
         ]);
     }
 
