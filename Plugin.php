@@ -24,11 +24,11 @@ class Plugin extends PluginBase
                 'class' => 'ABWebDevelopers\Forms\Models\Settings',
                 'keywords' => 'form custom contact abweb recaptcha antispam',
                 'order' => 555,
-                'permixssions' => ['abwebdevelopers.forms.access_settings'],
+                'permissions' => ['abwebdevelopers.forms.access_settings'],
             ]
         ];
     }
-    
+
     public function registerMailTemplates()
     {
         return [
