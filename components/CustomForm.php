@@ -173,11 +173,11 @@ class CustomForm extends ComponentBase
             // Fire onValidateFormFail event
             Event::fire(self::EVENTS_PREFIX . 'onValidateFormFail', [$this, $data, $rules, $messages, $validator]);
 
-            // Store the submission
-            if ($this->form->savesData()) {
-                // TODO: create a setting to save invalid submissions
-                $this->saveSubmission($data);
-            }
+            // // Store the submission
+            // if ($this->form->savesData()) {
+            //     // TODO: create a setting to save invalid submissions
+            //     $this->saveSubmission($data);
+            // }
 
             // Compile the errors into one string
             $errors = [];
