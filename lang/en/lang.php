@@ -22,7 +22,7 @@
         'ip_restriction' => [
             'label' => 'IP Restrictions',
         ],
-        'auto_eply' => [
+        'auto_reply' => [
             'label' => 'Automatic Replies',
         ],
         'styling' => [
