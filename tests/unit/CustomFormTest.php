@@ -535,4 +535,46 @@ class CustomFormTest extends PluginTestCase
         $this->assertEquals($resp->getData()->success, true);
     }
 
+    /**
+     * Test that the throttle system works
+     */
+    public function testTooManyAttemptsLocksUserOut() {
+        $this->initSettings([
+            'saves_data' => true,
+            'store_ips' => true,
+            'max_requests_per_day' => 3,
+            'throttle_message' => 'Chill'
+        ]);
+        
+        $post = [
+            'name' => 'valid',
+            'email' => 'valid@example.org',
+            'comment' => 'valid',
+        ];
+        Input::replace($post);
+
+        // Attempt 1 Accepted
+        $component = $this->getComponent();
+        $resp = $component->onFormSubmit();
+        $this->assertEquals($resp->getStatusCode(), 200);
+
+        // Attempt 2 Accepted
+        $component = $this->getComponent();
+        $resp = $component->onFormSubmit();
+        $this->assertEquals($resp->getStatusCode(), 200);
+
+        // Attempt 3 Accepted
+        $component = $this->getComponent();
+        $resp = $component->onFormSubmit();
+        $this->assertEquals($resp->getStatusCode(), 200);
+
+        // Attempt 4 Locked Out
+        $component = $this->getComponent();
+        $resp = $component->onFormSubmit();
+
+        $this->assertEquals($resp->getStatusCode(), 429);
+        $this->assertEquals($resp->getData()->success, false);
+        $this->assertEquals($resp->getData()->error, 'Chill');
+    }
+
 }

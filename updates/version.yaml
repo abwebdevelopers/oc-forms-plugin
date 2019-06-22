@@ -5,3 +5,5 @@
     - 'Stable release'
 1.0.3:
     - 'Events, more tests, more stable release'
+1.0.4:
+    - 'Implement IP throttle'

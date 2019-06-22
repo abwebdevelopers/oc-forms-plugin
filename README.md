@@ -2,6 +2,8 @@
 
 October Plugin for self created and styled forms, with a variety of customisations, emailing, storing submissions, etc
 
+## Please Note: This plugin is still in development so will likely have bugs. Check back within a week for a working version
+
 ### Usage (October CMS)
 
 Simple. Firstly you will need a form. Installing this plugin will automatically generate a basic contact form. This can be deleted or used as a reference - up to you.

@@ -217,6 +217,24 @@ class CustomForm extends ComponentBase
             Event::fire(self::EVENTS_PREFIX . 'onRecaptchaSuccess', [$this, $data, $rules, $messages]);
         }
 
+        // If we have are storing IPs for submissions (requirement for throttle) and..
+        if ($this->form->savesData() && Settings::get('store_ips', true)) {
+            // if the form is throttling requests then...
+            if ($max = $this->form->maxRequestsPerDay()) {
+                // Check if this IP has submitted $max requests today for this form
+                $attempts = Submission::throttleCheck($this->form->id)->count();
+
+                // If they have attempted too many in the last 24h then abort
+                if ($attempts >= $max) {
+                    $message = $this->form->throttleMessage();
+                    return Response::json([
+                        'success' => false,
+                        'error' => $message,
+                    ], 429);
+                }
+            }
+        }
+
         // Store the submission
         if ($this->form->savesData()) {
             $this->saveSubmission($data);
