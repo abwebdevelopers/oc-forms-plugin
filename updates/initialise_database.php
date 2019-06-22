@@ -156,6 +156,7 @@ class InitialiseDatabase extends Migration
             'description' => 'User\'s Comments',
             'sort_order' => 3
         ]);
+        
         $form->auto_reply_email_field_id = $email->id;
         $form->auto_reply_name_field_id = $name->id;
         $form->save();

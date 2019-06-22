@@ -146,7 +146,11 @@ class Form extends Model
             // Create virtual fields for auto selecting override checkboxes in backend form
             foreach ($this->overrides as $field) {
                 $override = 'override_' . $field;
-                $this->{$override} = $v = ($this->{$field} !== null);
+                $hasValue = ($this->{$field} !== null);
+                $this->{$override} = $hasValue;
+                if (!$hasValue) {
+                    $this->{$field} = Settings::get($field, null);
+                }
             }
         }
     }

@@ -6,6 +6,17 @@ use Event;
 
 class Plugin extends PluginBase
 {
+
+    /**
+     * @var string Event namespace
+     */
+    public const EVENTS_PREFIX = 'abweb.forms.';
+
+    /**
+     * Register Plugin Components
+     * 
+     * @return array
+     */
     public function registerComponents()
     {
         return [
@@ -13,6 +24,11 @@ class Plugin extends PluginBase
         ];
     }
 
+    /**
+     * Register Plugin Settings
+     * 
+     * @return array
+     */
     public function registerSettings() {
 
         return [
@@ -29,6 +45,12 @@ class Plugin extends PluginBase
         ];
     }
     
+
+    /**
+     * Register Plugin Mail Templates
+     * 
+     * @return array
+     */
     public function registerMailTemplates()
     {
         return [
@@ -37,8 +59,11 @@ class Plugin extends PluginBase
         ];
     }
 
+    /**
+     * Inject patch JS and CSS when creating/updating forms
+     */
     public function boot() {
-        Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
+        Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
             if ($controller instanceof \ABWebDevelopers\Forms\Controllers\Form) {
                 // Check this is the settings page for this plugin:
                 if ($action === 'update' || $action === 'create') {

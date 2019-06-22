@@ -58,6 +58,8 @@
             'recaptchaFailed' => 'You must complete the reCAPTCHA verification',
             'noData' => 'No data supplied',
             'invalidNotificationRecipients' => 'Notification recipients list contains invalid email address',
+            'noAutoReplyEmailField' => 'Auto-reply Email field could not be resolved',
+            'noAutoReplyNameField' => 'Auto-reply Name field could not be resolved',
         ]
     ],
     'models' => [
