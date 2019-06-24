@@ -10,6 +10,9 @@ use PluginTestCase;
 class FormTest extends PluginTestCase
 {
 
+    /**
+     * Instatiate a basic form for test cases
+     */
     private function getForm() {
         return Form::create([
             'title' => 'Example',
@@ -39,6 +42,10 @@ class FormTest extends PluginTestCase
         ]);
     }
 
+    /**
+     * Verify that if a field is "assigned" to the auto reply email field, it
+     * can be retrieved through the autoReplyEmailField() method
+     */
     public function testCanRetrieveAutoReplyEmailField() {
         $form = $this->getForm();
 
@@ -66,6 +73,10 @@ class FormTest extends PluginTestCase
         $this->assertEquals($field->id, $form->autoReplyEmailField()->id);
     }
 
+    /**
+     * Verify that if a field is "assigned" to the auto reply name field, it
+     * can be retrieved through the autoReplyEmailField() method
+     */
     public function testCanRetrieveAutoReplyNameField() {
         $form = $this->getForm();
 
