@@ -103,5 +103,27 @@ class FormTest extends PluginTestCase
         // Now the field should be returned
         $this->assertEquals($field->id, $form->autoReplyNameField()->id);
     }
+
+    /**
+     * Test that the throttle system works
+     */
+    public function testSelectOptionsAreRetrievedCorrectly() {
+        $form = $this->getForm();
+
+        $field = Field::create([
+            'type' => 'select',
+            'name' => 'Name',
+            'code' => 'name',
+            'description' => 'Test',
+            'form_id' => $form->id,
+            'options' => 'Apples,Bananas, Oranges',
+        ]);
+
+        $this->assertEquals($field->getOptions(), [
+            'Apples',
+            'Bananas',
+            'Oranges',
+        ]);
+    }
     
 }

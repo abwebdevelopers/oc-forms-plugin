@@ -7,3 +7,6 @@
     - 'Events, more tests, more stable release'
 1.0.4:
     - 'Implement IP throttle'
+1.0.5:
+    - 'Add options field for select, radio and checkbox fields'
+    - add_options_to_fields_table.php
