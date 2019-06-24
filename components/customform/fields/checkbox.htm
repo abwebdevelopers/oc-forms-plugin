@@ -1,7 +1,7 @@
-{% if field.options|length %}
-{% for opt, id in field.options %}
-<label for="{{ field.getId(form) }}_{{ id }}">
-    <input type="checkbox" name="{{ field.code }}[{{ id }}]" id="{{ field.getId(form) }}_{{ id }}" value="1"
+{% if field.getOptions()|length %}
+{% for id, opt in field.getOptions() %}
+<label for="{{ field.getId(form) }}_{{ id }}" class="abweb-form-option">
+    <input type="checkbox" name="{{ field.code }}[{{ id }}]" id="{{ field.getId(form) }}_{{ id }}" value="{{ opt }}"
         {% if field.required %}required{% endif %}>
     <span>{{ opt }}</span>
 </label>

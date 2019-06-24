@@ -282,6 +282,11 @@
                 'label' => 'Validation Message',
                 'comment' => 'What message should be shown on failure',
             ],
+            'options' => [
+                'label' => 'Options',
+                'comment' => 'For select, radio and checkbox types only. Comma separated, auto trimmed',
+                'placeholder' => 'Option 1, Option 2, Option 3',
+            ],
         ]
     ]
 ];

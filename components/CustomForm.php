@@ -41,7 +41,7 @@ class CustomForm extends ComponentBase
 
     /**
      * Component details definition
-     * 
+     *
      * @return array
      */
     public function componentDetails()
@@ -54,7 +54,7 @@ class CustomForm extends ComponentBase
 
     /**
      * Property definition
-     * 
+     *
      * @return array
      */
     public function defineProperties()
@@ -72,7 +72,7 @@ class CustomForm extends ComponentBase
 
     /**
      * Get this component's form
-     * 
+     *
      * @return Form
      */
     public function form()
@@ -82,7 +82,7 @@ class CustomForm extends ComponentBase
 
     /**
      * Autoload the form using the form code with fields
-     * 
+     *
      * @return Form
      */
     public function loadForm() {
@@ -95,7 +95,7 @@ class CustomForm extends ComponentBase
 
     /**
      * On Run Handler - The GET action
-     * 
+     *
      * @return void
      */
     public function onRun()
@@ -115,7 +115,7 @@ class CustomForm extends ComponentBase
 
     /**
      * On Form Submit Handler - The (ajax) POST action
-     * 
+     *
      * @return void
      */
     public function onFormSubmit() {
@@ -132,7 +132,7 @@ class CustomForm extends ComponentBase
         // Get a list of all fields, any validation rules and messages
         foreach ($this->form->fields as $field) {
             $fields[] = $field->code;
-            
+
             $fieldRules = $field->compiled_rules;
             if (!empty($fieldRules)) {
                 $rules[$field->code] = $fieldRules;
@@ -142,6 +142,10 @@ class CustomForm extends ComponentBase
                 } else {
                     $messages[$field->code] = $field->name . ' is invalid';
                 }
+            }
+
+            if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
+                $rules[$field->code . '.*'] = $field->option_rules;
             }
         }
 
@@ -275,7 +279,7 @@ class CustomForm extends ComponentBase
     /**
      * Verify if a given response is a valid recaptcha response by cross referencing it
      * with Google's recaptcha verify API
-     * 
+     *
      * @param string $response
      * @return bool
      */
@@ -301,13 +305,13 @@ class CustomForm extends ComponentBase
 
         $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
         $result = json_decode($response);
-        
+
         return (bool) $result->success;
     }
 
     /**
      * Caching facility to retrieve pre-rendered partial of the form if configured to save
-     * 
+     *
      * @return string
      */
     public function getRenderedPartial()
@@ -338,7 +342,7 @@ class CustomForm extends ComponentBase
 
     /**
      * Render the form! Not sure if I still need this...
-     * 
+     *
      * @return string;
      */
     public function renderForm()
@@ -356,7 +360,7 @@ class CustomForm extends ComponentBase
     /**
      * Send the notificaiton to the administrator(s) which is either
      * defined at a global level, or per form.
-     * 
+     *
      * @param array $data
      * @return Response|bool
      */
@@ -379,7 +383,7 @@ class CustomForm extends ComponentBase
                 // Don't send notification, silent abort
                 return false;
             }
-            
+
             // Compile ruleset with matching $key(s) for validation
             $rules = [];
             foreach ($to as $key => $value) {
@@ -442,7 +446,7 @@ class CustomForm extends ComponentBase
      * Send the auto reply to the user/customer who submitted the form
      * using the email (and name) fields in the form as the recipients
      * name/email. Requires configuration, per form.
-     * 
+     *
      * @param array $data
      * @return Response|bool
      */
@@ -499,7 +503,7 @@ class CustomForm extends ComponentBase
 
     /**
      * Store the submission in the database with the form field values
-     * 
+     *
      * @param array $data
      * @return Submission
      */
@@ -532,7 +536,7 @@ class CustomForm extends ComponentBase
     /**
      * Set template vars for email templates, including the form, the fields with
      * their respective values, and a moreInfo link (to submission, if saved)
-     * 
+     *
      * @param array $data
      * @return array
      */
@@ -551,6 +555,16 @@ class CustomForm extends ComponentBase
             // Field not found (likely Google Recaptcha?)
             if ($field === null) {
                 continue;
+            }
+
+            if (is_array($value)) {
+                if (count($value) === 0) {
+                    $value = 'N/A';
+                } else if (count($value) === 1) {
+                    $value = current($value);
+                } else {
+                    $value = implode(", ", $value);
+                }
             }
 
             // Add this field
