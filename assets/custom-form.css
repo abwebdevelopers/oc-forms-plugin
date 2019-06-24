@@ -65,3 +65,9 @@
 .form-submitting .loading-indicator > div > span:nth-child(3) {
     animation-delay: .5s;
 }
+
+.abweb-form-checkbox > label.abweb-form-option,
+.abweb-form-radio > label.abweb-form-option {
+    display: block;
+    padding-left: 20px;
+}

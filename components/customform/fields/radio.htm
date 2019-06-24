@@ -1,6 +1,6 @@
-{% if field.options|length %}
-{% for opt, id in field.options %}
-<label for="{{ field.getId(form) }}_{{ id }}">
+{% if field.getOptions|length %}
+{% for id, opt in field.getOptions %}
+<label for="{{ field.getId(form) }}_{{ id }}" class="abweb-form-option">
     <input type="radio" name="{{ field.code }}" id="{{ field.getId(form) }}_{{ id }}" value="1"
         {% if field.required %}required{% endif %}>
     <span>{{ opt }}</span>

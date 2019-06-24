@@ -34,6 +34,12 @@ fields:
         label: abwebdevelopers.forms::lang.models.field.required.label
         comment: abwebdevelopers.forms::lang.models.field.required.comment
         span: right
+    options:
+        label: abwebdevelopers.forms::lang.models.field.options.label
+        comment: abwebdevelopers.forms::lang.models.field.options.comment
+        placeholder: abwebdevelopers.forms::lang.models.field.options.placeholder
+        type: text
+        span: full
 tabs:
     fields:
         # Validation
@@ -52,7 +58,7 @@ tabs:
             span: right
             placeholder: 'Invalid :attr'
             type: text
-        
+
         # Styling
         field_class:
             label: abwebdevelopers.forms::lang.models.settings.field_class.label

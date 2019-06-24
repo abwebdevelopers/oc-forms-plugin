@@ -42,6 +42,7 @@ class Field extends Model
         'row_class',
         'group_class',
         'label_class',
+        'options',
     ];
 
     /**
@@ -58,7 +59,7 @@ class Field extends Model
      * After fetching the Field event
      * Create override_{field} Fields which represent the fields' states on whether or not
      * to inherit the setting value - used in the forms.
-     * 
+     *
      * @return void
      */
     public function afterFetch() {
@@ -75,7 +76,7 @@ class Field extends Model
      * Before the Field's Save event.
      * Dynamically set the required field if "required" is in the validation rules
      * Remove override_{field} Fields
-     * 
+     *
      * @return void
      */
     public function beforeSave() {
@@ -100,7 +101,7 @@ class Field extends Model
     /**
      * Get the field's validation rules, and add dynamic rules based on the field
      * type, required flag, etc.
-     * 
+     *
      * @return array
      */
     public function getCompiledRulesAttribute() {
@@ -111,12 +112,12 @@ class Field extends Model
         if (!in_array('email', $fieldRules) && $this->type === 'email') {
             $fieldRules[] = 'email';
         }
-        
+
         // If no 'numeric' rule, but field is numeric, add it
         if (!in_array('numeric', $fieldRules) && $this->type === 'number') {
             $fieldRules[] = 'numeric';
         }
-        
+
         // If no 'required' rule, but field is required, add it
         if (!in_array('required', $fieldRules) && $this->required) {
             $fieldRules[] = 'required';
@@ -126,9 +127,20 @@ class Field extends Model
         return implode('|', $fieldRules);
     }
 
+    public function getOptionRulesAttribute() {
+        $fieldRules = [];
+
+        if (in_array($this->type, ['checkbox','radio','select'])) {
+            $fieldRules[] = 'in:' . implode(',', $this->getOptions());
+        }
+
+        // Return compiled list of rules
+        return implode('|', $fieldRules);
+    }
+
     /**
      * Get the partial to render for this field
-     * 
+     *
      * @return string
      */
     public function getPartialAttribute() {
@@ -137,7 +149,7 @@ class Field extends Model
 
     /**
      * Get the 'type' field's dropdown options
-     * 
+     *
      * @return array
      */
     public function getTypeOptions()
@@ -156,13 +168,26 @@ class Field extends Model
 
     /**
      * Get the Field's unique ID
-     * 
+     *
      * @param Form $form
      * @return string
      */
     public function getId(Form $form)
     {
         return 'form_' . $form->code . '_' . $this->code;
+    }
+
+    public function getOptions() {
+        $options = [];
+
+        foreach (explode(',', $this->options) as $opt) {
+            $opt = trim($opt);
+            if ($opt !== '') {
+                $options[] = $opt;
+            }
+        }
+
+        return $options;
     }
 
 }
