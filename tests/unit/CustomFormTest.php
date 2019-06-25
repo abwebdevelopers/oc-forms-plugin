@@ -19,7 +19,7 @@ class CustomFormTest extends PluginTestCase
 
     /**
      * Reset the settings with optional overrides
-     * 
+     *
      * @param array $data
      * @return void
      */
@@ -46,7 +46,7 @@ class CustomFormTest extends PluginTestCase
 
     /**
      * Return an instance of Form model
-     * 
+     *
      * @param array $data
      * @return Form
      */
@@ -67,7 +67,7 @@ class CustomFormTest extends PluginTestCase
         $this->form = Form::updateOrCreate([
             'id' => 1
         ], $data);
-        
+
         $name = Field::updateOrCreate([
             'form_id' => $this->form->id,
             'code' => 'name',
@@ -110,7 +110,7 @@ class CustomFormTest extends PluginTestCase
 
     /**
      * Return an instance of CustomForm component
-     * 
+     *
      * @param string $formCode
      * @return CustomForm
      */
@@ -454,7 +454,7 @@ class CustomFormTest extends PluginTestCase
         $this->initSettings([
             'auto_reply' => true,
         ]);
-        
+
         // No email field specified
         $this->getForm();
         $this->form->auto_reply_email_field_id = null;
@@ -517,7 +517,7 @@ class CustomFormTest extends PluginTestCase
             'auto_reply' => true,
             'queue_emails' => true,
         ]);
-        
+
         $component = $this->getComponent();
 
         $post = [
@@ -545,7 +545,7 @@ class CustomFormTest extends PluginTestCase
             'max_requests_per_day' => 3,
             'throttle_message' => 'Chill'
         ]);
-        
+
         $post = [
             'name' => 'valid',
             'email' => 'valid@example.org',
@@ -577,4 +577,64 @@ class CustomFormTest extends PluginTestCase
         $this->assertEquals($resp->getData()->error, 'Chill');
     }
 
+    /**
+     * Test that submitting the form with invalid option (for select, radio, checkbox fields) fails and returns 400 with field errors
+     */
+    public function testSubmitFailsOnInvalidOption() {
+        $this->getForm();
+        $field = Field::updateOrCreate([
+            'form_id' => $this->form->id,
+            'code' => 'option',
+        ], [
+            'name' => 'Option',
+            'type' => 'select',
+            'options' => 'Apples,Bananas,Oranges',
+            'required' => true
+        ]);
+
+        $component = $this->getComponent();
+
+        Input::replace([
+            'name' => 'valid',
+            'email' => 'valid@example.org',
+            'comment' => 'rehrtjhrtyj',
+            'option' => 'INVALID'
+        ]);
+
+        $resp = $component->onFormSubmit();
+
+        $this->assertEquals($resp->getStatusCode(), 400);
+        $this->assertEquals($resp->getData()->success, false);
+        $this->assertEquals(array_keys((array) $resp->getData()->errors), ['option.0']);
+    }
+
+    /**
+     * Test that submitting the form with valid option (for select, radio, checkbox fields) passes and returns 200
+     */
+    public function testSubmitPassesOnValidOption() {
+        $this->getForm();
+        $field = Field::updateOrCreate([
+            'form_id' => $this->form->id,
+            'code' => 'option',
+        ], [
+            'name' => 'Option',
+            'type' => 'select',
+            'options' => 'Apples,Bananas,Oranges',
+            'required' => true
+        ]);
+
+        $component = $this->getComponent();
+
+        Input::replace([
+            'name' => 'valid',
+            'email' => 'valid@example.org',
+            'comment' => 'rehrtjhrtyj',
+            'option' => 'Apples'
+        ]);
+
+        $resp = $component->onFormSubmit();
+
+        $this->assertEquals($resp->getStatusCode(), 200);
+        $this->assertEquals($resp->getData()->success, true);
+    }
 }

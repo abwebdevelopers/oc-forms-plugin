@@ -159,11 +159,21 @@ class CustomForm extends ComponentBase
         // Get only what we asked for
         $data = Input::only($fields);
 
+        foreach ($data as $code => $value) {
+            foreach ($this->form->fields as $field) {
+                if ($field->code === $code) {
+                    if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
+                        $data[$code] = (array) $value;
+                    }
+                }
+            }
+        }
+
         // If no data was supplied, reject the request
         if (empty($data)) {
             return Response::json([
                 'success' => false,
-                'error' => Lang::get('abwebdevelopers.forms::lang.customForm.validation.noData')
+                'error' =>  Lang::get('abwebdevelopers.forms::lang.customForm.validation.noData')
             ], 400);
         }
 
