@@ -37,7 +37,7 @@ As you would with component, open the layout and insert the respective component
 
 ##### Events
 
-Currently there are about 22 events which may fire (depending on your configurations, of course). If you feel like there's an important event missing, please open an issue or PR.
+Currently there are about 24 events which may fire (depending on your configurations, of course). If you feel like there's an important event missing, please open an issue or PR.
 
 ```php
 // Runs at the beginning of "onRun" (when loading a page with a CustomForm)
@@ -90,7 +90,7 @@ Event::listen('abweb.forms.afterFormSubmit', function (CustomForm $customForm, a
 // Runs before rendering the form (or retrieving pre-rendered cache)
 Event::listen('abweb.forms.beforeRenderPartial', function (CustomForm $customForm, bool $cachingEnabled) {
     // Do something...
-    if ($cachineEnabled) {
+    if ($cachingEnabled) {
         // Do something...
     }
 });
@@ -131,6 +131,9 @@ Event::listen('abweb.forms.onSendNotification', function (CustomForm $customForm
 // Runs after sending (or queueing) notification to recipients
 Event::listen('abweb.forms.afterSendNotification', function (CustomForm $customForm, array $data, bool $success) {
     // Do something...
+    if (!$success) {
+        Log::debug('Dammit whats wrong now?');
+    }
 });
 
 // Runs before sending auto reply email. Can adjust data, recipient name and email
@@ -143,6 +146,11 @@ Event::listen('abweb.forms.beforeSendAutoReply', function (CustomForm $customFor
 // Runs if validating auto reply recipient fails.
 Event::listen('abweb.forms.onAutoReplyValidationFail', function (CustomForm $customForm, array $data, $toEmail, $toName, string $failedOn) {
     // Do something...
+    if ($failedOn === 'email') {
+        Log::debug('Invalid auto-reply email');
+    } else { // 'name'
+        Log::debug('Invalid auto-reply name');
+    }
 });
 
 // Runs when configuring the $message to send an automatic reply to the user
