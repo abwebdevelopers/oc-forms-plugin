@@ -159,6 +159,7 @@ class CustomForm extends ComponentBase
         // Get only what we asked for
         $data = Input::only($fields);
 
+        // Ensure checkboxes, radios and selects are dealt with as arrays (even if only accepting one value)
         foreach ($data as $code => $value) {
             foreach ($this->form->fields as $field) {
                 if ($field->code === $code) {
@@ -438,6 +439,8 @@ class CustomForm extends ComponentBase
                         $message->cc($recipient, 'Admin');
                     }
                 }
+
+                Event::fire(self::EVENTS_PREFIX . 'onSendNotification', [$this, &$message, $to]);
             });
 
             // Fire afterSendNotification event
@@ -503,6 +506,8 @@ class CustomForm extends ComponentBase
         // Send the auto reply
         Mail::{$method}($template, $this->templateVars, function($message) use ($to_email, $to_name) {
             $message->to($to_email, $to_name);
+
+            Event::fire(self::EVENTS_PREFIX . 'onSendAutoReply', [$this, &$message, $to_email, $to_name]);
         });
 
         // Fire afterSendAutoReply event
