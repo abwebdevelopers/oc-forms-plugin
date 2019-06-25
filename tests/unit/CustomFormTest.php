@@ -542,6 +542,7 @@ class CustomFormTest extends PluginTestCase
         $this->initSettings([
             'saves_data' => true,
             'store_ips' => true,
+            'enable_ip_restriction' => true,
             'max_requests_per_day' => 3,
             'throttle_message' => 'Chill'
         ]);

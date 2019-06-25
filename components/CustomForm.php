@@ -235,7 +235,7 @@ class CustomForm extends ComponentBase
         // If we have are storing IPs for submissions (requirement for throttle) and..
         if ($this->form->savesData() && Settings::get('store_ips', true)) {
             // if the form is throttling requests then...
-            if ($max = $this->form->maxRequestsPerDay()) {
+            if ($this->form->hasIpRestriction() && $max = $this->form->maxRequestsPerDay()) {
                 // Check if this IP has submitted $max requests today for this form
                 $attempts = Submission::throttleCheck($this->form->id)->count();
 
