@@ -5,6 +5,7 @@ namespace ABWebDevelopers\Forms\Components;
 use ABWebDevelopers\Forms\Models\Form;
 use ABWebDevelopers\Forms\Models\Settings;
 use ABWebDevelopers\Forms\Models\Submission;
+use ABWebDevelopers\Forms\Classes\HtmlGenerator;
 use Cms\Classes\ComponentBase;
 use Backend;
 use Cache;
@@ -358,7 +359,11 @@ class CustomForm extends ComponentBase
      */
     public function renderForm()
     {
-        return $this->renderPartial('@form');
+        $htmlGenerator = new HtmlGenerator();
+
+        $form = $htmlGenerator->generateForm($this->form);
+
+        return $form->render();
     }
 
     /**
