@@ -138,7 +138,7 @@ class Form extends Model
      * After fetching the Field event
      * Create override_{field} Fields which represent the fields' states on whether or not
      * to inherit the setting value - used in the forms.
-     * 
+     *
      * @return void
      */
     public function afterFetch() {
@@ -158,7 +158,7 @@ class Form extends Model
     /**
      * Before the Field's Save event.
      * Remove override_{field} Fields
-     * 
+     *
      * @return void
      */
     public function beforeSave() {
@@ -178,13 +178,13 @@ class Form extends Model
 
     /**
      * Return the available options for auto reply name field dropdown
-     * 
+     *
      * @return array
      */
     public function getAutoReplyNameFieldIdOptions()
     {
         $fields = [];
-        
+
         foreach ($this->fields->sortBy(function($a) {
             $score = -1;
             $score += ($a->type === 'text') ? 1 : 0;
@@ -202,13 +202,13 @@ class Form extends Model
 
     /**
      * Return the available options for auto reply email field dropdown
-     * 
+     *
      * @return array
      */
     public function getAutoReplyEmailFieldIdOptions()
     {
         $fields = [];
-        
+
         foreach ($this->fields->sortBy(function($a) {
             $score = -1;
             $score += ($a->type === 'email') ? 1 : 0;
@@ -223,7 +223,7 @@ class Form extends Model
 
         return $fields;
     }
-    
+
 
     // Form component helpers:
 
@@ -231,7 +231,7 @@ class Form extends Model
 
     /**
      * Determine if recaptcha is enabled for form
-     * 
+     *
      * @return bool
      */
     public function recaptchaEnabled() {
@@ -244,7 +244,7 @@ class Form extends Model
 
     /**
      * Determine if IP restriction is enabled for form
-     * 
+     *
      * @return bool
      */
     public function hasIpRestriction() {
@@ -257,7 +257,7 @@ class Form extends Model
 
     /**
      * Retrieve max amount of requests per day (min 1)
-     * 
+     *
      * @return int
      */
     public function maxRequestsPerDay() {
@@ -270,7 +270,7 @@ class Form extends Model
 
     /**
      * Retrieve the forms throttle message
-     * 
+     *
      * @return string
      */
     public function throttleMessage() {
@@ -285,7 +285,7 @@ class Form extends Model
 
     /**
      * Determine if saving data is enabled
-     * 
+     *
      * @return bool
      */
     public function savesData() {
@@ -298,7 +298,7 @@ class Form extends Model
 
     /**
      * Determine if sending notifications is enabled
-     * 
+     *
      * @return bool
      */
     public function sendsNotifications() {
@@ -311,7 +311,7 @@ class Form extends Model
 
     /**
      * Retrieve form's notification template (not empty)
-     * 
+     *
      * @return string
      */
     public function notificationTemplate() {
@@ -324,7 +324,7 @@ class Form extends Model
 
     /**
      * Retrieve form's notification recipients
-     * 
+     *
      * @return string
      */
     public function notificationRecipients() {
@@ -334,10 +334,10 @@ class Form extends Model
 
         return (string) Settings::get('notification_recipients', '');
     }
-    
+
     /**
      * Determine if the form auto replies
-     * 
+     *
      * @return bool
      */
     public function autoReply() {
@@ -347,19 +347,19 @@ class Form extends Model
 
         return (bool) Settings::get('auto_reply', false);
     }
-    
+
     /**
      * Retrieve the form's auto reply email field
-     * 
+     *
      * @return Field|null
      */
     public function autoReplyEmailField() {
         return $this->auto_reply_email_field;
     }
-    
+
     /**
      * Retrieve the form's auto reply name field
-     * 
+     *
      * @return Field|null
      */
     public function autoReplyNameField() {
@@ -368,7 +368,7 @@ class Form extends Model
 
     /**
      * Retrieve form's auto reply template
-     * 
+     *
      * @return string
      */
     public function autoReplyTemplate() {
@@ -380,10 +380,10 @@ class Form extends Model
     }
 
     // ====== STYLING
-    
+
     /**
      * Retrieve the form's form class
-     * 
+     *
      * @return string
      */
     public function formClass() {
@@ -393,10 +393,10 @@ class Form extends Model
 
         return (string) Settings::get('form_class', 'form');
     }
-    
+
     /**
      * Retrieve the form's field class
-     * 
+     *
      * @param Field $field
      * @return string
      */
@@ -413,10 +413,10 @@ class Form extends Model
 
         return (string) Settings::get('field_class', 'form-control');
     }
-    
+
     /**
      * Retrieve the form's row class
-     * 
+     *
      * @param Field $field
      * @return string
      */
@@ -433,10 +433,10 @@ class Form extends Model
 
         return (string) Settings::get('row_class', 'row');
     }
-    
+
     /**
      * Retrieve the form's group class
-     * 
+     *
      * @param Field $field
      * @return string
      */
@@ -453,10 +453,10 @@ class Form extends Model
 
         return (string) Settings::get('group_class', 'form-group col-md-12');
     }
-    
+
     /**
      * Retrieve the form's label class
-     * 
+     *
      * @param Field $field
      * @return string
      */
@@ -473,10 +473,10 @@ class Form extends Model
 
         return (string) Settings::get('label_class', 'form-label');
     }
-    
+
     /**
      * Retrieve the form's submit button class
-     * 
+     *
      * @return string
      */
     public function submitClass() {
@@ -486,10 +486,10 @@ class Form extends Model
 
         return (string) Settings::get('submit_class', 'btn btn-primary');
     }
-    
+
     /**
      * Retrieve the form's submit button text
-     * 
+     *
      * @return string
      */
     public function submitText() {
@@ -499,10 +499,10 @@ class Form extends Model
 
         return (string) Settings::get('submit_text', 'Submit');
     }
-    
+
     /**
      * Determine if the form's cancel button is enabled
-     * 
+     *
      * @return string
      */
     public function enableCancel() {
@@ -512,10 +512,10 @@ class Form extends Model
 
         return (bool) Settings::get('enable_cancel', false);
     }
-    
+
     /**
      * Retrieve the form's cancel button class
-     * 
+     *
      * @return string
      */
     public function cancelClass() {
@@ -525,10 +525,10 @@ class Form extends Model
 
         return (string) Settings::get('cancel_class', 'btn btn-danger');
     }
-    
+
     /**
      * Retrieve the form's cancel button text
-     * 
+     *
      * @return string
      */
     public function cancelText() {
@@ -538,10 +538,10 @@ class Form extends Model
 
         return (string) Settings::get('cancel_text', 'Cancel');
     }
-    
+
     /**
      * Determine if caching is enabled
-     * 
+     *
      * @return bool
      */
     public function enableCaching() {
@@ -551,10 +551,10 @@ class Form extends Model
 
         return (bool) Settings::get('enable_caching', false);
     }
-    
+
     /**
      * Retrieve the amount of minutes to cache the form for
-     * 
+     *
      * @return int
      */
     public function cacheLifetime() {
@@ -564,10 +564,10 @@ class Form extends Model
 
         return (int) Settings::get('cache_lifetime', 60);
     }
-    
+
     /**
      * Determine what to do on success
-     * 
+     *
      * @return string
      */
     public function onSuccess() {
@@ -577,10 +577,10 @@ class Form extends Model
 
         return (string) Settings::get('on_success', 'hide');
     }
-    
+
     /**
      * Retrieve the message to display in a flash on success
-     * 
+     *
      * @return string
      */
     public function onSuccessMessage() {
@@ -590,10 +590,10 @@ class Form extends Model
 
         return (string) Settings::get('on_success_message', 'Successfully sent');
     }
-    
+
     /**
      * Retrieve the URL to redirect to on success
-     * 
+     *
      * @return string
      */
     public function onSuccessRedirect() {
@@ -602,6 +602,75 @@ class Form extends Model
         }
 
         return (string) Settings::get('on_success_redirect', '/');
+    }
+
+    /**
+     * Retrieve the class for label success
+     *
+     * @return string
+     */
+    public function labelSuccessClass() {
+        return (string) Settings::get('label_success_class', '');
+    }
+
+    /**
+     * Retrieve the class for label error
+     *
+     * @return string
+     */
+    public function labelErrorClass() {
+        return (string) Settings::get('label_error_class', '');
+    }
+
+    /**
+     * Retrieve the class for field success
+     *
+     * @return string
+     */
+    public function fieldSuccessClass() {
+        return (string) Settings::get('field_success_class', '');
+    }
+
+    /**
+     * Retrieve the class for field error
+     *
+     * @return string
+     */
+    public function fieldErrorClass() {
+        return (string) Settings::get('field_error_class', '');
+    }
+
+    /**
+     * Retrieve the class for form success
+     *
+     * @return voistringd
+     */
+    public function formSuccessClass() {
+        return (string) Settings::get('form_success_class', '');
+    }
+
+    /**
+     * Retrieve the class for form error
+     *
+     * @return string
+     */
+    public function formErrorClass() {
+        return (string) Settings::get('form_error_class', '');
+    }
+
+    /**
+     * Determine if at least one of the form's fields is a "file" field
+     *
+     * @return boolean
+     */
+    public function hasFileField() {
+        foreach ($this->fields as $field) {
+            if ($field->type === 'file') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

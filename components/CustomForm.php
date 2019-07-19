@@ -7,6 +7,7 @@ use ABWebDevelopers\Forms\Models\Settings;
 use ABWebDevelopers\Forms\Models\Submission;
 use ABWebDevelopers\Forms\Classes\HtmlGenerator;
 use Cms\Classes\ComponentBase;
+use System\Models\File;
 use Backend;
 use Cache;
 use Event;
@@ -31,14 +32,29 @@ class CustomForm extends ComponentBase
     protected $form;
 
     /**
+     * @var array<string,Field> List of Fields (values) accessible by Field codes (keys)
+     */
+    protected $fields = [];
+
+    /**
      * @var Submission The current form submission entity
      */
     private $submission;
 
     /**
+     * @var HtmlGenerator The HTML generator instance
+     */
+    private $htmlGenerator;
+
+    /**
      * @var array All variables that will be available in the email templates
      */
     protected $templateVars = [];
+
+    /**
+     * @var array All uploaded files
+     */
+    protected $uploadedFiles = [];
 
     /**
      * Component details definition
@@ -115,6 +131,16 @@ class CustomForm extends ComponentBase
     }
 
     /**
+     * Validate a field via AJAX
+     *
+     * @return void
+     */
+    public function onFieldValidate(): void
+    {
+
+    }
+
+    /**
      * On Form Submit Handler - The (ajax) POST action
      *
      * @return void
@@ -133,6 +159,9 @@ class CustomForm extends ComponentBase
         // Get a list of all fields, any validation rules and messages
         foreach ($this->form->fields as $field) {
             $fields[] = $field->code;
+
+            // Create an easy-to-access array of fields
+            $this->fields[$field->code] = $field;
 
             $fieldRules = $field->compiled_rules;
             if (!empty($fieldRules)) {
@@ -162,11 +191,17 @@ class CustomForm extends ComponentBase
 
         // Ensure checkboxes, radios and selects are dealt with as arrays (even if only accepting one value)
         foreach ($data as $code => $value) {
+            $field = $this->fields[$code];
+            if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
+                $data[$code] = (array) $value;
+            }
+        }
+
+        $files = [];
+        if ($this->form->hasFileField()) {
             foreach ($this->form->fields as $field) {
-                if ($field->code === $code) {
-                    if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
-                        $data[$code] = (array) $value;
-                    }
+                if ($field->type === 'file' || $field->type === 'image') {
+                    $files[] = $field->code;
                 }
             }
         }
@@ -211,9 +246,6 @@ class CustomForm extends ComponentBase
         // Fire afterValidateForm event
         Event::fire(self::EVENTS_PREFIX . 'afterValidateForm', [$this, $data, $rules, $messages]);
 
-        // Set the email template vars
-        $this->setTemplateVars($data);
-
         // Validation past, so let check if the recaptcha response is valid
         if ($this->form->recaptchaEnabled()) {
             if (!$this->passesRecaptcha($data['g-recaptcha-response'])) {
@@ -232,6 +264,18 @@ class CustomForm extends ComponentBase
             // Fire onRecaptchaSuccess event
             Event::fire(self::EVENTS_PREFIX . 'onRecaptchaSuccess', [$this, $data, $rules, $messages]);
         }
+
+        // Upload the files
+        $this->uploadedFiles = [];
+        if (!empty($files)) {
+            foreach ($files as $key) {
+                $this->uploadedFiles[$key] = (new File())->fromPost($data[$key]);
+            }
+        }
+        unset($files);
+
+        // Set the email template vars
+        $this->setTemplateVars($data);
 
         // If we have are storing IPs for submissions (requirement for throttle) and..
         if ($this->form->savesData() && Settings::get('store_ips', true)) {
@@ -353,17 +397,25 @@ class CustomForm extends ComponentBase
     }
 
     /**
-     * Render the form! Not sure if I still need this...
+     * Get and set the HtmlGenerator instance for generating this form
+     *
+     * @return HtmlGenerator
+     */
+    public function getHtmlGenerator()
+    {
+        $this->htmlGenerator = new HtmlGenerator();
+
+        return $this->htmlGenerator->generateForm($this->form);
+    }
+
+    /**
+     * Render the form!
      *
      * @return string;
      */
     public function renderForm()
     {
-        $htmlGenerator = new HtmlGenerator();
-
-        $form = $htmlGenerator->generateForm($this->form);
-
-        return $form->render();
+        return $this->getHtmlGenerator()->render();
     }
 
     /**
@@ -433,8 +485,11 @@ class CustomForm extends ComponentBase
             // Only queue if configured to queue emails
             $method = Settings::get('queue_emails', true) ? 'queue' : 'send';
 
+            // Get attachments for email
+            $attachments = $this->getAttachments();
+
             // Send the notification
-            Mail::{$method}($template, $this->templateVars, function($message) use ($to) {
+            Mail::{$method}($template, $this->templateVars, function($message) use ($to, $attachments) {
                 if (count($to) === 1) {
                     $message->to(current($to), 'Admin');
                 } else {
@@ -445,7 +500,11 @@ class CustomForm extends ComponentBase
                     }
                 }
 
-                Event::fire(self::EVENTS_PREFIX . 'onSendNotification', [$this, &$message, $to]);
+                foreach ($attachments as $key => $attachment) {
+                    $message->attach($attachment, [ 'as' => $key ]);
+                }
+
+                Event::fire(self::EVENTS_PREFIX . 'onSendNotification', [$this, &$message, $to, $attachments]);
             });
 
             // Fire afterSendNotification event
@@ -508,11 +567,18 @@ class CustomForm extends ComponentBase
         // Only queue if configured to queue emails
         $method = Settings::get('queue_emails', true) ? 'queue' : 'send';
 
+        // Get attachments for email
+        $attachments = $this->getAttachments();
+
         // Send the auto reply
-        Mail::{$method}($template, $this->templateVars, function($message) use ($to_email, $to_name) {
+        Mail::{$method}($template, $this->templateVars, function($message) use ($to_email, $to_name, $attachments) {
             $message->to($to_email, $to_name);
 
-            Event::fire(self::EVENTS_PREFIX . 'onSendAutoReply', [$this, &$message, $to_email, $to_name]);
+            foreach ($attachments as $key => $attachment) {
+                $message->attach($attachment, [ 'as' => $key ]);
+            }
+
+            Event::fire(self::EVENTS_PREFIX . 'onSendAutoReply', [$this, &$message, $to_email, $to_name, $attachments]);
         });
 
         // Fire afterSendAutoReply event
@@ -587,12 +653,23 @@ class CustomForm extends ComponentBase
                 }
             }
 
+            $raw = false;
+
+            if ($field->type === 'file' || $field->type === 'image') {
+                $filename = $this->getSafeFileName($this->uploadedFiles[$field->code]);
+
+                $value = 'See Attached: <code>' . $filename . '</code>';
+
+                $raw = true;
+            }
+
             // Add this field
             $fields[$key] = [
                 'name' => $field->name,
                 'type' => $field->type,
                 'description' => $field->description,
                 'value' => $value,
+                'raw' => $raw,
             ];
         }
 
@@ -621,6 +698,51 @@ class CustomForm extends ComponentBase
      */
     public function getSubmission() {
         return $this->submission;
+    }
+
+    /**
+     * Retrieve a list of file paths from the uploaded files
+     *
+     * @return array
+     */
+    public function getAttachments() {
+        $attachments = [];
+
+        foreach ($this->uploadedFiles as $key => $file) {
+            $filename = $this->getSafeFileName($file);
+            $attachments[$filename] = $file->getLocalPath();
+        }
+
+        return $attachments;
+    }
+
+    /**
+     * Retrieve safe file name from a file. Filename will start with alphanumeric characters
+     * only, followed by alphanumeric or basic, safe, ascii symbols
+     *
+     * @param File $file
+     * @return string
+     */
+    public function getSafeFileName(File $file): string
+    {
+        $filename = $this->afterLast($file->getFileName(), '/');
+        $filename = preg_replace('/(^[^a-z0-9_])|[^a-z0-9_\.\_\-\(\)\[\]]/i', '', $filename);
+
+        return $filename;
+    }
+
+    /**
+     * Retrieve a substring from after the occurrence $needle in a $haystack
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @return string
+     */
+    public function afterLast(string $haystack, string $needle): string
+    {
+        $pos = strrpos($haystack, $needle);
+
+        return $pos === false ? $haystack : substr($haystack, $pos + 1);
     }
 
 }

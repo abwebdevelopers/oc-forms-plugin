@@ -12,3 +12,6 @@
     - add_options_to_fields_table.php
 1.0.6:
     - 'Add events for mailable instances when sending a notification and/or reply'
+1.0.7:
+    - 'Change templating engine from Twig to HtmlElement. Add more field types, show description in form flag, default value field, custom attributes area'
+    - add_default_show_description_and_attributes_to_fields_table.php

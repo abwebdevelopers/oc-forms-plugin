@@ -71,3 +71,42 @@
     display: block;
     padding-left: 20px;
 }
+
+.abweb-form-checkbox-options,
+.abweb-form-radio-options {
+    padding-left: 5px;
+    border-left: 2px solid transparent;
+}
+
+.abweb-form-checkbox-options.checkboxes-invalid,
+.abweb-form-radio-options.checkboxes-invalid {
+    /* border-left-color: #d91a1a; */
+}
+
+.abweb-form-checkbox-options.checkboxes-valid,
+.abweb-form-radio-options.checkboxes-valid {
+    /* border-left-color: #34c11b; */
+}
+
+.field-description {
+    font-size: 0.8em;
+    opacity: 0.65;
+    margin-bottom: 5px;
+}
+
+.abweb-form-checkbox-options > label,
+.abweb-form-checkbox-option-group > label,
+.abweb-form-radio-options > label,
+.abweb-form-radio-option-group > label {
+    margin-right: 10px;
+}
+
+[type="radio"],
+[type="checkbox"] {
+    margin-right: 3px;
+}
+input[type="checkbox"] + span,
+input[type="radio"] + span {
+    top: -2px;
+    position: relative;
+}

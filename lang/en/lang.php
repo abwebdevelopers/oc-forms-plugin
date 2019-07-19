@@ -11,6 +11,9 @@
         'emailing' => 'Emailing',
         'caching' => 'Caching',
         'action' => 'Action',
+        'validation' => 'Validation',
+        'options' => 'Options',
+        'html_attributes' => 'HTML Attributes',
     ],
     'sections' => [
         'buttons' => [
@@ -268,7 +271,15 @@
             ],
             'placeholder' => [
                 'label' => 'Placeholder',
-                'comment' => '',
+                'comment' => 'Enter the placeholder attribute value here. For select elements, it acts as an option.',
+            ],
+            'default' => [
+                'label' => 'Default',
+                'comment' => 'The default value. For select/radio/checkboxes use the code of the option.',
+            ],
+            'show_description' => [
+                'label' => 'Show Description',
+                'comment' => 'Show the description in the form under the field\'s label?',
             ],
             'required' => [
                 'label' => 'Required',
@@ -284,9 +295,52 @@
             ],
             'options' => [
                 'label' => 'Options',
-                'comment' => 'For select, radio and checkbox types only. Comma separated, auto trimmed',
-                'placeholder' => 'Option 1, Option 2, Option 3',
+                'comment' => 'Add your select, radio or checkbox options here',
+                'prompt' => 'Add an option',
+                'fields' => [
+                    'option_label' => [
+                        'label' => 'Option Label',
+                        'comment' => 'Used as the label for this option'
+                    ],
+                    'option_code' => [
+                        'label' => 'Option Code',
+                        'comment' => 'Used to identify this field. Must be in snake_case'
+                    ],
+                    'is_optgroup' => [
+                        'label' => 'Add sub options?',
+                        'comment' => 'Adding sub options will turn this option into a group of options (specifically an `<optgroup>`)'
+                    ],
+                    'options' => [
+                        'label' => 'Sub Options',
+                        'comment' => 'Add sub options to this option group',
+                        'fields' => [
+                            'option_label' => [
+                                'label' => 'Option Label',
+                                'comment' => 'Used as the label for this option'
+                            ],
+                            'option_code' => [
+                                'label' => 'Option Code',
+                                'comment' => 'Used to identify this field. Must be in snake_case'
+                            ]
+                        ]
+                    ],
+                ]
             ],
+            'html_attributes' => [
+                'label' => 'HTML Attributes',
+                'comment' => 'Add/override custom attributes for the field (input, select, textarea).',
+                'prompt' => 'Add an attribute',
+                'fields' => [
+                    'attribute_name' => [
+                        'label' => 'Attribute Name',
+                        'comment' => 'The name of the attribute, e.g. data-id, title, class, etc',
+                    ],
+                    'attribute_value' => [
+                        'label' => 'Attribute Value',
+                        'comment' => 'The value of the attribute. For boolean attributes, leave blank.',
+                    ],
+                ]
+            ]
         ]
     ]
 ];

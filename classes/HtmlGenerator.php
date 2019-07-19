@@ -4,13 +4,18 @@ namespace ABWebDevelopers\Forms\Classes;
 
 use ABWebDevelopers\Forms\Models\Form;
 use ABWebDevelopers\Forms\Models\Field;
-use YeTii\HtmlElement\Elements\Div as HtmlDiv;
-use YeTii\HtmlElement\Elements\Span as HtmlSpan;
-use YeTii\HtmlElement\Elements\Form as HtmlForm;
-use YeTii\HtmlElement\Elements\Input as HtmlInput;
-use YeTii\HtmlElement\Elements\Select as HtmlSelect;
-use YeTii\HtmlElement\Elements\Textarea as HtmlTextarea;
-use YeTii\HtmlElement\Elements\Label as HtmlLabel;
+use YeTii\HtmlElement\Element;
+use YeTii\HtmlElement\Elements\HtmlDiv;
+use YeTii\HtmlElement\Elements\HtmlSpan;
+use YeTii\HtmlElement\Elements\HtmlForm;
+use YeTii\HtmlElement\Elements\HtmlInput;
+use YeTii\HtmlElement\Elements\HtmlOption;
+use YeTii\HtmlElement\Elements\HtmlOptgroup;
+use YeTii\HtmlElement\Elements\HtmlSelect;
+use YeTii\HtmlElement\Elements\HtmlTextarea;
+use YeTii\HtmlElement\Elements\HtmlLabel;
+use YeTii\HtmlElement\Elements\HtmlButton;
+use YeTii\HtmlElement\Elements\HtmlP;
 
 class HtmlGenerator
 {
@@ -46,14 +51,79 @@ class HtmlGenerator
             'class' => $form->rowClass(),
             'nodes' => $fields,
         ]);
-        
+
+        $recaptcha = '';
+        if ($form->recaptchaEnabled()) {
+            $recaptcha = new HtmlDiv([
+                'class' => $form->rowClass(),
+                'node' => new HtmlDiv([
+                    'class' => $form->groupClass(),
+                    'nodes' => [
+                        new HtmlDiv([
+                            'class' => 'g-recaptcha',
+                            'data-sitekey' => Settings::get('recaptcha_public_key'),
+                        ]),
+                        new HtmlDiv([
+                            'class' => 'form-field-error-message text-danger',
+                            'style' => 'display:none'
+                        ]),
+                    ]
+                ])
+            ]);
+        }
+
+        $cancel = '';
+        if ($form->enableCancel()) {
+            $cancel = new HtmlButton([
+                'class' => $form->cancelClass(),
+                'node' => $form->cancelText(),
+            ]);
+        }
+
+        $buttons = new HtmlDiv([
+            'class' => $form->rowClass(),
+            'node' => [
+                new HtmlDiv([
+                    'class' => $form->groupClass(),
+                    'nodes' => [
+                        $cancel,
+                        new HtmlButton([
+                            'type' => 'submit',
+                            'class' => $form->submitClass(),
+                            'node' => $form->submitText(),
+                        ]),
+                    ]
+                ])
+            ]
+        ]);
+
+        $dataClasses = [
+            'data-label-success-class' => $form->labelSuccessClass(),
+            'data-label-error-class' => $form->labelErrorClass(),
+            'data-field-success-class' => $form->fieldSuccessClass(),
+            'data-field-error-class' => $form->fieldErrorClass(),
+            'data-form-success-class' => $form->formSuccessClass(),
+            'data-form-error-class' => $form->formErrorClass(),
+        ];
+
         $htmlForm = new HtmlForm([
             'id' => 'form_' . $form->code,
+            'class' => 'custom-form',
             'nodes' => [
                 $loadingIndicator,
                 $fields,
+                $recaptcha,
+                $buttons
             ],
         ]);
+
+        if ($form->hasFileField()) {
+            $htmlForm->set([
+                'data-request-files' => true,
+            ]);
+        }
+
+        $htmlForm->set($dataClasses);
 
         return $htmlForm;
     }
@@ -71,7 +141,7 @@ class HtmlGenerator
         $label = new HtmlLabel([
             'for' => $fieldId,
             'class' => $form->labelClass($field),
-            'node' => $field->name 
+            'node' => $field->name
         ]);
 
         if ($field->required) {
@@ -87,10 +157,19 @@ class HtmlGenerator
             'style' => 'display:none;'
         ]);
 
+        $description = '';
+        if ($field->show_description) {
+            $description = new HtmlP([
+                'class' => 'field-description',
+                'node' => $field->description,
+            ]);
+        }
+
         return new HtmlDiv([
             'class' => implode(' ', $classes),
             'nodes' => [
                 $label,
+                $description,
                 $element,
                 $error
             ]
@@ -143,19 +222,91 @@ class HtmlGenerator
         if (!empty($options)) {
             $el = new HtmlDiv([
                 'id' => $fieldId . '_options',
+                'class' => 'abweb-form-' . $field->type . '-options',
             ]);
-            foreach ($options as $i => $option) {
+
+            foreach ($options as $code => $option) {
+                if (is_array($option)) {
+                    $label = new HtmlLabel([
+                        'node' => $option['label'],
+                    ]);
+
+                    $div = new HtmlDiv([
+                        'nodes' => [
+                            $label,
+                        ],
+                    ]);
+
+                    $optgroup = new HtmlDiv([
+                        'id' => $fieldId . '_option_group',
+                        'class' => 'abweb-form-' . $field->type . '-option-group',
+                    ]);
+
+                    foreach ($option['options'] as $code2 => $option2) {
+                        $input = new HtmlInput([
+                            'type' => $field->type,
+                            'name' => $field->code . ($field->type === 'radio' ? '' : '[]'),
+                            'id' => $fieldId . '_' . $code2,
+                            'value' => $code2,
+                            'node' => $option2
+                        ]);
+
+                        if ($field->required && $field->type === 'radio') {
+                            $input->set([
+                                'required' => true
+                            ]);
+                        } elseif ($field->required) {
+                            $input->set([
+                                'data-required-checkbox' => true,
+                            ]);
+                        }
+
+                        $this->addCustomAttributes($input, $field);
+
+                        $optgroup->addChild(new HtmlLabel([
+                            'for' => $fieldId . '_' . $code2,
+                            'class' => 'abweb-form-option',
+                            'nodes' => [
+                                $input,
+                                new HtmlSpan([
+                                    'node' => $option2,
+                                ]),
+                            ]
+                        ]));
+                    }
+
+                    $div->addChild($optgroup);
+
+                    $el->addChild($div);
+
+                    continue;
+                }
+
+                $input = new HtmlInput([
+                    'type' => $field->type,
+                    'name' => $field->code . ($field->type === 'radio' ? '' : '[]'),
+                    'id' => $fieldId . '_' . $code,
+                    'value' => $code,
+                    'node' => $option
+                ]);
+
+                if ($field->required && $field->type === 'radio') {
+                    $input->set([
+                        'required' => true
+                    ]);
+                } elseif ($field->required) {
+                    $input->set([
+                        'data-required-checkbox' => true,
+                    ]);
+                }
+
+                $this->addCustomAttributes($input, $field);
+
                 $el->addChild(new HtmlLabel([
-                    'for' => $fieldId . '_' . $i,
+                    'for' => $fieldId . '_' . $code,
                     'class' => 'abweb-form-option',
                     'nodes' => [
-                        new HtmlInput([
-                            'type' => $field->type,
-                            'name' => $field->code . '[' . $i . ']',
-                            'id' => $fieldId . '_' . $i,
-                            'value' => $option,
-                            'required' => $field->required, // TODO: remove?
-                        ]),
+                        $input,
                         new HtmlSpan([
                             'node' => $option,
                         ]),
@@ -163,12 +314,42 @@ class HtmlGenerator
                 ]));
             }
         } else {
+            // Single Input = typically just a true or false, like "yes I accept"
             $el = new HtmlInput([
                 'type' => $field->type,
+                'value' => 1, // True
             ]);
 
+            if ($field->required) {
+                $el->set([
+                    'required' => true
+                ]);
+            }
+
             $el->set($this->resolveTypeGlobal($form, $field));
+
+            $this->addCustomAttributes($el, $field);
         }
+
+        return $el;
+    }
+
+    /**
+     * Resolve HtmlElement for color fields
+     *
+     * @param Form $form
+     * @param Field $field
+     * @return HtmlElement
+     */
+    public function resolveTypeColor(Form $form, Field $field)
+    {
+        $el = new HtmlInput([
+            'type' => 'color'
+        ]);
+
+        $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
 
         return $el;
     }
@@ -189,6 +370,8 @@ class HtmlGenerator
 
         $el->set($this->resolveTypeGlobal($form, $field));
 
+        $this->addCustomAttributes($el, $field);
+
         return $el;
     }
 
@@ -208,6 +391,49 @@ class HtmlGenerator
 
         $el->set($this->resolveTypeGlobal($form, $field));
 
+        $this->addCustomAttributes($el, $field);
+
+        return $el;
+    }
+
+    /**
+     * Resolve HtmlElement for file fields
+     *
+     * @param Form $form
+     * @param Field $field
+     * @return HtmlElement
+     */
+    public function resolveTypeFile(Form $form, Field $field)
+    {
+        $el = new HtmlInput([
+            'type' => 'file'
+        ]);
+
+        $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
+
+        return $el;
+    }
+
+    /**
+     * Resolve HtmlElement for image fields
+     *
+     * @param Form $form
+     * @param Field $field
+     * @return HtmlElement
+     */
+    public function resolveTypeImage(Form $form, Field $field)
+    {
+        $el = new HtmlInput([
+            'type' => 'file',
+            'accept' => 'image/*',
+        ]);
+
+        $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
+
         return $el;
     }
 
@@ -226,6 +452,28 @@ class HtmlGenerator
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
+
+        return $el;
+    }
+
+    /**
+     * Resolve HtmlElement for password fields
+     *
+     * @param Form $form
+     * @param Field $field
+     * @return HtmlElement
+     */
+    public function resolveTypePassword(Form $form, Field $field)
+    {
+        $el = new HtmlInput([
+            'type' => 'password'
+        ]);
+
+        $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
 
         return $el;
     }
@@ -253,8 +501,7 @@ class HtmlGenerator
      */
     public function resolveTypeSelect(Form $form, Field $field)
     {
-        $el = new HtmlInput([
-            'type' => 'text',
+        $el = new HtmlSelect([
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
@@ -266,12 +513,49 @@ class HtmlGenerator
             'node' => $field->placeholder,
         ]));
 
-        foreach ($field->getOptions() as $option) {
+        foreach ($field->getOptions() as $code => $option) {
+            if (is_array($option)) {
+                $optgroup = new HtmlOptgroup([
+                    'label' => $option['label'],
+                ]);
+
+                foreach ($option['options'] as $code2 => $option2) {
+                    $optgroup->addChild(new HtmlOption([
+                        'value' => $code2,
+                        'node' => $option2,
+                    ]));
+                }
+
+                $el->addChild($optgroup);
+
+                continue;
+            }
+
             $el->addChild(new HtmlOption([
-                'value' => $option,
+                'value' => $code,
                 'node' => $option,
             ]));
         }
+
+        return $el;
+    }
+
+    /**
+     * Resolve HtmlElement for tel fields
+     *
+     * @param Form $form
+     * @param Field $field
+     * @return HtmlElement
+     */
+    public function resolveTypeTel(Form $form, Field $field)
+    {
+        $el = new HtmlInput([
+            'type' => 'tel'
+        ]);
+
+        $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
 
         return $el;
     }
@@ -292,6 +576,8 @@ class HtmlGenerator
 
         $el->set($this->resolveTypeGlobal($form, $field));
 
+        $this->addCustomAttributes($el, $field);
+
         return $el;
     }
 
@@ -309,5 +595,48 @@ class HtmlGenerator
         $el->set($this->resolveTypeGlobal($form, $field));
 
         return $el;
+    }
+
+    /**
+     * Resolve HtmlElement for url fields
+     *
+     * @param Form $form
+     * @param Field $field
+     * @return HtmlElement
+     */
+    public function resolveTypeUrl(Form $form, Field $field)
+    {
+        $el = new HtmlInput([
+            'type' => 'url'
+        ]);
+
+        $el->set($this->resolveTypeGlobal($form, $field));
+
+        $this->addCustomAttributes($el, $field);
+
+        return $el;
+    }
+
+    /**
+     * Add any custom HTML Attributes to a field
+     *
+     * @param Element $element
+     * @param Field $field
+     * @return Element
+     */
+    public function addCustomAttributes(Element $element, Field $field)
+    {
+        if (empty($field->html_attributes)) {
+            return $element;
+        }
+
+        $attributes = [];
+        foreach ($field->html_attributes as $attribute) {
+            $attributes[$attribute['attribute_name']] = $attribute['attribute_value'];
+        }
+
+        $element->set($attributes);
+
+        return $element;
     }
 }
