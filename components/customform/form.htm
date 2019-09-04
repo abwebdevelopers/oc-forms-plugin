@@ -9,7 +9,7 @@
     <div class="{{ form.rowClass() }}">
         {% for field in form.fields %}
         <div class="custom-form-input abweb-form-{{ field.type }} {{ form.groupClass(field) }}">
-            <label for="{{ form.id(field) }}" class="{{ form.labelClass(field) }}">
+            <label for="{{ field.getId(form) }}" class="{{ form.labelClass(field) }}">
                 {{ field.name }}
                 {% if field.required %}<span class="required"></span>{% endif %}
             </label>
