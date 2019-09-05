@@ -9,8 +9,8 @@ use PluginTestCase;
 
 class SettingsTest extends PluginTestCase
 {
-
-    private function getForm(bool $withData = false) {
+    private function getForm(bool $withData = false)
+    {
         if ($withData) {
             return Form::create([
                 'title' => 'Example',
@@ -43,7 +43,8 @@ class SettingsTest extends PluginTestCase
         return new Form();
     }
 
-    private function getField() {
+    private function getField()
+    {
         return new Field();
     }
 
@@ -73,7 +74,7 @@ class SettingsTest extends PluginTestCase
                 'code' => 'send_email',
             ]
         ];
-        
+
         foreach ($fields as $field) {
             $field = Field::create($field + [
                 'form_id' => $form->id
@@ -86,7 +87,7 @@ class SettingsTest extends PluginTestCase
 
         $first = array_shift($suggests);
         $this->assertEquals('Test Email Field [email]', $first);
-        
+
         $second = array_shift($suggests);
         $this->assertEquals('Should email customer? [send_email]', $second);
     }
@@ -117,7 +118,7 @@ class SettingsTest extends PluginTestCase
                 'code' => 'example2',
             ],
         ];
-        
+
         foreach ($fields as $field) {
             $field = Field::create($field + [
                 'form_id' => $form->id
@@ -130,7 +131,7 @@ class SettingsTest extends PluginTestCase
 
         $first = array_shift($suggests);
         $this->assertEquals('Test Name Field [name]', $first);
-        
+
         $second = array_shift($suggests);
         $this->assertEquals('Has Name? [has_name]', $second);
     }
@@ -403,7 +404,7 @@ class SettingsTest extends PluginTestCase
         $field = $this->getField();
         $field->field_class = $third;
         $this->assertEquals($override, $form->fieldClass($field));
-        
+
         // Confirm that overriding means the field value is used
         $field->override_field_class = true;
         $this->assertEquals($third, $form->fieldClass($field));
@@ -435,7 +436,7 @@ class SettingsTest extends PluginTestCase
         $field = $this->getField();
         $field->row_class = $third;
         $this->assertEquals($override, $form->rowClass($field));
-        
+
         // Confirm that overriding means the field value is used
         $field->override_row_class = true;
         $this->assertEquals($third, $form->rowClass($field));
@@ -467,7 +468,7 @@ class SettingsTest extends PluginTestCase
         $field = $this->getField();
         $field->group_class = $third;
         $this->assertEquals($override, $form->groupClass($field));
-        
+
         // Confirm that overriding means the field value is used
         $field->override_group_class = true;
         $this->assertEquals($third, $form->groupClass($field));
@@ -499,7 +500,7 @@ class SettingsTest extends PluginTestCase
         $field = $this->getField();
         $field->label_class = $third;
         $this->assertEquals($override, $form->labelClass($field));
-        
+
         // Confirm that overriding means the field value is used
         $field->override_label_class = true;
         $this->assertEquals($third, $form->labelClass($field));
@@ -724,5 +725,4 @@ class SettingsTest extends PluginTestCase
         $form->override_on_success_redirect = true;
         $this->assertEquals($override, $form->onSuccessRedirect());
     }
-
 }

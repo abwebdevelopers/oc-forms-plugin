@@ -1,5 +1,14 @@
-title: Field
+# ===================================
+#  Reorder Behavior Config
+# ===================================
+
+# Reorder Title
+title: Reorder Fields
+# Attribute name
+nameFrom: name
+# Model Class name
 modelClass: ABWebDevelopers\Forms\Models\Field
-nameFrom: sort_order
+# Toolbar widget configuration
 toolbar:
+    # Partial for toolbar buttons
     buttons: reorder_toolbar

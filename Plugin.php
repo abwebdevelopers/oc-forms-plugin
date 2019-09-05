@@ -14,7 +14,7 @@ class Plugin extends PluginBase
 
     /**
      * Register Plugin Components
-     * 
+     *
      * @return array
      */
     public function registerComponents()
@@ -26,11 +26,11 @@ class Plugin extends PluginBase
 
     /**
      * Register Plugin Settings
-     * 
+     *
      * @return array
      */
-    public function registerSettings() {
-
+    public function registerSettings()
+    {
         return [
             'settings' => [
                 'label' => 'Custom Forms',
@@ -47,7 +47,7 @@ class Plugin extends PluginBase
 
     /**
      * Register Plugin Mail Templates
-     * 
+     *
      * @return array
      */
     public function registerMailTemplates()
@@ -61,7 +61,10 @@ class Plugin extends PluginBase
     /**
      * Inject patch JS and CSS when creating/updating forms
      */
-    public function boot() {
+    public function boot()
+    {
+        $this->loadViewsFrom(__DIR__ . '/views', 'abwebdevelopers.forms');
+
         Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
             if ($controller instanceof \ABWebDevelopers\Forms\Controllers\Form) {
                 // Check this is the settings page for this plugin:
@@ -73,5 +76,4 @@ class Plugin extends PluginBase
             }
         });
     }
-
 }

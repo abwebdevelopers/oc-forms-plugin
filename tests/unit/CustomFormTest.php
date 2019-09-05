@@ -14,7 +14,6 @@ use Lang;
 
 class CustomFormTest extends PluginTestCase
 {
-
     protected $form;
 
     /**
@@ -23,7 +22,8 @@ class CustomFormTest extends PluginTestCase
      * @param array $data
      * @return void
      */
-    private function initSettings(array $data = []) {
+    private function initSettings(array $data = [])
+    {
         // Merge per-test settings with defaults (acting as a reset)
         $data = array_merge([
             'enable_caching' => false,
@@ -50,7 +50,8 @@ class CustomFormTest extends PluginTestCase
      * @param array $data
      * @return Form
      */
-    private function getForm(array $data = []) {
+    private function getForm(array $data = [])
+    {
         if (!empty($this->form)) {
             return $this->form;
         }
@@ -114,7 +115,8 @@ class CustomFormTest extends PluginTestCase
      * @param string $formCode
      * @return CustomForm
      */
-    private function getComponent(string $formCode = null) {
+    private function getComponent(string $formCode = null)
+    {
         $this->getForm();
 
         $component = new CustomForm();
@@ -127,22 +129,25 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form with no data fails and returns 400 "No data supplied"
      */
-    public function testSubmitFailsOnNoData() {
+    public function testSubmitFailsOnNoData()
+    {
         $component = $this->getComponent();
 
         $resp = $component->onFormSubmit();
 
         $this->assertEquals($resp->getStatusCode(), 400);
+
         $this->assertEquals($resp->getData(), (object)[
             'success' => false,
-            'error' => 'No data supplied'
+            'error' => 'abwebdevelopers.forms::lang.customForm.validation.noData' // 'No data supplied'
         ]);
     }
 
     /**
      * Test that submitting the form with invalid data fails and returns 400 with field errors
      */
-    public function testSubmitFailsOnInvalidData() {
+    public function testSubmitFailsOnInvalidData()
+    {
         $component = $this->getComponent();
 
         Input::replace([
@@ -161,7 +166,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form with no recaptcha data fails and returns respective error
      */
-    public function testSubmitFailsOnNoRecaptcha() {
+    public function testSubmitFailsOnNoRecaptcha()
+    {
         $this->initSettings([
             'enable_recaptcha' => true
         ]);
@@ -183,7 +189,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form with invalid recaptcha data fails and returns respective error
      */
-    public function testSubmitFailsOnInvalidRecaptcha() {
+    public function testSubmitFailsOnInvalidRecaptcha()
+    {
         $this->initSettings([
             'enable_recaptcha' => true
         ]);
@@ -206,7 +213,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form will save a submission, if told to
      */
-    public function testSubmissionIsSavedWhenSetTo() {
+    public function testSubmissionIsSavedWhenSetTo()
+    {
         $this->initSettings([
             'saves_data' => true,
         ]);
@@ -233,7 +241,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form will save a submission, if told to
      */
-    public function testSuccessfulSubmissionResponseIsCorrect() {
+    public function testSuccessfulSubmissionResponseIsCorrect()
+    {
         $redirect = '/thank-you';
         $message = 'Chur bro';
         $success = 'redirect';
@@ -269,7 +278,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form will save a submission with IP, if told to
      */
-    public function testSubmissionIsSavedWithIpWhenSetTo() {
+    public function testSubmissionIsSavedWithIpWhenSetTo()
+    {
         $this->initSettings([
             'saves_data' => true,
             'store_ips' => true,
@@ -298,7 +308,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form will not save a submission, if not told to
      */
-    public function testSubmissionIsNotSavedWhenSetNotTo() {
+    public function testSubmissionIsNotSavedWhenSetNotTo()
+    {
         $this->initSettings();
         $component = $this->getComponent();
 
@@ -322,7 +333,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that notification alerts will be sent
      */
-    public function testNotificationSendingWorks() {
+    public function testNotificationSendingWorks()
+    {
         $this->initSettings([
             'send_notifications' => true,
             'notification_recipients' => 'bob@example.org',
@@ -348,7 +360,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that notification alerts will be queued
      */
-    public function testNotificationQueueingWorks() {
+    public function testNotificationQueueingWorks()
+    {
         $this->initSettings([
             'queue_emails' => true,
             'send_notifications' => true,
@@ -374,7 +387,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that notifications alerts are skipped if no recipients are specified
      */
-    public function testNotificationSendingSkipsIfNoRecipients() {
+    public function testNotificationSendingSkipsIfNoRecipients()
+    {
         $this->initSettings([
             'send_notifications' => true,
             'notification_recipients' => '',
@@ -399,7 +413,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that notification alerts are aborted if invalid recipients are specified
      */
-    public function testNotificationSendingAbortsIfInvalidRecipients() {
+    public function testNotificationSendingAbortsIfInvalidRecipients()
+    {
         $this->initSettings([
             'send_notifications' => true,
             'notification_recipients' => 'invalid',
@@ -425,7 +440,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that auto reply alert is sent if email/name fields specified
      */
-    public function testAutoReplySendsWithAutoReplyFieldsSpecified() {
+    public function testAutoReplySendsWithAutoReplyFieldsSpecified()
+    {
         $this->initSettings([
             'auto_reply' => true,
         ]);
@@ -450,7 +466,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that auto reply alert is aborted if email field is not specified
      */
-    public function testAutoReplyAbortsWithoutAutoReplyEmailFieldSpecified() {
+    public function testAutoReplyAbortsWithoutAutoReplyEmailFieldSpecified()
+    {
         $this->initSettings([
             'auto_reply' => true,
         ]);
@@ -481,7 +498,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that auto reply alert is aborted if name field is not specified
      */
-    public function testAutoReplyAbortsWithoutAutoReplyNameFieldSpecified() {
+    public function testAutoReplyAbortsWithoutAutoReplyNameFieldSpecified()
+    {
         $this->initSettings([
             'auto_reply' => true,
         ]);
@@ -512,7 +530,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that auto reply alert is can be queued
      */
-    public function testAutoReplyCanQueue() {
+    public function testAutoReplyCanQueue()
+    {
         $this->initSettings([
             'auto_reply' => true,
             'queue_emails' => true,
@@ -538,7 +557,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that the throttle system works
      */
-    public function testTooManyAttemptsLocksUserOut() {
+    public function testTooManyAttemptsLocksUserOut()
+    {
         $this->initSettings([
             'saves_data' => true,
             'store_ips' => true,
@@ -581,7 +601,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form with invalid option (for select, radio, checkbox fields) fails and returns 400 with field errors
      */
-    public function testSubmitFailsOnInvalidOption() {
+    public function testSubmitFailsOnInvalidOption()
+    {
         $this->getForm();
         $field = Field::updateOrCreate([
             'form_id' => $this->form->id,
@@ -589,7 +610,20 @@ class CustomFormTest extends PluginTestCase
         ], [
             'name' => 'Option',
             'type' => 'select',
-            'options' => 'Apples,Bananas,Oranges',
+            'options' => [
+                [
+                    'option_code' => 'apples',
+                    'option_label' => 'Apples',
+                ],
+                [
+                    'option_code' => 'bananas',
+                    'option_label' => 'Bananas',
+                ],
+                [
+                    'option_code' => 'oranges',
+                    'option_label' => 'Oranges',
+                ]
+            ],
             'required' => true
         ]);
 
@@ -612,7 +646,8 @@ class CustomFormTest extends PluginTestCase
     /**
      * Test that submitting the form with valid option (for select, radio, checkbox fields) passes and returns 200
      */
-    public function testSubmitPassesOnValidOption() {
+    public function testSubmitPassesOnValidOption()
+    {
         $this->getForm();
         $field = Field::updateOrCreate([
             'form_id' => $this->form->id,
@@ -620,7 +655,20 @@ class CustomFormTest extends PluginTestCase
         ], [
             'name' => 'Option',
             'type' => 'select',
-            'options' => 'Apples,Bananas,Oranges',
+            'options' => [
+                [
+                    'option_code' => 'Apples',
+                    'option_label' => 'Apples',
+                ],
+                [
+                    'option_code' => 'Bananas',
+                    'option_label' => 'Bananas',
+                ],
+                [
+                    'option_code' => 'Oranges',
+                    'option_label' => 'Oranges',
+                ]
+            ],
             'required' => true
         ]);
 

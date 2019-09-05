@@ -141,7 +141,8 @@ class Form extends Model
      *
      * @return void
      */
-    public function afterFetch() {
+    public function afterFetch()
+    {
         if (!empty($this->overrides)) {
             // Create virtual fields for auto selecting override checkboxes in backend form
             foreach ($this->overrides as $field) {
@@ -161,7 +162,8 @@ class Form extends Model
      *
      * @return void
      */
-    public function beforeSave() {
+    public function beforeSave()
+    {
         if (!empty($this->overrides)) {
             // Convert inherited values to null
             foreach ($this->overrides as $field) {
@@ -185,7 +187,7 @@ class Form extends Model
     {
         $fields = [];
 
-        foreach ($this->fields->sortBy(function($a) {
+        foreach ($this->fields->sortBy(function ($a) {
             $score = -1;
             $score += ($a->type === 'text') ? 1 : 0;
             $score += (stripos($a->code, 'name') !== false) ? 1 : 0;
@@ -209,7 +211,7 @@ class Form extends Model
     {
         $fields = [];
 
-        foreach ($this->fields->sortBy(function($a) {
+        foreach ($this->fields->sortBy(function ($a) {
             $score = -1;
             $score += ($a->type === 'email') ? 1 : 0;
             $score += (stripos($a->code, 'email') !== false) ? 1 : 0;
@@ -234,7 +236,8 @@ class Form extends Model
      *
      * @return bool
      */
-    public function recaptchaEnabled() {
+    public function recaptchaEnabled()
+    {
         if ($this->override_enable_recaptcha) {
             return (bool) $this->enable_recaptcha;
         }
@@ -247,7 +250,8 @@ class Form extends Model
      *
      * @return bool
      */
-    public function hasIpRestriction() {
+    public function hasIpRestriction()
+    {
         if ($this->override_enable_ip_restriction) {
             return (bool) $this->enable_ip_restriction;
         }
@@ -260,7 +264,8 @@ class Form extends Model
      *
      * @return int
      */
-    public function maxRequestsPerDay() {
+    public function maxRequestsPerDay()
+    {
         if ($this->override_max_requests_per_day) {
             return max((int) $this->max_requests_per_day, 1);
         }
@@ -273,7 +278,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function throttleMessage() {
+    public function throttleMessage()
+    {
         if ($this->override_throttle_message) {
             return (string) $this->throttle_message;
         }
@@ -288,7 +294,8 @@ class Form extends Model
      *
      * @return bool
      */
-    public function savesData() {
+    public function savesData()
+    {
         if ($this->override_saves_data) {
             return (bool) $this->saves_data;
         }
@@ -301,7 +308,8 @@ class Form extends Model
      *
      * @return bool
      */
-    public function sendsNotifications() {
+    public function sendsNotifications()
+    {
         if ($this->override_send_notifications) {
             return (bool) $this->send_notifications;
         }
@@ -314,7 +322,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function notificationTemplate() {
+    public function notificationTemplate()
+    {
         if ($this->override_notification_template) {
             return (string) $this->notification_template;
         }
@@ -327,7 +336,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function notificationRecipients() {
+    public function notificationRecipients()
+    {
         if ($this->override_notification_recipients) {
             return (string) $this->notification_recipients;
         }
@@ -340,7 +350,8 @@ class Form extends Model
      *
      * @return bool
      */
-    public function autoReply() {
+    public function autoReply()
+    {
         if ($this->override_auto_reply) {
             return (bool) $this->auto_reply;
         }
@@ -353,7 +364,8 @@ class Form extends Model
      *
      * @return Field|null
      */
-    public function autoReplyEmailField() {
+    public function autoReplyEmailField()
+    {
         return $this->auto_reply_email_field;
     }
 
@@ -362,7 +374,8 @@ class Form extends Model
      *
      * @return Field|null
      */
-    public function autoReplyNameField() {
+    public function autoReplyNameField()
+    {
         return $this->auto_reply_name_field;
     }
 
@@ -371,7 +384,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function autoReplyTemplate() {
+    public function autoReplyTemplate()
+    {
         if ($this->override_auto_reply_template) {
             return (string) $this->auto_reply_template;
         }
@@ -386,7 +400,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function formClass() {
+    public function formClass()
+    {
         if ($this->override_form_class) {
             return (string) $this->form_class;
         }
@@ -400,7 +415,8 @@ class Form extends Model
      * @param Field $field
      * @return string
      */
-    public function fieldClass(Field $field = null) {
+    public function fieldClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_field_class) {
                 return $field->field_class;
@@ -420,7 +436,8 @@ class Form extends Model
      * @param Field $field
      * @return string
      */
-    public function rowClass(Field $field = null) {
+    public function rowClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_row_class) {
                 return $field->row_class;
@@ -440,7 +457,8 @@ class Form extends Model
      * @param Field $field
      * @return string
      */
-    public function groupClass(Field $field = null) {
+    public function groupClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_group_class) {
                 return $field->group_class;
@@ -460,7 +478,8 @@ class Form extends Model
      * @param Field $field
      * @return string
      */
-    public function labelClass(Field $field = null) {
+    public function labelClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_label_class) {
                 return $field->label_class;
@@ -479,7 +498,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function submitClass() {
+    public function submitClass()
+    {
         if ($this->override_submit_class) {
             return (string) $this->submit_class;
         }
@@ -492,7 +512,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function submitText() {
+    public function submitText()
+    {
         if ($this->override_submit_text) {
             return (string) $this->submit_text;
         }
@@ -505,7 +526,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function enableCancel() {
+    public function enableCancel()
+    {
         if ($this->override_enable_cancel) {
             return (bool) $this->enable_cancel;
         }
@@ -518,7 +540,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function cancelClass() {
+    public function cancelClass()
+    {
         if ($this->override_cancel_class) {
             return (string) $this->cancel_class;
         }
@@ -531,7 +554,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function cancelText() {
+    public function cancelText()
+    {
         if ($this->override_cancel_text) {
             return (string) $this->cancel_text;
         }
@@ -544,7 +568,8 @@ class Form extends Model
      *
      * @return bool
      */
-    public function enableCaching() {
+    public function enableCaching()
+    {
         if ($this->override_enable_caching) {
             return (bool) $this->enable_caching;
         }
@@ -557,7 +582,8 @@ class Form extends Model
      *
      * @return int
      */
-    public function cacheLifetime() {
+    public function cacheLifetime()
+    {
         if ($this->override_cache_lifetime) {
             return (int) $this->cache_lifetime;
         }
@@ -570,7 +596,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function onSuccess() {
+    public function onSuccess()
+    {
         if ($this->override_on_success) {
             return (string) $this->on_success;
         }
@@ -583,7 +610,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function onSuccessMessage() {
+    public function onSuccessMessage()
+    {
         if ($this->override_on_success_message) {
             return (string) $this->on_success_message;
         }
@@ -596,7 +624,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function onSuccessRedirect() {
+    public function onSuccessRedirect()
+    {
         if ($this->override_on_success_redirect) {
             return (string) $this->on_success_redirect;
         }
@@ -609,7 +638,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function labelSuccessClass() {
+    public function labelSuccessClass()
+    {
         return (string) Settings::get('label_success_class', '');
     }
 
@@ -618,7 +648,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function labelErrorClass() {
+    public function labelErrorClass()
+    {
         return (string) Settings::get('label_error_class', '');
     }
 
@@ -627,7 +658,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function fieldSuccessClass() {
+    public function fieldSuccessClass()
+    {
         return (string) Settings::get('field_success_class', '');
     }
 
@@ -636,7 +668,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function fieldErrorClass() {
+    public function fieldErrorClass()
+    {
         return (string) Settings::get('field_error_class', '');
     }
 
@@ -645,7 +678,8 @@ class Form extends Model
      *
      * @return voistringd
      */
-    public function formSuccessClass() {
+    public function formSuccessClass()
+    {
         return (string) Settings::get('form_success_class', '');
     }
 
@@ -654,7 +688,8 @@ class Form extends Model
      *
      * @return string
      */
-    public function formErrorClass() {
+    public function formErrorClass()
+    {
         return (string) Settings::get('form_error_class', '');
     }
 
@@ -663,7 +698,8 @@ class Form extends Model
      *
      * @return boolean
      */
-    public function hasFileField() {
+    public function hasFileField()
+    {
         foreach ($this->fields as $field) {
             if ($field->type === 'file') {
                 return true;
@@ -672,5 +708,4 @@ class Form extends Model
 
         return false;
     }
-
 }

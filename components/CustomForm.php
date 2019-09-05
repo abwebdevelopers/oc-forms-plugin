@@ -17,6 +17,7 @@ use Mail;
 use Request;
 use Response;
 use Validator;
+use Illuminate\Http\JsonResponse;
 
 class CustomForm extends ComponentBase
 {
@@ -61,7 +62,7 @@ class CustomForm extends ComponentBase
      *
      * @return array
      */
-    public function componentDetails()
+    public function componentDetails(): array
     {
         return [
             'name' => 'Custom Form',
@@ -74,17 +75,33 @@ class CustomForm extends ComponentBase
      *
      * @return array
      */
-    public function defineProperties()
+    public function defineProperties(): array
     {
         return [
             'formCode' => [
                 'title'             => 'abwebdevelopers.forms::lang.customForm.formCode.title',
                 'description'       => 'abwebdevelopers.forms::lang.customForm.formCode.description',
                 'default'           => '',
-                'type'              => 'string',
+                'type'              => 'dropdown',
                 'required'          => true,
             ],
         ];
+    }
+
+    /**
+     * Get Form Code Options for Component property
+     *
+     * @return array
+     */
+    public function getFormCodeOptions(): array
+    {
+        $options = [];
+
+        foreach (Form::all() as $form) {
+            $options[$form->code] = $form->title;
+        }
+
+        return $options;
     }
 
     /**
@@ -92,7 +109,7 @@ class CustomForm extends ComponentBase
      *
      * @return Form
      */
-    public function form()
+    public function form(): Form
     {
         return $this->form;
     }
@@ -102,9 +119,10 @@ class CustomForm extends ComponentBase
      *
      * @return Form
      */
-    public function loadForm() {
+    public function loadForm(): Form
+    {
         return $this->form = Form::with([
-            'fields' => function($query) {
+            'fields' => function ($query) {
                 return $query->orderBy('sort_order', 'asc');
             }
         ])->where('code', $this->property('formCode'))->firstOrFail();
@@ -115,7 +133,7 @@ class CustomForm extends ComponentBase
      *
      * @return void
      */
-    public function onRun()
+    public function onRun(): void
     {
         // Fire beforeRun event
         Event::fire(self::EVENTS_PREFIX . 'beforeRun', [$this]);
@@ -125,59 +143,82 @@ class CustomForm extends ComponentBase
 
         // Load required CSS
         $this->addCss('/plugins/abwebdevelopers/forms/assets/custom-form.css');
+        $this->addJs('/plugins/abwebdevelopers/forms/assets/custom-form.js');
 
         // Fire afterRun event
         Event::fire(self::EVENTS_PREFIX . 'afterRun', [$this]);
+
+        $this->getRenderedPartial();
     }
 
     /**
      * Validate a field via AJAX
      *
-     * @return void
+     * @return JsonResponse
      */
-    public function onFieldValidate(): void
+    public function onFieldValidate(): JsonResponse
     {
+        // Autoload the form
+        $this->loadForm();
 
+        $field = str_replace('[]', '', Input::get('__field'));
+        $value = Input::get('__value');
+
+        // Get all form fields, rules and messages
+        list($fields, $rules, $messages) = $this->getFormValidation();
+
+        // Get only what we asked for
+        $data = $this->getInputFields($fields);
+
+        // Validate the form (all fields, to allow for required_if, required_unless, etc)
+        $validator = Validator::make($data, $rules, $messages);
+
+        // Get the actual field object
+        $field = $this->fields[$field];
+
+        // Fire beforeValidateField event
+        Event::fire(self::EVENTS_PREFIX . 'beforeValidateField', [$this, $field, &$value, &$data, &$rules, &$messages, &$validator]);
+
+        if (!$validator->passes()) {
+            $errors = $validator->messages()->toArray();
+
+            // Only fails if this speciifc field fails
+            if (!empty($errors[$field->code])) {
+                // Fire onValidateFieldFail event
+                Event::fire(self::EVENTS_PREFIX . 'onValidateFieldFail', [$this, $field, $value, $data, $rules, $messages, $validator]);
+
+                $errors = $errors[$field->code];
+
+                return Response::json([
+                    'success' => false,
+                    'error' => implode(" \n", $errors),
+                ], 400);
+            }
+        }
+
+        // Fire onValidateFieldPass event
+        Event::fire(self::EVENTS_PREFIX . 'onValidateFieldPass', [$this, $field, $value, $data, $rules, $messages, $validator]);
+
+        return Response::json([
+            'success' => true,
+        ], 200);
     }
 
     /**
      * On Form Submit Handler - The (ajax) POST action
      *
-     * @return void
+     * @return JsonResponse
      */
-    public function onFormSubmit() {
+    public function onFormSubmit(): JsonResponse
+    {
         // Fire beforeFormSubmit event
         Event::fire(self::EVENTS_PREFIX . 'beforeFormSubmit', [$this]);
 
         // Autoload the form
         $this->loadForm();
 
-        $fields = [];
-        $rules = [];
-        $messages = [];
-
-        // Get a list of all fields, any validation rules and messages
-        foreach ($this->form->fields as $field) {
-            $fields[] = $field->code;
-
-            // Create an easy-to-access array of fields
-            $this->fields[$field->code] = $field;
-
-            $fieldRules = $field->compiled_rules;
-            if (!empty($fieldRules)) {
-                $rules[$field->code] = $fieldRules;
-
-                if (!empty($field->validation_messages)) {
-                    $messages[$field->code] = $field->validation_messages;
-                } else {
-                    $messages[$field->code] = $field->name . ' is invalid';
-                }
-            }
-
-            if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
-                $rules[$field->code . '.*'] = $field->option_rules;
-            }
-        }
+        // Get all form fields, rules and messages
+        list($fields, $rules, $messages) = $this->getFormValidation();
 
         // If Google recaptcha enabled, add validation for it
         if ($this->form->recaptchaEnabled()) {
@@ -187,15 +228,7 @@ class CustomForm extends ComponentBase
         }
 
         // Get only what we asked for
-        $data = Input::only($fields);
-
-        // Ensure checkboxes, radios and selects are dealt with as arrays (even if only accepting one value)
-        foreach ($data as $code => $value) {
-            $field = $this->fields[$code];
-            if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
-                $data[$code] = (array) $value;
-            }
-        }
+        $data = $this->getInputFields($fields);
 
         $files = [];
         if ($this->form->hasFileField()) {
@@ -210,7 +243,7 @@ class CustomForm extends ComponentBase
         if (empty($data)) {
             return Response::json([
                 'success' => false,
-                'error' =>  Lang::get('abwebdevelopers.forms::lang.customForm.validation.noData')
+                'error' => Lang::get('abwebdevelopers.forms::lang.customForm.validation.noData')
             ], 400);
         }
 
@@ -269,7 +302,9 @@ class CustomForm extends ComponentBase
         $this->uploadedFiles = [];
         if (!empty($files)) {
             foreach ($files as $key) {
-                $this->uploadedFiles[$key] = (new File())->fromPost($data[$key]);
+                if (!empty($data[$key])) {
+                    $this->uploadedFiles[$key] = (new File())->fromPost($data[$key]);
+                }
             }
         }
         unset($files);
@@ -333,13 +368,74 @@ class CustomForm extends ComponentBase
     }
 
     /**
+     * Retrieve all input fields
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function getInputFields(array $fields = null): array
+    {
+        $data = Input::only($fields);
+
+        // Ensure checkboxes, radios and selects are dealt with as arrays (even if only accepting one value)
+        foreach ($data as $code => $value) {
+            if (!empty($this->fields[$code])) {
+                $field = $this->fields[$code];
+                if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
+                    $data[$code] = (array) $value;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get all form fields, their rules, and their validation messages
+     *
+     * @return array
+     */
+    public function getFormValidation(): array
+    {
+        $fields = [];
+        $rules = [];
+        $messages = [];
+
+        // Get a list of all fields, any validation rules and messages
+        foreach ($this->form->fields as $field) {
+            $fields[] = $field->code;
+
+            // Create an easy-to-access array of fields
+            $this->fields[$field->code] = $field;
+
+            $fieldRules = $field->compiled_rules;
+            if (!empty($fieldRules)) {
+                $rules[$field->code] = $fieldRules;
+
+                if (!empty($field->validation_messages)) {
+                    $messages[$field->code] = $field->validation_messages;
+                } else {
+                    $messages[$field->code] = $field->name . ' is invalid';
+                }
+            }
+
+            if (in_array($field->type, ['checkbox', 'radio', 'select'])) {
+                $rules[$field->code . '.*'] = $field->option_rules;
+            }
+        }
+
+        return [$fields, $rules, $messages];
+    }
+
+    /**
      * Verify if a given response is a valid recaptcha response by cross referencing it
      * with Google's recaptcha verify API
      *
      * @param string $response
      * @return bool
      */
-    private function passesRecaptcha(string $response) {
+    private function passesRecaptcha(string $response)
+    {
         $secret = Settings::get('recaptcha_secret_key');
 
         if (empty($secret)) {
@@ -381,7 +477,7 @@ class CustomForm extends ComponentBase
         // If caching is enabled, return the cached version...
         if ($cachingEnabled) {
             // ..and/or initialise the cache, for the configured lifetime
-            $form = Cache::remember('abwebdevelopers_form_' . $this->form->code, $this->form->cacheLifetime(), function() {
+            $form = Cache::remember('abwebdevelopers_form_' . $this->form->code, $this->form->cacheLifetime(), function () {
                 return $this->renderForm();
             });
         } else {
@@ -415,13 +511,18 @@ class CustomForm extends ComponentBase
      */
     public function renderForm()
     {
+        if (empty($this->form)) {
+            return '';
+        }
+
         return $this->getHtmlGenerator()->render();
     }
 
     /**
      * Return the setting for the ReCAPTCHA Public Key
      */
-    public function recpatchaPublicKey() {
+    public function recpatchaPublicKey()
+    {
         return Settings::get('recaptcha_public_key');
     }
 
@@ -432,7 +533,8 @@ class CustomForm extends ComponentBase
      * @param array $data
      * @return Response|bool
      */
-    private function sendNotification(array $data) {
+    private function sendNotification(array $data)
+    {
         // Get notification recipients from form, or global settings if not set
         $to = $this->form->notificationRecipients();
 
@@ -483,13 +585,13 @@ class CustomForm extends ComponentBase
             $template = $this->form->notificationTemplate();
 
             // Only queue if configured to queue emails
-            $method = Settings::get('queue_emails', true) ? 'queue' : 'send';
+            $method = Settings::get('queue_emails', false) ? 'queue' : 'send';
 
             // Get attachments for email
             $attachments = $this->getAttachments();
 
             // Send the notification
-            Mail::{$method}($template, $this->templateVars, function($message) use ($to, $attachments) {
+            Mail::{$method}($template, $this->templateVars, function ($message) use ($to, $attachments) {
                 if (count($to) === 1) {
                     $message->to(current($to), 'Admin');
                 } else {
@@ -527,7 +629,8 @@ class CustomForm extends ComponentBase
      * @param array $data
      * @return Response|bool
      */
-    private function sendAutoReply($data) {
+    private function sendAutoReply($data)
+    {
         // Resolve the user's email address using the configured field
         $to_email = $this->form->autoReplyEmailField();
         $to_email = (!empty($to_email) && !empty($data[$to_email->code])) ? $data[$to_email->code] : null;
@@ -571,7 +674,7 @@ class CustomForm extends ComponentBase
         $attachments = $this->getAttachments();
 
         // Send the auto reply
-        Mail::{$method}($template, $this->templateVars, function($message) use ($to_email, $to_name, $attachments) {
+        Mail::{$method}($template, $this->templateVars, function ($message) use ($to_email, $to_name, $attachments) {
             $message->to($to_email, $to_name);
 
             foreach ($attachments as $key => $attachment) {
@@ -593,7 +696,8 @@ class CustomForm extends ComponentBase
      * @param array $data
      * @return Submission
      */
-    private function saveSubmission($data) {
+    private function saveSubmission($data)
+    {
         // Compile the data to store with the submission
         $submissionData = [
             'url' => '/' . trim(Request::path(), '/'),
@@ -626,7 +730,8 @@ class CustomForm extends ComponentBase
      * @param array $data
      * @return array
      */
-    public function setTemplateVars(array $data) {
+    public function setTemplateVars(array $data)
+    {
         // Build an array of fields for the template
         $fields = [];
         foreach ($data as $key => $value) {
@@ -646,7 +751,7 @@ class CustomForm extends ComponentBase
             if (is_array($value)) {
                 if (count($value) === 0) {
                     $value = 'N/A';
-                } else if (count($value) === 1) {
+                } elseif (count($value) === 1) {
                     $value = current($value);
                 } else {
                     $value = implode(", ", $value);
@@ -689,14 +794,16 @@ class CustomForm extends ComponentBase
     /**
      * Get a Settings value by $key
      */
-    public function setting(string $key) {
+    public function setting(string $key)
+    {
         return Settings::get($key);
     }
 
     /**
      * Retrieve the submission from the component
      */
-    public function getSubmission() {
+    public function getSubmission()
+    {
         return $this->submission;
     }
 
@@ -705,7 +812,8 @@ class CustomForm extends ComponentBase
      *
      * @return array
      */
-    public function getAttachments() {
+    public function getAttachments()
+    {
         $attachments = [];
 
         foreach ($this->uploadedFiles as $key => $file) {
@@ -744,5 +852,4 @@ class CustomForm extends ComponentBase
 
         return $pos === false ? $haystack : substr($haystack, $pos + 1);
     }
-
 }

@@ -16,9 +16,9 @@ function bootstrapAbwebForm($) {
       $(this).on('change', function () {
         var siblings = form.find('[data-required-checkbox][name="' + name + '"]');
         if (!siblings.is(':checked')) {
-          siblings.closest('.abweb-form-checkbox-options').removeClass('checkboxes-valid').addClass('checkboxes-invalid').attr('title', 'You must select at least one');
+          siblings.closest('.abf-checkbox-options').removeClass('checkboxes-valid').addClass('checkboxes-invalid').attr('title', 'You must select at least one');
         } else {
-          siblings.closest('.abweb-form-checkbox-options').removeClass('checkboxes-invalid').addClass('checkboxes-valid').attr('title', '');
+          siblings.closest('.abf-checkbox-options').removeClass('checkboxes-invalid').addClass('checkboxes-valid').attr('title', '');
         }
       });
     });
@@ -45,7 +45,13 @@ function bootstrapAbwebForm($) {
 
     form.find('input:visible, select, textarea').on('blur', function () {
       var field = $(this);
+      var postData = {
+        '__field': $(this).attr('name'),
+        '__value': $(this).val(),
+      };
+
       field.request('onFieldValidate', {
+        data: postData,
         success: function (d) {
           resetClassesForField(field);
 
@@ -55,16 +61,20 @@ function bootstrapAbwebForm($) {
           } else {
             field.addClass(classes.field_error);
             field.closest('.custom-form-input').find('.form-field-error-message').addClass(classes.label_error);
-            field.closest('.custom-form-input').find('.form-field-error-message').html(data.error);
+            field.closest('.custom-form-input').find('.form-field-error-message').html(d.error);
           }
         },
         error: function (xhr) {
-          console.log(xhr);
           resetClassesForField(field);
 
           field.addClass(classes.field_error);
           field.closest('.custom-form-input').find('.form-field-error-message').addClass(classes.label_error);
-          field.closest('.custom-form-input').find('.form-field-error-message').html(xhr.responseText)
+
+          if (xhr.responseJSON.success !== undefined) {
+            field.closest('.custom-form-input').find('.form-field-error-message').html(xhr.responseJSON.error).show();
+          } else {
+            field.closest('.custom-form-input').find('.form-field-error-message').html(xhr.responseText).show();
+          }
         }
       });
     });
@@ -87,11 +97,7 @@ function bootstrapAbwebForm($) {
             fieldName = fieldName.replace(/\.(\d+)/, '[$1]');
           }
 
-          console.log(fieldName);
-
           var field = form.find('[name="' + fieldName + '"]');
-
-          console.log(field);
 
           if (fieldName === 'g-recaptcha-response') {
             field = $('#g-recaptcha-response').closest('[data-sitekey]');
@@ -164,7 +170,6 @@ function bootstrapAbwebForm($) {
           }
         },
         error: function (xhr) {
-          console.log(xhr);
           resetClasses();
 
           form.removeClass('form-submitting');

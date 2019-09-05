@@ -7,7 +7,6 @@ use October\Rain\Database\Traits\Sortable;
 
 class Field extends Model
 {
-
     use Validation, Sortable;
 
     const SORT_ORDER = 'sort_order';
@@ -67,7 +66,8 @@ class Field extends Model
      *
      * @return void
      */
-    public function afterFetch() {
+    public function afterFetch()
+    {
         if (!empty($this->overrides)) {
             // Create virtual fields for auto selecting override checkboxes in backend form
             foreach ($this->overrides as $field) {
@@ -194,32 +194,13 @@ class Field extends Model
     }
 
     /**
-     * Retrieve the list of available options
+     * Retrieve the list of available options (in object form, not assoc array)
      *
      * @return array
      */
     public function getOptions(): array
     {
-        $options = [];
-
-        foreach ($this->options as $opt) {
-            if ($opt['is_optgroup']) {
-                $optgroup = [];
-                foreach ($opt['options'] ?? [] as $opt2) {
-                    $optgroup[$opt2['option_code']] = $opt2['option_label'];
-                }
-                $options[$opt['option_code']] = [
-                    'label' => $opt['option_label'],
-                    'options' => $optgroup,
-                ];
-
-                continue;
-            }
-
-            $options[$opt['option_code']] = $opt['option_label'];
-        }
-
-        return $options;
+        return (array) json_decode(json_encode($this->options));
     }
 
     /**
@@ -232,17 +213,16 @@ class Field extends Model
         $keys = [];
 
         $options = $this->getOptions();
-        foreach ($options as $key => $value) {
-            if (!empty($value['options'])) {
-                foreach ($value['options'] as $key2 => $value2) {
-                    $keys[] = $key2;
+        foreach ($options as $option) {
+            if (!empty($option->is_optgroup)) {
+                foreach ($option->options as $option2) {
+                    $keys[] = $option2->option_code;
                 }
             } else {
-                $keys[] = $key;
+                $keys[] = $option->option_code;
             }
         }
 
         return $keys;
     }
-
 }

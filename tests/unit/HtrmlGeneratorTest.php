@@ -17,7 +17,6 @@ use YeTii\HtmlElement\Elements\HtmlTextarea;
 
 class HtmlGeneratorTest extends PluginTestCase
 {
-
     protected $form;
 
     /**
@@ -26,7 +25,8 @@ class HtmlGeneratorTest extends PluginTestCase
      * @param array $data
      * @return void
      */
-    private function initSettings(array $data = []) {
+    private function initSettings(array $data = [])
+    {
         // Merge per-test settings with defaults (acting as a reset)
         $data = array_merge([
             'enable_caching' => false,
@@ -53,7 +53,8 @@ class HtmlGeneratorTest extends PluginTestCase
      * @param array $data
      * @return Form
      */
-    private function getForm(array $data = []) {
+    private function getForm(array $data = [])
+    {
         if (!empty($this->form)) {
             return $this->form;
         }
@@ -117,18 +118,22 @@ class HtmlGeneratorTest extends PluginTestCase
      * @param string $formCode
      * @return CustomForm
      */
-    private function getComponent(string $formCode = null) {
+    private function getComponent(string $formCode = null)
+    {
         $this->getForm();
 
         $component = new CustomForm();
 
         $component->setProperty('formCode', ($formCode === null) ? $this->form->code : $formCode);
 
+        $component->loadForm();
+
         return $component;
     }
 
     /** @test */
-    public function itGeneratesTheFormElement() {
+    public function itGeneratesTheFormElement()
+    {
         $component = $this->getComponent();
 
         $htmlGenerator = $component->getHtmlGenerator();
@@ -140,5 +145,4 @@ class HtmlGeneratorTest extends PluginTestCase
             'class' => 'custom-form',
         ], $htmlGenerator->getAttributes(['id', 'class']));
     }
-
 }

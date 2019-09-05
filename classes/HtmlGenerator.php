@@ -4,6 +4,7 @@ namespace ABWebDevelopers\Forms\Classes;
 
 use ABWebDevelopers\Forms\Models\Form;
 use ABWebDevelopers\Forms\Models\Field;
+use ABWebDevelopers\Forms\Models\Settings;
 use YeTii\HtmlElement\Element;
 use YeTii\HtmlElement\Elements\HtmlDiv;
 use YeTii\HtmlElement\Elements\HtmlSpan;
@@ -19,7 +20,6 @@ use YeTii\HtmlElement\Elements\HtmlP;
 
 class HtmlGenerator
 {
-
     public function generateForm(Form $form)
     {
         $loadingIndicator = new HtmlDiv([
@@ -132,7 +132,7 @@ class HtmlGenerator
     {
         $classes = [
             'custom-form-input',
-            'abweb-form-' . $field->type,
+            'abf-' . $field->type,
             $form->groupClass($field),
         ];
 
@@ -222,33 +222,31 @@ class HtmlGenerator
         if (!empty($options)) {
             $el = new HtmlDiv([
                 'id' => $fieldId . '_options',
-                'class' => 'abweb-form-' . $field->type . '-options',
+                'class' => 'abf-' . $field->type . '-options',
             ]);
 
-            foreach ($options as $code => $option) {
-                if (is_array($option)) {
+            foreach ($options as $option) {
+                if (!empty($option->is_optgroup)) {
                     $label = new HtmlLabel([
-                        'node' => $option['label'],
+                        'class' => 'abf-' . $field->type . '-optlabel',
+                        'node' => $option->option_label,
                     ]);
 
-                    $div = new HtmlDiv([
+                    $optgroup = new HtmlDiv([
+                        'id' => $fieldId . '_option_group',
+                        'class' => 'abf-' . $field->type . '-optgroup',
                         'nodes' => [
                             $label,
                         ],
                     ]);
 
-                    $optgroup = new HtmlDiv([
-                        'id' => $fieldId . '_option_group',
-                        'class' => 'abweb-form-' . $field->type . '-option-group',
-                    ]);
-
-                    foreach ($option['options'] as $code2 => $option2) {
+                    foreach ($option->options as $option2) {
                         $input = new HtmlInput([
                             'type' => $field->type,
                             'name' => $field->code . ($field->type === 'radio' ? '' : '[]'),
-                            'id' => $fieldId . '_' . $code2,
-                            'value' => $code2,
-                            'node' => $option2
+                            'id' => $fieldId . '_' . $option2->option_code,
+                            'value' => $option2->option_code,
+                            'node' => $option2->option_label
                         ]);
 
                         if ($field->required && $field->type === 'radio') {
@@ -264,20 +262,18 @@ class HtmlGenerator
                         $this->addCustomAttributes($input, $field);
 
                         $optgroup->addChild(new HtmlLabel([
-                            'for' => $fieldId . '_' . $code2,
-                            'class' => 'abweb-form-option',
+                            'for' => $fieldId . '_' . $option2->option_code,
+                            'class' => 'abf-option',
                             'nodes' => [
                                 $input,
                                 new HtmlSpan([
-                                    'node' => $option2,
+                                    'node' => $option2->option_label,
                                 ]),
                             ]
                         ]));
                     }
 
-                    $div->addChild($optgroup);
-
-                    $el->addChild($div);
+                    $el->addChild($optgroup);
 
                     continue;
                 }
@@ -285,9 +281,9 @@ class HtmlGenerator
                 $input = new HtmlInput([
                     'type' => $field->type,
                     'name' => $field->code . ($field->type === 'radio' ? '' : '[]'),
-                    'id' => $fieldId . '_' . $code,
-                    'value' => $code,
-                    'node' => $option
+                    'id' => $fieldId . '_' . $option->option_code,
+                    'value' => $option->option_code,
+                    'node' => $option->option_label
                 ]);
 
                 if ($field->required && $field->type === 'radio') {
@@ -303,12 +299,12 @@ class HtmlGenerator
                 $this->addCustomAttributes($input, $field);
 
                 $el->addChild(new HtmlLabel([
-                    'for' => $fieldId . '_' . $code,
-                    'class' => 'abweb-form-option',
+                    'for' => $fieldId . '_' . $option->option_code,
+                    'class' => 'abf-option',
                     'nodes' => [
                         $input,
                         new HtmlSpan([
-                            'node' => $option,
+                            'node' => $option->option_label,
                         ]),
                     ]
                 ]));
@@ -513,16 +509,16 @@ class HtmlGenerator
             'node' => $field->placeholder,
         ]));
 
-        foreach ($field->getOptions() as $code => $option) {
-            if (is_array($option)) {
+        foreach ($field->getOptions() as $option) {
+            if ($option->is_optgroup) {
                 $optgroup = new HtmlOptgroup([
-                    'label' => $option['label'],
+                    'label' => $option->option_label,
                 ]);
 
-                foreach ($option['options'] as $code2 => $option2) {
+                foreach ($option->options as $option) {
                     $optgroup->addChild(new HtmlOption([
-                        'value' => $code2,
-                        'node' => $option2,
+                        'value' => $option->option_code,
+                        'node' => $option->option_label,
                     ]));
                 }
 
@@ -532,8 +528,8 @@ class HtmlGenerator
             }
 
             $el->addChild(new HtmlOption([
-                'value' => $code,
-                'node' => $option,
+                'value' => $option->option_code,
+                'node' => $option->option_label,
             ]));
         }
 
