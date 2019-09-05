@@ -13,8 +13,10 @@
 1.0.6:
     - 'Add events for mailable instances when sending a notification and/or reply'
 1.0.7:
+    - 'Fix missing values in the labels "for" attributes'
+1.1.0:
     - 'Change templating engine from Twig to HtmlElement. Add more field types, show description in form flag, default value field, custom attributes area'
     - add_default_show_description_and_attributes_to_fields_table.php
-1.0.8:
+1.1.1:
     - 'Migrate old v1.0.6 options'
     - migrate_options_to_new_repeater_system.php
