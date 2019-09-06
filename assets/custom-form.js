@@ -45,7 +45,7 @@ function bootstrapAbwebForm($) {
     }
 
     function resetClassesForField(field) {
-      field.closest('.custom-form-input').find('.form-field-error-message').removeClass(classes.label_error).removeClass(classes.label_success);
+      field.closest('.custom-form-input').find('.form-field-error-message').removeClass(classes.label_error).removeClass(classes.label_success).html('');
       field.removeClass(classes.field_error).removeClass(classes.field_success);
     }
 
@@ -149,7 +149,7 @@ function bootstrapAbwebForm($) {
               form.slideUp('fast');
               form.removeClass('form-submitting');
               $.oc.flashMsg({
-                'text': d.message,
+                'text': (d.message) ? d.message : 'Form successfully submitted',
                 'class': 'success'
               });
             } else {
@@ -158,7 +158,7 @@ function bootstrapAbwebForm($) {
               form.find('input').val('');
               form.removeClass('form-submitting');
               $.oc.flashMsg({
-                'text': d.message,
+                'text': (d.message) ? d.message : 'Form successfully submitted',
                 'class': 'success'
               });
             }

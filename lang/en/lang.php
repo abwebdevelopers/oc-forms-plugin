@@ -340,7 +340,15 @@
                         'comment' => 'The value of the attribute. For boolean attributes, leave blank.',
                     ],
                 ]
-            ]
+            ],
+            'show_in_email_autoreply' => [
+                'label' => 'Show in autoreply emails',
+                'comment' => 'Should this field\'s value show in the autoreply emails',
+            ],
+            'show_in_email_notification' => [
+                'label' => 'Show in notification emails',
+                'comment' => 'Should this field\'s value show in notification emails',
+            ],
         ]
     ]
 ];

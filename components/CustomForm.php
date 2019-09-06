@@ -587,11 +587,12 @@ class CustomForm extends ComponentBase
             // Only queue if configured to queue emails
             $method = Settings::get('queue_emails', false) ? 'queue' : 'send';
 
-            // Get attachments for email
+            // Get attachments and vars for email
             $attachments = $this->getAttachments();
+            $vars = $this->getTemplateVars('notification');
 
             // Send the notification
-            Mail::{$method}($template, $this->templateVars, function ($message) use ($to, $attachments) {
+            Mail::{$method}($template, $vars, function ($message) use ($to, $attachments) {
                 if (count($to) === 1) {
                     $message->to(current($to), 'Admin');
                 } else {
@@ -670,11 +671,12 @@ class CustomForm extends ComponentBase
         // Only queue if configured to queue emails
         $method = Settings::get('queue_emails', true) ? 'queue' : 'send';
 
-        // Get attachments for email
+        // Get attachments and vars for email
         $attachments = $this->getAttachments();
+        $vars = $this->getTemplateVars('autoreply');
 
         // Send the auto reply
-        Mail::{$method}($template, $this->templateVars, function ($message) use ($to_email, $to_name, $attachments) {
+        Mail::{$method}($template, $vars, function ($message) use ($to_email, $to_name, $attachments) {
             $message->to($to_email, $to_name);
 
             foreach ($attachments as $key => $attachment) {
@@ -724,6 +726,22 @@ class CustomForm extends ComponentBase
     }
 
     /**
+     * Retrieve all relevant email template variables for the $email provided.
+     *
+     * @param string $email Either 'notification' or 'autoreply' or whichever custom ones are used
+     * @return array
+     */
+    public function getTemplateVars(string $email): array
+    {
+        $vars = $this->templateVars;
+        $vars['fields'] = collect($vars['fields'])->filter(function ($field) use ($email) {
+            return $field['show_in_email_' . $email] ?? false;
+        })->toArray();
+
+        return $vars;
+    }
+
+    /**
      * Set template vars for email templates, including the form, the fields with
      * their respective values, and a moreInfo link (to submission, if saved)
      *
@@ -748,13 +766,30 @@ class CustomForm extends ComponentBase
                 continue;
             }
 
+            if ($field->type === 'checkbox') {
+                if (empty($field->options)) {
+                    $value = 'Checked';
+                }
+            }
+
             if (is_array($value)) {
+                $options = $field->options;
+
                 if (count($value) === 0) {
                     $value = 'N/A';
                 } elseif (count($value) === 1) {
                     $value = current($value);
+                    $value = $field->getOption($value);
                 } else {
-                    $value = implode(", ", $value);
+                    $array = [];
+                    foreach ($value as $val) {
+                        $val = $field->getOption($val);
+
+                        if ($val !== null) {
+                            $array[] = $val;
+                        }
+                    }
+                    $value = implode(', ', $array);
                 }
             }
 
@@ -775,6 +810,8 @@ class CustomForm extends ComponentBase
                 'description' => $field->description,
                 'value' => $value,
                 'raw' => $raw,
+                'show_in_email_autoreply' => $field->show_in_email_autoreply,
+                'show_in_email_notification' => $field->show_in_email_notification,
             ];
         }
 

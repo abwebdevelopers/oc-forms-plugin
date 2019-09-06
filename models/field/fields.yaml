@@ -28,17 +28,17 @@ fields:
         comment: abwebdevelopers.forms::lang.models.field.placeholder.comment
         span: left
         type: text
+    default:
+        label: abwebdevelopers.forms::lang.models.field.default.label
+        comment: abwebdevelopers.forms::lang.models.field.default.comment
+        span: right
+        type: text
+        comment: 'Optional. Placeholder'
     show_description:
         type: switch
         label: abwebdevelopers.forms::lang.models.field.show_description.label
         comment: abwebdevelopers.forms::lang.models.field.show_description.comment
-        span: right
-    default:
-        label: abwebdevelopers.forms::lang.models.field.default.label
-        comment: abwebdevelopers.forms::lang.models.field.default.comment
         span: left
-        type: text
-        comment: 'Optional. Placeholder'
     required:
         type: switch
         label: abwebdevelopers.forms::lang.models.field.required.label
@@ -196,3 +196,17 @@ tabs:
             tab: abwebdevelopers.forms::lang.tabs.styling
             span: right
             type: checkbox
+
+        # Emailing
+        show_in_email_autoreply:
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            label: abwebdevelopers.forms::lang.models.field.show_in_email_autoreply.label
+            comment: abwebdevelopers.forms::lang.models.field.show_in_email_autoreply.comment
+            span: left
+            type: switch
+        show_in_email_notification:
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            label: abwebdevelopers.forms::lang.models.field.show_in_email_notification.label
+            comment: abwebdevelopers.forms::lang.models.field.show_in_email_notification.comment
+            span: right
+            type: switch

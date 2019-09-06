@@ -72,7 +72,7 @@ class Field extends Model
             // Create virtual fields for auto selecting override checkboxes in backend form
             foreach ($this->overrides as $field) {
                 $override = 'override_' . $field;
-                $this->{$override} = $v = ($this->{$field} !== null);
+                $this->{$override} = ($this->{$field} !== null);
             }
         }
     }
@@ -224,5 +224,30 @@ class Field extends Model
         }
 
         return $keys;
+    }
+
+    /**
+     * Retrieve an option label by code
+     *
+     * @param string $key
+     * @return string|null The option label
+     */
+    public function getOption(string $key): ?string
+    {
+        foreach ($this->options as $option) {
+            if ($option['is_optgroup'] ?? false) {
+                foreach ($option['options'] ?? [] as $opt) {
+                    if ($opt['option_code'] === $key) {
+                        return $opt['option_label'];
+                    }
+                }
+            }
+
+            if ($option['option_code'] === $key) {
+                return $option['option_label'];
+            }
+        }
+
+        return null;
     }
 }
