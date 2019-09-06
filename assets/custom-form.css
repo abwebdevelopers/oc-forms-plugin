@@ -66,8 +66,47 @@
     animation-delay: .5s;
 }
 
-.abweb-form-checkbox > label.abweb-form-option,
-.abweb-form-radio > label.abweb-form-option {
+.abf-checkbox > label.abf-option,
+.abf-radio > label.abf-option {
     display: block;
     padding-left: 20px;
+}
+
+.abf-checkbox-options,
+.abf-radio-options {
+    padding-left: 5px;
+    border-left: 2px solid transparent;
+}
+
+.abf-checkbox-options.checkboxes-invalid,
+.abf-radio-options.checkboxes-invalid {
+    /* border-left-color: #d91a1a; */
+}
+
+.abf-checkbox-options.checkboxes-valid,
+.abf-radio-options.checkboxes-valid {
+    /* border-left-color: #34c11b; */
+}
+
+.field-description {
+    font-size: 0.8em;
+    opacity: 0.65;
+    margin-bottom: 5px;
+}
+
+.abf-checkbox-options > label,
+.abf-checkbox-option-group > label,
+.abf-radio-options > label,
+.abf-radio-option-group > label {
+    margin-right: 10px;
+}
+
+[type="radio"],
+[type="checkbox"] {
+    margin-right: 3px;
+}
+input[type="checkbox"] + span,
+input[type="radio"] + span {
+    top: -2px;
+    position: relative;
 }

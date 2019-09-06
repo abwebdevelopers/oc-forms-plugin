@@ -7,7 +7,6 @@ use October\Rain\Database\Traits\Sortable;
 
 class Field extends Model
 {
-
     use Validation, Sortable;
 
     const SORT_ORDER = 'sort_order';
@@ -55,6 +54,11 @@ class Field extends Model
         'label_class',
     ];
 
+    public $jsonable = [
+        'options',
+        'html_attributes',
+    ];
+
     /**
      * After fetching the Field event
      * Create override_{field} Fields which represent the fields' states on whether or not
@@ -62,12 +66,13 @@ class Field extends Model
      *
      * @return void
      */
-    public function afterFetch() {
+    public function afterFetch()
+    {
         if (!empty($this->overrides)) {
             // Create virtual fields for auto selecting override checkboxes in backend form
             foreach ($this->overrides as $field) {
                 $override = 'override_' . $field;
-                $this->{$override} = $v = ($this->{$field} !== null);
+                $this->{$override} = ($this->{$field} !== null);
             }
         }
     }
@@ -79,7 +84,8 @@ class Field extends Model
      *
      * @return void
      */
-    public function beforeSave() {
+    public function beforeSave(): void
+    {
         if (!empty($this->overrides)) {
             // Convert inherited values to null
             foreach ($this->overrides as $field) {
@@ -102,9 +108,10 @@ class Field extends Model
      * Get the field's validation rules, and add dynamic rules based on the field
      * type, required flag, etc.
      *
-     * @return array
+     * @return string
      */
-    public function getCompiledRulesAttribute() {
+    public function getCompiledRulesAttribute(): string
+    {
         // Get array of validation rules
         $fieldRules = (!empty($this->validation_rules)) ? explode('|', $this->validation_rules) : [];
 
@@ -127,11 +134,23 @@ class Field extends Model
         return implode('|', $fieldRules);
     }
 
-    public function getOptionRulesAttribute() {
+    /**
+     * Retrieve the option rules for validation (i.e value must be in a list of keys)
+     *
+     * @return string
+     */
+    public function getOptionRulesAttribute(): string
+    {
         $fieldRules = [];
 
         if (in_array($this->type, ['checkbox','radio','select'])) {
-            $fieldRules[] = 'in:' . implode(',', $this->getOptions());
+            $keys = $this->getOptionKeys();
+
+            if (empty($keys)) {
+                $fieldRules[] = 'accepted';
+            } else {
+                $fieldRules[] = 'in:' . implode(',', $this->getOptionKeys());
+            }
         }
 
         // Return compiled list of rules
@@ -139,20 +158,11 @@ class Field extends Model
     }
 
     /**
-     * Get the partial to render for this field
-     *
-     * @return string
-     */
-    public function getPartialAttribute() {
-        return '@fields/' . $this->type;
-    }
-
-    /**
      * Get the 'type' field's dropdown options
      *
      * @return array
      */
-    public function getTypeOptions()
+    public function getTypeOptions(): array
     {
         return [
             'text' => 'Text',
@@ -163,6 +173,12 @@ class Field extends Model
             'select' => 'Select',
             'checkbox' => 'Checkbox',
             'radio' => 'Radio',
+            'url' => 'URL',
+            'tel' => 'Tel',
+            'file' => 'File',
+            'image' => 'Image',
+            'password' => 'Password',
+            'color' => 'Color',
         ];
     }
 
@@ -172,22 +188,66 @@ class Field extends Model
      * @param Form $form
      * @return string
      */
-    public function getId(Form $form)
+    public function getId(Form $form): string
     {
         return 'form_' . $form->code . '_' . $this->code;
     }
 
-    public function getOptions() {
-        $options = [];
+    /**
+     * Retrieve the list of available options (in object form, not assoc array)
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return (array) json_decode(json_encode($this->options));
+    }
 
-        foreach (explode(',', $this->options) as $opt) {
-            $opt = trim($opt);
-            if ($opt !== '') {
-                $options[] = $opt;
+    /**
+     * Retrieve the list of option keys (for validation rule `in:`)
+     *
+     * @return array
+     */
+    public function getOptionKeys(): array
+    {
+        $keys = [];
+
+        $options = $this->getOptions();
+        foreach ($options as $option) {
+            if (!empty($option->is_optgroup)) {
+                foreach ($option->options as $option2) {
+                    $keys[] = $option2->option_code;
+                }
+            } else {
+                $keys[] = $option->option_code;
             }
         }
 
-        return $options;
+        return $keys;
     }
 
+    /**
+     * Retrieve an option label by code
+     *
+     * @param string $key
+     * @return string|null The option label
+     */
+    public function getOption(string $key): ?string
+    {
+        foreach ($this->options as $option) {
+            if ($option['is_optgroup'] ?? false) {
+                foreach ($option['options'] ?? [] as $opt) {
+                    if ($opt['option_code'] === $key) {
+                        return $opt['option_label'];
+                    }
+                }
+            }
+
+            if ($option['option_code'] === $key) {
+                return $option['option_label'];
+            }
+        }
+
+        return null;
+    }
 }

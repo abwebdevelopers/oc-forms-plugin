@@ -138,10 +138,11 @@ class Form extends Model
      * After fetching the Field event
      * Create override_{field} Fields which represent the fields' states on whether or not
      * to inherit the setting value - used in the forms.
-     * 
+     *
      * @return void
      */
-    public function afterFetch() {
+    public function afterFetch()
+    {
         if (!empty($this->overrides)) {
             // Create virtual fields for auto selecting override checkboxes in backend form
             foreach ($this->overrides as $field) {
@@ -158,10 +159,11 @@ class Form extends Model
     /**
      * Before the Field's Save event.
      * Remove override_{field} Fields
-     * 
+     *
      * @return void
      */
-    public function beforeSave() {
+    public function beforeSave()
+    {
         if (!empty($this->overrides)) {
             // Convert inherited values to null
             foreach ($this->overrides as $field) {
@@ -178,14 +180,14 @@ class Form extends Model
 
     /**
      * Return the available options for auto reply name field dropdown
-     * 
+     *
      * @return array
      */
     public function getAutoReplyNameFieldIdOptions()
     {
         $fields = [];
-        
-        foreach ($this->fields->sortBy(function($a) {
+
+        foreach ($this->fields->sortBy(function ($a) {
             $score = -1;
             $score += ($a->type === 'text') ? 1 : 0;
             $score += (stripos($a->code, 'name') !== false) ? 1 : 0;
@@ -202,14 +204,14 @@ class Form extends Model
 
     /**
      * Return the available options for auto reply email field dropdown
-     * 
+     *
      * @return array
      */
     public function getAutoReplyEmailFieldIdOptions()
     {
         $fields = [];
-        
-        foreach ($this->fields->sortBy(function($a) {
+
+        foreach ($this->fields->sortBy(function ($a) {
             $score = -1;
             $score += ($a->type === 'email') ? 1 : 0;
             $score += (stripos($a->code, 'email') !== false) ? 1 : 0;
@@ -223,7 +225,7 @@ class Form extends Model
 
         return $fields;
     }
-    
+
 
     // Form component helpers:
 
@@ -231,10 +233,11 @@ class Form extends Model
 
     /**
      * Determine if recaptcha is enabled for form
-     * 
+     *
      * @return bool
      */
-    public function recaptchaEnabled() {
+    public function recaptchaEnabled()
+    {
         if ($this->override_enable_recaptcha) {
             return (bool) $this->enable_recaptcha;
         }
@@ -244,10 +247,11 @@ class Form extends Model
 
     /**
      * Determine if IP restriction is enabled for form
-     * 
+     *
      * @return bool
      */
-    public function hasIpRestriction() {
+    public function hasIpRestriction()
+    {
         if ($this->override_enable_ip_restriction) {
             return (bool) $this->enable_ip_restriction;
         }
@@ -257,10 +261,11 @@ class Form extends Model
 
     /**
      * Retrieve max amount of requests per day (min 1)
-     * 
+     *
      * @return int
      */
-    public function maxRequestsPerDay() {
+    public function maxRequestsPerDay()
+    {
         if ($this->override_max_requests_per_day) {
             return max((int) $this->max_requests_per_day, 1);
         }
@@ -270,10 +275,11 @@ class Form extends Model
 
     /**
      * Retrieve the forms throttle message
-     * 
+     *
      * @return string
      */
-    public function throttleMessage() {
+    public function throttleMessage()
+    {
         if ($this->override_throttle_message) {
             return (string) $this->throttle_message;
         }
@@ -285,10 +291,11 @@ class Form extends Model
 
     /**
      * Determine if saving data is enabled
-     * 
+     *
      * @return bool
      */
-    public function savesData() {
+    public function savesData()
+    {
         if ($this->override_saves_data) {
             return (bool) $this->saves_data;
         }
@@ -298,10 +305,11 @@ class Form extends Model
 
     /**
      * Determine if sending notifications is enabled
-     * 
+     *
      * @return bool
      */
-    public function sendsNotifications() {
+    public function sendsNotifications()
+    {
         if ($this->override_send_notifications) {
             return (bool) $this->send_notifications;
         }
@@ -311,10 +319,11 @@ class Form extends Model
 
     /**
      * Retrieve form's notification template (not empty)
-     * 
+     *
      * @return string
      */
-    public function notificationTemplate() {
+    public function notificationTemplate()
+    {
         if ($this->override_notification_template) {
             return (string) $this->notification_template;
         }
@@ -324,54 +333,59 @@ class Form extends Model
 
     /**
      * Retrieve form's notification recipients
-     * 
+     *
      * @return string
      */
-    public function notificationRecipients() {
+    public function notificationRecipients()
+    {
         if ($this->override_notification_recipients) {
             return (string) $this->notification_recipients;
         }
 
         return (string) Settings::get('notification_recipients', '');
     }
-    
+
     /**
      * Determine if the form auto replies
-     * 
+     *
      * @return bool
      */
-    public function autoReply() {
+    public function autoReply()
+    {
         if ($this->override_auto_reply) {
             return (bool) $this->auto_reply;
         }
 
         return (bool) Settings::get('auto_reply', false);
     }
-    
+
     /**
      * Retrieve the form's auto reply email field
-     * 
+     *
      * @return Field|null
      */
-    public function autoReplyEmailField() {
+    public function autoReplyEmailField()
+    {
         return $this->auto_reply_email_field;
     }
-    
+
     /**
      * Retrieve the form's auto reply name field
-     * 
+     *
      * @return Field|null
      */
-    public function autoReplyNameField() {
+    public function autoReplyNameField()
+    {
         return $this->auto_reply_name_field;
     }
 
     /**
      * Retrieve form's auto reply template
-     * 
+     *
      * @return string
      */
-    public function autoReplyTemplate() {
+    public function autoReplyTemplate()
+    {
         if ($this->override_auto_reply_template) {
             return (string) $this->auto_reply_template;
         }
@@ -380,27 +394,29 @@ class Form extends Model
     }
 
     // ====== STYLING
-    
+
     /**
      * Retrieve the form's form class
-     * 
+     *
      * @return string
      */
-    public function formClass() {
+    public function formClass()
+    {
         if ($this->override_form_class) {
             return (string) $this->form_class;
         }
 
         return (string) Settings::get('form_class', 'form');
     }
-    
+
     /**
      * Retrieve the form's field class
-     * 
+     *
      * @param Field $field
      * @return string
      */
-    public function fieldClass(Field $field = null) {
+    public function fieldClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_field_class) {
                 return $field->field_class;
@@ -413,14 +429,15 @@ class Form extends Model
 
         return (string) Settings::get('field_class', 'form-control');
     }
-    
+
     /**
      * Retrieve the form's row class
-     * 
+     *
      * @param Field $field
      * @return string
      */
-    public function rowClass(Field $field = null) {
+    public function rowClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_row_class) {
                 return $field->row_class;
@@ -433,14 +450,15 @@ class Form extends Model
 
         return (string) Settings::get('row_class', 'row');
     }
-    
+
     /**
      * Retrieve the form's group class
-     * 
+     *
      * @param Field $field
      * @return string
      */
-    public function groupClass(Field $field = null) {
+    public function groupClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_group_class) {
                 return $field->group_class;
@@ -453,14 +471,15 @@ class Form extends Model
 
         return (string) Settings::get('group_class', 'form-group col-md-12');
     }
-    
+
     /**
      * Retrieve the form's label class
-     * 
+     *
      * @param Field $field
      * @return string
      */
-    public function labelClass(Field $field = null) {
+    public function labelClass(Field $field = null)
+    {
         if ($field !== null) {
             if ($field->override_label_class) {
                 return $field->label_class;
@@ -473,130 +492,140 @@ class Form extends Model
 
         return (string) Settings::get('label_class', 'form-label');
     }
-    
+
     /**
      * Retrieve the form's submit button class
-     * 
+     *
      * @return string
      */
-    public function submitClass() {
+    public function submitClass()
+    {
         if ($this->override_submit_class) {
             return (string) $this->submit_class;
         }
 
         return (string) Settings::get('submit_class', 'btn btn-primary');
     }
-    
+
     /**
      * Retrieve the form's submit button text
-     * 
+     *
      * @return string
      */
-    public function submitText() {
+    public function submitText()
+    {
         if ($this->override_submit_text) {
             return (string) $this->submit_text;
         }
 
         return (string) Settings::get('submit_text', 'Submit');
     }
-    
+
     /**
      * Determine if the form's cancel button is enabled
-     * 
+     *
      * @return string
      */
-    public function enableCancel() {
+    public function enableCancel()
+    {
         if ($this->override_enable_cancel) {
             return (bool) $this->enable_cancel;
         }
 
         return (bool) Settings::get('enable_cancel', false);
     }
-    
+
     /**
      * Retrieve the form's cancel button class
-     * 
+     *
      * @return string
      */
-    public function cancelClass() {
+    public function cancelClass()
+    {
         if ($this->override_cancel_class) {
             return (string) $this->cancel_class;
         }
 
         return (string) Settings::get('cancel_class', 'btn btn-danger');
     }
-    
+
     /**
      * Retrieve the form's cancel button text
-     * 
+     *
      * @return string
      */
-    public function cancelText() {
+    public function cancelText()
+    {
         if ($this->override_cancel_text) {
             return (string) $this->cancel_text;
         }
 
         return (string) Settings::get('cancel_text', 'Cancel');
     }
-    
+
     /**
      * Determine if caching is enabled
-     * 
+     *
      * @return bool
      */
-    public function enableCaching() {
+    public function enableCaching()
+    {
         if ($this->override_enable_caching) {
             return (bool) $this->enable_caching;
         }
 
         return (bool) Settings::get('enable_caching', false);
     }
-    
+
     /**
      * Retrieve the amount of minutes to cache the form for
-     * 
+     *
      * @return int
      */
-    public function cacheLifetime() {
+    public function cacheLifetime()
+    {
         if ($this->override_cache_lifetime) {
             return (int) $this->cache_lifetime;
         }
 
         return (int) Settings::get('cache_lifetime', 60);
     }
-    
+
     /**
      * Determine what to do on success
-     * 
+     *
      * @return string
      */
-    public function onSuccess() {
+    public function onSuccess()
+    {
         if ($this->override_on_success) {
             return (string) $this->on_success;
         }
 
         return (string) Settings::get('on_success', 'hide');
     }
-    
+
     /**
      * Retrieve the message to display in a flash on success
-     * 
+     *
      * @return string
      */
-    public function onSuccessMessage() {
+    public function onSuccessMessage()
+    {
         if ($this->override_on_success_message) {
             return (string) $this->on_success_message;
         }
 
         return (string) Settings::get('on_success_message', 'Successfully sent');
     }
-    
+
     /**
      * Retrieve the URL to redirect to on success
-     * 
+     *
      * @return string
      */
-    public function onSuccessRedirect() {
+    public function onSuccessRedirect()
+    {
         if ($this->override_on_success_redirect) {
             return (string) $this->on_success_redirect;
         }
@@ -604,4 +633,79 @@ class Form extends Model
         return (string) Settings::get('on_success_redirect', '/');
     }
 
+    /**
+     * Retrieve the class for label success
+     *
+     * @return string
+     */
+    public function labelSuccessClass()
+    {
+        return (string) Settings::get('label_success_class', '');
+    }
+
+    /**
+     * Retrieve the class for label error
+     *
+     * @return string
+     */
+    public function labelErrorClass()
+    {
+        return (string) Settings::get('label_error_class', '');
+    }
+
+    /**
+     * Retrieve the class for field success
+     *
+     * @return string
+     */
+    public function fieldSuccessClass()
+    {
+        return (string) Settings::get('field_success_class', '');
+    }
+
+    /**
+     * Retrieve the class for field error
+     *
+     * @return string
+     */
+    public function fieldErrorClass()
+    {
+        return (string) Settings::get('field_error_class', '');
+    }
+
+    /**
+     * Retrieve the class for form success
+     *
+     * @return voistringd
+     */
+    public function formSuccessClass()
+    {
+        return (string) Settings::get('form_success_class', '');
+    }
+
+    /**
+     * Retrieve the class for form error
+     *
+     * @return string
+     */
+    public function formErrorClass()
+    {
+        return (string) Settings::get('form_error_class', '');
+    }
+
+    /**
+     * Determine if at least one of the form's fields is a "file" field
+     *
+     * @return boolean
+     */
+    public function hasFileField()
+    {
+        foreach ($this->fields as $field) {
+            if ($field->type === 'file') {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

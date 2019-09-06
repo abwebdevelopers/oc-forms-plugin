@@ -8,7 +8,6 @@ use October\Rain\Database\Traits\Validation;
 
 class Settings extends Model
 {
-
     use Validation;
 
     /**
@@ -66,13 +65,4 @@ class Settings extends Model
         'enable_caching' => 'boolean',
         'cache_lifetime' => 'integer|min:0',
     ];
-
-    /**
-     * Retrieve the link to view this submission
-     * 
-     * @return string
-     */
-    public function viewLink() {
-        return Backend::url('abwebdevelopers/forms/submission/' . $this->id);
-    }
 }

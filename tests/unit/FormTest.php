@@ -13,7 +13,8 @@ class FormTest extends PluginTestCase
     /**
      * Instatiate a basic form for test cases
      */
-    private function getForm() {
+    private function getForm()
+    {
         return Form::create([
             'title' => 'Example',
             'code' => 'example',
@@ -46,7 +47,8 @@ class FormTest extends PluginTestCase
      * Verify that if a field is "assigned" to the auto reply email field, it
      * can be retrieved through the autoReplyEmailField() method
      */
-    public function testCanRetrieveAutoReplyEmailField() {
+    public function testCanRetrieveAutoReplyEmailField()
+    {
         $form = $this->getForm();
 
         // Assert that no email field returns null
@@ -77,7 +79,8 @@ class FormTest extends PluginTestCase
      * Verify that if a field is "assigned" to the auto reply name field, it
      * can be retrieved through the autoReplyEmailField() method
      */
-    public function testCanRetrieveAutoReplyNameField() {
+    public function testCanRetrieveAutoReplyNameField()
+    {
         $form = $this->getForm();
 
         // Assert that no name field returns null
@@ -103,27 +106,4 @@ class FormTest extends PluginTestCase
         // Now the field should be returned
         $this->assertEquals($field->id, $form->autoReplyNameField()->id);
     }
-
-    /**
-     * Test that the throttle system works
-     */
-    public function testSelectOptionsAreRetrievedCorrectly() {
-        $form = $this->getForm();
-
-        $field = Field::create([
-            'type' => 'select',
-            'name' => 'Name',
-            'code' => 'name',
-            'description' => 'Test',
-            'form_id' => $form->id,
-            'options' => 'Apples,Bananas, Oranges',
-        ]);
-
-        $this->assertEquals($field->getOptions(), [
-            'Apples',
-            'Bananas',
-            'Oranges',
-        ]);
-    }
-    
 }
