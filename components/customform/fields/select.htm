@@ -1,9 +1,0 @@
-<select name="{{ field.code }}" id="{{ field.getId(form) }}" class="{{ form.fieldClass(field) }}"
-    {% if field.required %}required{% endif %}>
-    {% if field.placeholder %}
-    <option value="" selected {% if field.required %}disabled{% endif %}>{{ field.placeholder }}</option>
-    {% endif %}
-    {% for opt in field.getOptions %}
-    <option value="{{ opt }}">{{ opt }}</option>
-    {% endfor %}
-</select>

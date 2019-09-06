@@ -512,7 +512,7 @@ class CustomForm extends ComponentBase
     public function renderForm()
     {
         if (empty($this->form)) {
-            return '';
+            return '<!-- Invalid form -->';
         }
 
         return $this->getHtmlGenerator()->render();
