@@ -54,4 +54,19 @@ class Submission extends Model
                     ->where('ip', Request::ip()) // where IP matches
                     ->where('created_at', '>=', \Carbon\Carbon::now()->subDay()); // last 24h
     }
+
+    /**
+     * Render any given value of the submission
+     *
+     * @param string|array $value
+     * @return string
+     */
+    public function renderValue($value): string
+    {
+        if (is_array($value)) {
+            $value = implode("\n", $value);
+        }
+
+        return htmlspecialchars($value);
+    }
 }

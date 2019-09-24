@@ -36,7 +36,7 @@
                     <?php foreach ($submission->data as $field => $value): ?>
                     <li>
                         <b class="inline-data"><?= ucwords(str_replace('_', ' ', $field)) ?>:</b>
-                        <pre class="inline-data"><?= htmlspecialchars($value) ?></pre>
+                        <pre class="inline-data"><?= $submission->renderValue($value) ?></pre>
                     </li>
                     <?php endforeach; ?>
                 </ul>
