@@ -633,19 +633,27 @@ class CustomForm extends ComponentBase
     private function sendAutoReply($data)
     {
         // Resolve the user's email address using the configured field
-        $to_email = $this->form->autoReplyEmailField();
-        $to_email = (!empty($to_email) && !empty($data[$to_email->code])) ? $data[$to_email->code] : null;
+        $toEmailField = $this->form->autoReplyEmailField();
+        $toEmail = (!empty($toEmailField) && !empty($data[$toEmailField->code])) ? $data[$toEmailField->code] : null;
 
         // Resolve the user's name using the configured field
-        $to_name = $this->form->autoReplyNameField();
-        $to_name = (!empty($to_name) && !empty($data[$to_name->code])) ? $data[$to_name->code] : null;
+        $toNameField = $this->form->autoReplyNameField();
+        $toName = (!empty($toNameField) && !empty($data[$toNameField->code])) ? $data[$toNameField->code] : null;
+
+        // If the email wasn't provided
+        if (empty($toEmail) || empty($toName)) {
+            // Fire onAutoReplyValidationFail event
+            Event::fire(self::EVENTS_PREFIX . 'onAutoReplyEmailNotProvided', [$this, $data, $toEmail, $toName]);
+            
+            return false;
+        }
 
         // Fire beforeSendAutoReply event
-        Event::fire(self::EVENTS_PREFIX . 'beforeSendAutoReply', [$this, &$data, &$to_email, &$to_name]);
+        Event::fire(self::EVENTS_PREFIX . 'beforeSendAutoReply', [$this, &$data, &$toEmail, &$toName]);
 
-        if (empty($to_email)) {
+        if (empty($toEmailField)) {
             // Fire onAutoReplyValidationFail event
-            Event::fire(self::EVENTS_PREFIX . 'onAutoReplyValidationFail', [$this, $data, $to_email, $to_name, 'email']);
+            Event::fire(self::EVENTS_PREFIX . 'onAutoReplyValidationFail', [$this, $data, $toEmail, $toName, 'email']);
 
             // Return (a single) error if the email field could not be resolved
             return Response::json([
@@ -654,9 +662,9 @@ class CustomForm extends ComponentBase
             ], 501);
         }
 
-        if (empty($to_name)) {
+        if (empty($toNameField)) {
             // Fire onAutoReplyValidationFail event
-            Event::fire(self::EVENTS_PREFIX . 'onAutoReplyValidationFail', [$this, $data, $to_email, $to_name, 'name']);
+            Event::fire(self::EVENTS_PREFIX . 'onAutoReplyValidationFail', [$this, $data, $toEmail, $toName, 'name']);
 
             // Return (a single) error if the name field could not be resolved
             return Response::json([
@@ -676,14 +684,14 @@ class CustomForm extends ComponentBase
         $vars = $this->getTemplateVars('autoreply');
 
         // Send the auto reply
-        Mail::{$method}($template, $vars, function ($message) use ($to_email, $to_name, $attachments) {
-            $message->to($to_email, $to_name);
+        Mail::{$method}($template, $vars, function ($message) use ($toEmail, $toName, $attachments) {
+            $message->to($toEmail, $toName);
 
             foreach ($attachments as $key => $attachment) {
                 $message->attach($attachment, [ 'as' => $key ]);
             }
 
-            Event::fire(self::EVENTS_PREFIX . 'onSendAutoReply', [$this, &$message, $to_email, $to_name, $attachments]);
+            Event::fire(self::EVENTS_PREFIX . 'onSendAutoReply', [$this, &$message, $toEmail, $toName, $attachments]);
         });
 
         // Fire afterSendAutoReply event
