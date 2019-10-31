@@ -44,13 +44,12 @@ class HtmlGenerator
         $fields = [];
 
         foreach ($form->fields as $field) {
-            $fields[] = $this->generateField($form, $field);
+            if ($form->form_display_type === Form::FORM_DISPLAY_PAGED) {
+                $fields[$field->page_id][] = $this->generateField($form, $field);
+            } else {
+                $fields[] = $this->generateField($form, $field);
+            }
         }
-
-        $fields = new HtmlDiv([
-            'class' => $form->rowClass(),
-            'nodes' => $fields,
-        ]);
 
         $recaptcha = '';
         if ($form->recaptchaEnabled()) {
@@ -79,7 +78,21 @@ class HtmlGenerator
                 'node' => $form->cancelText(),
             ]);
         }
-
+        $next = '';
+        $prev = '';
+        if ($form->form_display_type === Form::FORM_DISPLAY_PAGED) {
+            $next = new HtmlButton([
+                'type' => 'button',
+                'node' => $form->nextText(),
+                'class' => 'form-next-button btn btn-success',
+            ]);
+            $prev = new HtmlButton([
+                'type' => 'button',
+                'node' => $form->prevText(),
+                'class' => 'form-prev-button btn btn-warning',
+                'disabled' => 'disabled',
+            ]);
+        }
         $buttons = new HtmlDiv([
             'class' => $form->rowClass(),
             'node' => [
@@ -87,10 +100,13 @@ class HtmlGenerator
                     'class' => $form->groupClass(),
                     'nodes' => [
                         $cancel,
+                        $prev,
+                        $next,
                         new HtmlButton([
                             'type' => 'submit',
                             'class' => $form->submitClass(),
                             'node' => $form->submitText(),
+                            'disabled' => ($form->form_display_type === Form::FORM_DISPLAY_PAGED) ? 'disabled' : null,
                         ]),
                     ]
                 ])
@@ -106,16 +122,52 @@ class HtmlGenerator
             'data-form-error-class' => $form->formErrorClass(),
         ];
 
-        $htmlForm = new HtmlForm([
-            'id' => 'form_' . $form->code,
-            'class' => 'custom-form',
-            'nodes' => [
-                $loadingIndicator,
-                $fields,
-                $recaptcha,
-                $buttons
-            ],
-        ]);
+        if ($form->form_display_type === Form::FORM_DISPLAY_PAGED) {
+            $nodes = [
+                $loadingIndicator
+            ];
+            $i = 0;
+            foreach ($form->pages as $page) {
+                if (!empty($fields[$page->id])) {
+                    $nodes[] = new HtmlDiv([
+                        'id' => 'form' . $form->id . '-page-id' . $i,
+                        'class' => 'form-page' . (($i === 0) ? ' active' : null),
+                        'data-page-tab' => $page->tab_name,
+                        'data-page-tooltip' => ($page->show_description === 1) ? $page->description : null,
+                        'nodes' => $fields[$page->id],
+                    ]);
+                    $i++;
+                }
+            }
+            $nodes = array_merge(
+                $nodes,
+                [
+                    $recaptcha,
+                    $buttons,
+                ]
+            );
+            
+            $htmlForm = new HtmlForm([
+                'id' => 'form_' . $form->code,
+                'class' => 'custom-form',
+                'nodes' => $nodes,
+            ]);
+        } else {
+            $fields = new HtmlDiv([
+                'class' => $form->rowClass(),
+                'nodes' => $fields,
+            ]);
+            $htmlForm = new HtmlForm([
+                'id' => 'form_' . $form->code,
+                'class' => 'custom-form',
+                'nodes' => [
+                    $loadingIndicator,
+                    $fields,
+                    $recaptcha,
+                    $buttons
+                ],
+            ]);
+        }
 
         if ($form->hasFileField()) {
             $htmlForm->set([

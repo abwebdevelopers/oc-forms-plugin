@@ -1,14 +1,14 @@
-var checkForShittyJqueryAttempt = 0;
-var checkForShittyJquery = window.setInterval(function () {
+var checkForJqueryAttempt = 0;
+var checkForJquery = window.setInterval(function () {
   if ($ !== undefined) {
-    clearInterval(checkForShittyJquery);
+    clearInterval(checkForJquery);
 
     bootstrapAbwebForm($);
   }
-  checkForShittyJqueryAttempt++;
+  checkForJqueryAttempt++;
 
-  if (checkForShittyJqueryAttempt > (20 * 15)) { // 15s
-    clearInterval(checkForShittyJquery);
+  if (checkForJqueryAttempt > (20 * 15)) { // 15s
+    clearInterval(checkForJquery);
   }
 }, 50);
 
@@ -203,4 +203,58 @@ function bootstrapAbwebForm($) {
       return false;
     });
   });
+  var currentPageIndex = 0;
+  var maxPages = 0;
+
+  function changeToPageIndex(index) {
+    if (beforeChangePageHook !== null) {
+      beforeChangePageHook.call();
+    }
+
+    if (index >= maxPages) {
+      $('.form-submit-button').prop('disabled', '');
+      $('.form-next-button').prop('disabled', 'disabled');
+      return;
+    } else {
+      $('.form-submit-button').prop('disabled', 'disabled');
+      $('.form-next-button').prop('disabled', '');
+    }
+
+    currentPageIndex = index;
+    $('.form-page').removeClass('active');
+    $('.form-page').each((i, item) => {
+      if (i === index) {
+        $(item).addClass('active');
+      }
+    });
+
+    if (currentPageIndex !== 0) {
+      $('.form-prev-button').prop('disabled', '');
+    } else {
+      $('.form-prev-button').prop('disabled', 'disabled');
+    }
+
+    if (afterChangePageHook !== null) {
+      afterChangePageHook.call();
+    }
+  }
+
+  function initPages() {
+    $('.form-page').each((i, item) => {
+      maxPages ++;
+      $(item).prepend('<div class="tab">' + $(item).attr('data-page-tab') + '</div>');
+    });
+
+    $('.form-next-button').on('click', function() {
+      changeToPageIndex(currentPageIndex+1);
+    });
+
+    $('.form-prev-button').on('click', function() {
+      changeToPageIndex(currentPageIndex-1);
+    });
+  }
+
+  initPages();
 }
+var beforeChangePageHook = null;
+var afterChangePageHook = null; 

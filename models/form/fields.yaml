@@ -20,7 +20,12 @@ tabs:
             type: partial
             tab: abwebdevelopers.forms::lang.tabs.fields
             path: ~/plugins/abwebdevelopers/forms/controllers/form/_fields.htm
-
+        pages:
+            label: abwebdevelopers.forms::lang.tabs.pages
+            span: full
+            type: partial
+            tab: abwebdevelopers.forms::lang.tabs.pages
+            path: ~/plugins/abwebdevelopers/forms/controllers/form/_pages.htm
         # Caching
         enable_caching:
             label: abwebdevelopers.forms::lang.models.settings.enable_caching.label

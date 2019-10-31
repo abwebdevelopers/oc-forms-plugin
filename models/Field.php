@@ -2,6 +2,7 @@
 
 use Model;
 use ABWebDevelopers\Forms\Models\ValidationRule;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use October\Rain\Database\Traits\Validation;
 use October\Rain\Database\Traits\Sortable;
 
@@ -42,6 +43,7 @@ class Field extends Model
         'group_class',
         'label_class',
         'options',
+        'page_id',
     ];
 
     /**
@@ -249,5 +251,42 @@ class Field extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Return with the name of the currently assigned
+     * page for display in the field column.
+     *
+     * @return string|null
+     */
+    public function getPageNameAttribute() :string
+    {
+        $pageName = null;
+        try {
+            $pageName = Page::findOrFail($this->page_id)->tab_name;
+        } catch (ModelNotFoundException $e) {
+            $pageName = 'None';
+        }
+        
+        return $pageName;
+    }
+    /**
+     * Return with an array of options consisting of available pages this
+     * field can be assigned to.
+     *
+     * @return array
+     */
+    public function getPageIdOptions() :array
+    {
+        $options = [
+            0 => 'No Page',
+        ];
+        if (!empty($this->form_id)) {
+            $pages = Page::where('form_id', $this->form_id)->get()->toArray();
+            foreach ($pages as $page) {
+                $options[$page['id']] = $page['tab_name'];
+            }
+        }
+        return $options;
     }
 }
