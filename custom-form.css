@@ -110,3 +110,17 @@ input[type="radio"] + span {
     top: -2px;
     position: relative;
 }
+
+.custom-form > .form-page {
+    display: none;
+}
+.custom-form {
+    display: block;
+}
+.custom-form > .form-page.active {
+    display: block;
+}
+.custom-form > .form-page.active > .tab {
+    display: inline-block;
+    padding: 6px 12px;
+}

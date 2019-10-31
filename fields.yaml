@@ -22,7 +22,7 @@ fields:
         label: abwebdevelopers.forms::lang.models.field.description.label
         comment: abwebdevelopers.forms::lang.models.field.description.comment
         span: auto
-        type: text
+        type: textarea
     placeholder:
         label: abwebdevelopers.forms::lang.models.field.placeholder.label
         comment: abwebdevelopers.forms::lang.models.field.placeholder.comment
@@ -210,3 +210,11 @@ tabs:
             comment: abwebdevelopers.forms::lang.models.field.show_in_email_notification.comment
             span: right
             type: switch
+
+        # Page
+        page_id:
+            tab: abwebdevelopers.forms::lang.tabs.pages
+            label: abwebdevelopers.forms::lang.models.field.page.label
+            comment: abwebdevelopers.forms::lang.models.field.page.comment
+            type: dropdown
+            span: left

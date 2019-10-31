@@ -5,6 +5,7 @@
     ],
     'tabs' => [
         'fields' => 'Fields',
+        'pages' => 'Pages',
         'privacy' => 'Privacy',
         'antispam' => 'Antispam',
         'styling' => 'Styling',
@@ -45,6 +46,13 @@
             'title' => 'Title',
             'code' => 'Code',
         ],
+    ],
+    'pages' => [
+        'field' => [
+            'tab_name' => 'test',
+            'tab_name' => 'test',
+            'tab_name' => 'test',
+        ]
     ],
     'mail' => [
         'templates' => [
@@ -252,6 +260,20 @@
                 'comment' => 'A little description about the forms purpose'
             ],
         ],
+        'page' => [
+            'tab_name' => [
+                'label' => 'Page Name',
+                'comment' => 'The name of the page.'
+            ],
+            'description' => [
+                'label' => 'Description',
+                'comment' => 'The description of the page.'
+            ],
+            'show_description' => [
+                'label' => 'Show Description',
+                'comment' => 'Show the description as a tooltip?'
+            ],
+        ],
         'field' => [
             'name' => [
                 'label' => 'Name',
@@ -348,6 +370,10 @@
             'show_in_email_notification' => [
                 'label' => 'Show in notification emails',
                 'comment' => 'Should this field\'s value show in notification emails',
+            ],
+            'page' => [
+                'label' => 'Parent Page',
+                'comment' => 'What page this field should display.',
             ],
         ]
     ]
