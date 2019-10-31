@@ -27,3 +27,6 @@
     - Fix error on submission view page
 1.2.0:
     - 'Fix auto reply for non-required email field - now aborts without JSON error'
+1.3.0:
+    - 'Add new pages form structure.'
+    - add_pages_table.php 

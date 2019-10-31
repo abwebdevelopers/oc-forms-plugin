@@ -3,6 +3,7 @@
 use Model;
 use ABWebDevelopers\Forms\Models\Submission;
 use ABWebDevelopers\Forms\Models\Field;
+use ABWebDevelopers\Forms\Models\Page;
 use ABWebDevelopers\Forms\Models\Settings;
 use October\Rain\Database\Traits\Validation;
 
@@ -15,12 +16,16 @@ class Form extends Model
      */
     public $table = 'abwebdevelopers_forms_forms';
 
+    const FORM_DISPLAY_STANDARD = 1;
+    const FORM_DISPLAY_PAGED = 2;
+
     /**
      * @var array Has many relations
      */
     public $hasMany = [
         'submissions' => Submission::class,
         'fields' => Field::class,
+        'pages' => Page::class,
     ];
 
     /**
@@ -504,7 +509,7 @@ class Form extends Model
             return (string) $this->submit_class;
         }
 
-        return (string) Settings::get('submit_class', 'btn btn-primary');
+        return (string) Settings::get('submit_class', 'btn btn-primary' . (($this->form_display_type === Form::FORM_DISPLAY_PAGED) ? ' form-submit-button' : null));
     }
 
     /**
@@ -561,6 +566,32 @@ class Form extends Model
         }
 
         return (string) Settings::get('cancel_text', 'Cancel');
+    }
+
+    /**
+     * Retrieve the form's cancel button text
+     *
+     * @return string
+     */
+    public function nextText()
+    {
+        if ($this->override_next_text) {
+            return (string) $this->next_text;
+        }
+        return (string) Settings::get('next_text', 'Next');
+    }
+
+    /**
+     * Retrieve the form's cancel button text
+     *
+     * @return string
+     */
+    public function prevText()
+    {
+        if ($this->override_prev_text) {
+            return (string) $this->prev_text;
+        }
+        return (string) Settings::get('prev_text', 'Prev');
     }
 
     /**
@@ -707,5 +738,19 @@ class Form extends Model
         }
 
         return false;
+    }
+
+    /**
+     * Identify how the form should be displayed.
+     *
+     * @return integer
+     */
+    public function getFormDisplayTypeAttribute() :int
+    {
+        $pages = $this->pages()->count();
+        if ($pages !== 0) {
+            return Form::FORM_DISPLAY_PAGED;
+        }
+        return Form::FORM_DISPLAY_STANDARD;
     }
 }

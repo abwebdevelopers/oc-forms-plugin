@@ -1,0 +1,18 @@
+columns:
+    tab_name:
+        label: abwebdevelopers.forms::lang.models.page.tab_name.label
+        type: text
+        searchable: true
+        sortable: true
+    description:
+        label: abwebdevelopers.forms::lang.models.page.description.label
+        type: text
+        searchable: true
+    created_at:
+        label: 'Created At'
+        type: datetime
+        sortable: true
+    updated_at:
+        label: 'Updated At'
+        type: datetime
+        sortable: true

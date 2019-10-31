@@ -1,0 +1,17 @@
+fields:
+    tab_name:
+        label: abwebdevelopers.forms::lang.models.page.tab_name.label
+        comment: abwebdevelopers.forms::lang.models.page.tab_name.comment
+        span: auto
+        required: 1
+        type: text
+    description:
+        label: abwebdevelopers.forms::lang.models.page.description.label
+        comment: abwebdevelopers.forms::lang.models.page.description.comment
+        span: auto
+        type: text
+    show_description:
+        type: switch
+        label: abwebdevelopers.forms::lang.models.page.show_description.label
+        comment: abwebdevelopers.forms::lang.models.page.show_description.comment
+        span: left 

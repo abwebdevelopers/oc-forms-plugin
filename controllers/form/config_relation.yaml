@@ -6,3 +6,12 @@ fields:
     view:
         list: $/abwebdevelopers/forms/models/field/columns.yaml
         toolbarButtons: create|delete
+
+pages:
+    label: Pages
+    manage:
+        form: $/abwebdevelopers/forms/models/page/fields.yaml
+        list: $/abwebdevelopers/forms/models/page/columns.yaml
+    view:
+        list: $/abwebdevelopers/forms/models/page/columns.yaml
+        toolbarButtons: create|delete
