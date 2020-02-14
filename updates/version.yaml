@@ -27,3 +27,6 @@
     - Fix error on submission view page
 1.2.0:
     - 'Fix auto reply for non-required email field - now aborts without JSON error'
+1.2.1:
+    - 'Remove obsolete foreign key constraints for tables'
+    - remove_foreign_key_constraints.php
