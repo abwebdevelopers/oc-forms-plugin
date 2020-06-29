@@ -65,6 +65,10 @@
             'noAutoReplyNameField' => 'Auto-reply Name field could not be resolved',
         ]
     ],
+    'permissions' => [
+        'forms' => 'Manage forms',
+        'submissions' => 'Manage submissions',
+    ],
     'models' => [
         'all' => [
             'created_at' => [

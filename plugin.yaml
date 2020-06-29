@@ -10,12 +10,26 @@ navigation:
         url: abwebdevelopers/forms/form
         icon: icon-list-alt
         order: 500
+        permissions:
+            - abwebdevelopers.forms.forms
+            - abwebdevelopers.forms.submissions
         sideMenu:
             bradie-forms-forms:
                 label: Forms
                 url: abwebdevelopers/forms/form
                 icon: icon-sitemap
+                permissions:
+                    - abwebdevelopers.forms.forms
             bradie-forms-submissions:
                 label: Submissions
                 url: abwebdevelopers/forms/submission
                 icon: icon-database
+                permissions:
+                    - abwebdevelopers.forms.submissions
+permissions:
+    abwebdevelopers.forms.forms:
+        tab: 'abwebdevelopers.forms::lang.plugin.name'
+        label: 'abwebdevelopers.forms::lang.permissions.forms'
+    abwebdevelopers.forms.submissions:
+        tab: 'abwebdevelopers.forms::lang.plugin.name'
+        label: 'abwebdevelopers.forms::lang.permissions.submissions'
