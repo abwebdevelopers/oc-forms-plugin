@@ -30,3 +30,5 @@
 1.2.1:
     - 'Remove obsolete foreign key constraints for tables'
     - remove_foreign_key_constraints.php
+1.2.2:
+    - 'Add persmissions to the plugin'
