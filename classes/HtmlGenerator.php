@@ -589,6 +589,8 @@ class HtmlGenerator
         $el = new HtmlTextarea();
 
         $el->set($this->resolveTypeGlobal($form, $field));
+        
+        $this->addCustomAttributes($el, $field);
 
         return $el;
     }
