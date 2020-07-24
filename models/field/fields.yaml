@@ -44,6 +44,11 @@ fields:
         label: abwebdevelopers.forms::lang.models.field.required.label
         comment: abwebdevelopers.forms::lang.models.field.required.comment
         span: right
+    sort_order:
+        label: abwebdevelopers.forms::lang.models.all.sort_order.label
+        type: number
+        span: left
+        required: true
 tabs:
     fields:
         # Validation
