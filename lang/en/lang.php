@@ -79,6 +79,8 @@
             ],
             'sort_order' => [
                 'label' => 'Display Order',
+                'up' => 'Up',
+                'down' => 'Down',
             ],
             'override' => [
                 'label' => 'Override system value',

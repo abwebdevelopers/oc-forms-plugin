@@ -1,7 +1,9 @@
 <?php namespace ABWebDevelopers\Forms\Controllers;
 
+use ABWebDevelopers\Forms\Models\Field;
 use Backend\Classes\Controller;
 use BackendMenu;
+use October\Rain\Support\Facades\Flash;
 
 class Form extends Controller
 {
@@ -19,5 +21,63 @@ class Form extends Controller
     {
         parent::__construct();
         BackendMenu::setContext('ABWebDevelopers.Forms', 'bradie-forms', 'forms-forms');
+    }
+
+    public function onMoveFieldUp()
+    {
+        $field = Field::findOrFail(post('field_id'));
+
+        $fieldBefore = $field->form->fields()
+            ->where('id', '<>', $field->id)
+            ->where('sort_order', '<', $field->sort_order)
+            ->orderBy('sort_order', 'desc')
+            ->first();
+
+        if (empty($fieldBefore)) {
+            return; // already first
+        }
+
+        $this->swapFieldOrder($field, $fieldBefore);
+
+        Flash::success('Up');
+
+        return $this->refreshFieldesRelation($field->form);
+    }
+
+    public function onMoveFieldDown()
+    {
+        $field = Field::findOrFail(post('field_id'));
+
+        $fieldAfter = $field->form->fields()
+            ->where('id', '<>', $field->id)
+            ->where('sort_order', '>', $field->sort_order)
+            ->orderBy('sort_order', 'asc')
+            ->first();
+
+        if (empty($fieldAfter)) {
+            return; // already last
+        }
+
+        $this->swapFieldOrder($field, $fieldAfter);
+
+        Flash::success('Down');
+
+        return $this->refreshFieldsRelation($field->form);
+    }
+
+    private function refreshFieldsRelation(\ABWebDevelopers\Forms\Models\Form $model)
+    {
+        $this->initForm($model);
+        $this->initRelation($model, 'fields');
+
+        return $this->relationRefresh('fields');
+    }
+
+    private function swapFieldOrder(Field $current, Field $other)
+    {
+        $current->setSortableOrder(
+            [$current->id, $other->id],
+            [$other->sort_order, $current->sort_order]
+        );
     }
 }
