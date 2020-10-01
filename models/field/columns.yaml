@@ -27,7 +27,7 @@ columns:
         type: datetime
         sortable: false
     order:
-        label: Order
+        label: abwebdevelopers.forms::lang.models.all.sort_order.label
         type: partial
         sortable: false
         clickable: false

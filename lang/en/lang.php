@@ -78,7 +78,7 @@
                 'label' => 'Updated At',
             ],
             'sort_order' => [
-                'label' => 'Display Order',
+                'label' => 'Order',
                 'up' => 'Up',
                 'down' => 'Down',
             ],
