@@ -32,3 +32,5 @@
     - remove_foreign_key_constraints.php
 1.2.2:
     - 'Add permissions to the plugin'
+1.2.3:
+    - 'Add ordering for fields'

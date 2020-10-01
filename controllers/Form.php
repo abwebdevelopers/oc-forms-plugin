@@ -39,9 +39,9 @@ class Form extends Controller
 
         $this->swapFieldOrder($field, $fieldBefore);
 
-        Flash::success('Up');
+        Flash::success(trans('abwebdevelopers.forms::lang.models.all.sort_order.up'));
 
-        return $this->refreshFieldesRelation($field->form);
+        return $this->refreshFieldsRelation($field->form);
     }
 
     public function onMoveFieldDown()
@@ -60,7 +60,7 @@ class Form extends Controller
 
         $this->swapFieldOrder($field, $fieldAfter);
 
-        Flash::success('Down');
+        Flash::success(trans('abwebdevelopers.forms::lang.models.all.sort_order.down'));
 
         return $this->refreshFieldsRelation($field->form);
     }
