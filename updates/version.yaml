@@ -34,3 +34,5 @@
     - 'Add permissions to the plugin'
 1.2.3:
     - 'Add ordering for fields'
+1.2.4:
+    - 'Update lang for successful ordering of fields'
