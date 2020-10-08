@@ -59,6 +59,10 @@ class Field extends Model
         'html_attributes',
     ];
 
+    public $belongsTo = [
+        'form' => Form::class
+    ];
+
     /**
      * After fetching the Field event
      * Create override_{field} Fields which represent the fields' states on whether or not
