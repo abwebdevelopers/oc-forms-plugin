@@ -36,3 +36,5 @@
     - 'Add ordering for fields'
 1.2.4:
     - 'Update lang for successful ordering of fields'
+1.2.5:
+    - 'Add support for HTML Attributes in TextArea field'
