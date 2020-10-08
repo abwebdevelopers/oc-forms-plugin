@@ -81,6 +81,8 @@
                 'label' => 'Order',
                 'up' => 'Up',
                 'down' => 'Down',
+                'successful_up' => 'Field successfully moved up',
+                'successful_down' => 'Field successfully moved down',
             ],
             'override' => [
                 'label' => 'Override system value',

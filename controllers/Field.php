@@ -1,7 +1,8 @@
-<?php namespace ABWebDevelopers\Forms\Controllers;
+<?php
+
+namespace ABWebDevelopers\Forms\Controllers;
 
 use Backend\Classes\Controller;
-use BackendMenu;
 
 class Field extends Controller
 {
@@ -10,5 +11,4 @@ class Field extends Controller
     ];
 
     public $reorderConfig = 'config_reorder.yaml';
-
 }

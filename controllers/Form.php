@@ -1,4 +1,6 @@
-<?php namespace ABWebDevelopers\Forms\Controllers;
+<?php
+
+namespace ABWebDevelopers\Forms\Controllers;
 
 use ABWebDevelopers\Forms\Models\Field;
 use Backend\Classes\Controller;
@@ -39,7 +41,7 @@ class Form extends Controller
 
         $this->swapFieldOrder($field, $fieldBefore);
 
-        Flash::success(trans('abwebdevelopers.forms::lang.models.all.sort_order.up'));
+        Flash::success(trans('abwebdevelopers.forms::lang.models.all.sort_order.successful_up'));
 
         return $this->refreshFieldsRelation($field->form);
     }
@@ -60,7 +62,7 @@ class Form extends Controller
 
         $this->swapFieldOrder($field, $fieldAfter);
 
-        Flash::success(trans('abwebdevelopers.forms::lang.models.all.sort_order.down'));
+        Flash::success(trans('abwebdevelopers.forms::lang.models.all.sort_order.successful_down'));
 
         return $this->refreshFieldsRelation($field->form);
     }
