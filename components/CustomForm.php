@@ -538,6 +538,14 @@ class CustomForm extends ComponentBase
         // Get notification recipients from form, or global settings if not set
         $to = $this->form->notificationRecipients();
 
+        // Get notification reply-to email from form
+        $replytoEmailField = $this->form->notifReplytoEmailField();
+        $replytoEmail = (!empty($replytoEmailField) && !empty($data[$replytoEmailField->code])) ? $data[$replytoEmailField->code] : null;
+
+        // Get notification reply-to name from form
+        $replytoNameField = $this->form->notifReplytoNameField();
+        $replytoName = (!empty($replytoNameField) && !empty($data[$replytoNameField->code])) ? $data[$replytoNameField->code] : null;
+
         // Fire beforeSendNotification event
         Event::fire(self::EVENTS_PREFIX . 'beforeSendNotification', [$this, &$data, &$to]);
 
@@ -592,7 +600,7 @@ class CustomForm extends ComponentBase
             $vars = $this->getTemplateVars('notification');
 
             // Send the notification
-            Mail::{$method}($template, $vars, function ($message) use ($to, $attachments) {
+            Mail::{$method}($template, $vars, function ($message) use ($to, $attachments, $replytoEmail, $replytoName) {
                 if (count($to) === 1) {
                     $message->to(current($to), 'Admin');
                 } else {
@@ -607,6 +615,10 @@ class CustomForm extends ComponentBase
                     $message->attach($attachment, [ 'as' => $key ]);
                 }
 
+                if ($this->form->notifReplyto() && !empty($replytoEmail)) {
+                    $message->replyTo($replytoEmail, $replytoName);
+                }
+                
                 Event::fire(self::EVENTS_PREFIX . 'onSendNotification', [$this, &$message, $to, $attachments]);
             });
 

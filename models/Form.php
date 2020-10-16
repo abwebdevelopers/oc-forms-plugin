@@ -29,6 +29,8 @@ class Form extends Model
     public $belongsTo = [
         'auto_reply_email_field' => Field::class,
         'auto_reply_name_field' => Field::class,
+        'notif_replyto_email_field' => Field::class,
+        'notif_replyto_name_field' => Field::class,
     ];
 
     /**
@@ -61,6 +63,9 @@ class Form extends Model
         'auto_reply_email_field_id',
         'auto_reply_name_field_id',
         'auto_reply_template',
+        'notif_replyto',
+        'notif_replyto_email_field_id',
+        'notif_replyto_name_field_id',
         'on_success',
         'on_success_message',
         'on_success_redirect',
@@ -94,6 +99,9 @@ class Form extends Model
         'auto_reply_email_field_id' => 'nullable',
         'auto_reply_name_field_id' => 'nullable',
         'auto_reply_template' => 'nullable|string|max:255',
+        'notif_replyto' => 'nullable|boolean',
+        'notif_replyto_email_field_id' => 'nullable',
+        'notif_replyto_name_field_id' => 'nullable',
         'enable_caching' => 'nullable|boolean',
         'cache_lifetime' => 'nullable|integer|min:0',
         'on_success' => 'nullable|in:hide,clear,redirect',
@@ -132,6 +140,9 @@ class Form extends Model
         'on_success',
         'on_success_message',
         'on_success_redirect',
+        'notif_replyto',
+        'notif_replyto_email_field_id',
+        'notif_replyto_name_field_id',
     ];
 
     /**
@@ -208,6 +219,54 @@ class Form extends Model
      * @return array
      */
     public function getAutoReplyEmailFieldIdOptions()
+    {
+        $fields = [];
+
+        foreach ($this->fields->sortBy(function ($a) {
+            $score = -1;
+            $score += ($a->type === 'email') ? 1 : 0;
+            $score += (stripos($a->code, 'email') !== false) ? 1 : 0;
+            $score += (stripos($a->name, 'email') !== false) ? 1 : 0;
+            $score += ($a->code === 'email') ? 1 : 0;
+
+            return 0 - $score;
+        }) as $field) {
+            $fields[$field->id] = $field->name . ' [' . $field->code . ']';
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Return the available options for confirmation replyto name field dropdown
+     *
+     * @return array
+     */
+    public function getNotifReplytoNameFieldIdOptions()
+    {
+        $fields = [];
+
+        foreach ($this->fields->sortBy(function ($a) {
+            $score = -1;
+            $score += ($a->type === 'text') ? 1 : 0;
+            $score += (stripos($a->code, 'name') !== false) ? 1 : 0;
+            $score += (stripos($a->name, 'name') !== false) ? 1 : 0;
+            $score += ($a->code === 'name') ? 1 : 0;
+
+            return 0 - $score;
+        }) as $field) {
+            $fields[$field->id] = $field->name . ' [' . $field->code . ']';
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Return the available options for auto reply email field dropdown
+     *
+     * @return array
+     */
+    public function getNotifReplytoEmailFieldIdOptions()
     {
         $fields = [];
 
@@ -378,6 +437,7 @@ class Form extends Model
     {
         return $this->auto_reply_name_field;
     }
+    
 
     /**
      * Retrieve form's auto reply template
@@ -391,6 +451,36 @@ class Form extends Model
         }
 
         return (string) Settings::get('auto_reply_template', 'abwebdevelopers.forms::mail.autoreply');
+    }
+
+    /**
+     * Determine if the form should send the reply-to header for notifications
+     *
+     * @return bool
+     */
+    public function notifReplyto()
+    {
+        return (bool) $this->notif_replyto;
+    }
+
+    /**
+     * Retrieve the form's reply-to email field
+     *
+     * @return Field|null
+     */
+    public function notifReplytoEmailField()
+    {
+        return $this->notif_replyto_email_field;
+    }
+
+    /**
+     * Retrieve the form's reply-to name field
+     *
+     * @return Field|null
+     */
+    public function notifReplytoNameField()
+    {
+        return $this->notif_replyto_name_field;
     }
 
     // ====== STYLING

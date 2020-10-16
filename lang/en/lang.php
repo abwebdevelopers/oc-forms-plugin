@@ -198,6 +198,18 @@
                 'label' => 'Auto Reply Name Field',
                 'comment' => 'Select the field to use as the name when auto replying',
             ],
+            'notif_replyto' => [
+                'label' => 'Add Reply-To Header?',
+                'comment' => 'Set the reply-to header in notification emails to point to the user\'s email',
+            ],
+            'notif_replyto_email_field_id' => [
+                'label' => 'Notification Reply-To Email Field',
+                'comment' => 'Select the field to use as the email address to auto reply to',
+            ],
+            'notif_replyto_name_field_id' => [
+                'label' => 'Notification Reply-To Name Field',
+                'comment' => 'Select the field to use as the name when auto replying',
+            ],
             'auto_reply_template' => [
                 'label' => 'Auto Reply Template',
                 'comment' => 'Custom email template code (Settings > Email templates)',

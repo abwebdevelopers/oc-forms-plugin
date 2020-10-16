@@ -428,6 +428,56 @@ tabs:
             tab: abwebdevelopers.forms::lang.tabs.emailing
             type: checkbox
             span: right
+        notif_replyto:
+            label: abwebdevelopers.forms::lang.models.settings.notif_replyto.label
+            comment: abwebdevelopers.forms::lang.models.settings.notif_replyto.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            span: left
+            type: switch
+            trigger:
+                action: enable
+                field: override_notif_replyto
+                condition: checked
+        override_notif_replyto:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            type: checkbox
+            span: right
+        notif_replyto_email_field_id:
+            label: abwebdevelopers.forms::lang.models.settings.notif_replyto_email_field_id.label
+            comment: abwebdevelopers.forms::lang.models.settings.notif_replyto_email_field_id.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            showSearch: true
+            span: left
+            type: dropdown
+            trigger:
+                action: enable
+                field: override_notif_replyto_email_field_id
+                condition: checked
+        override_notif_replyto_email_field_id:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            type: checkbox
+            span: right
+        notif_replyto_name_field_id:
+            label: abwebdevelopers.forms::lang.models.settings.notif_replyto_name_field_id.label
+            comment: abwebdevelopers.forms::lang.models.settings.notif_replyto_name_field_id.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            showSearch: true
+            span: left
+            type: dropdown
+            trigger:
+                action: enable
+                field: override_notif_replyto_name_field_id
+                condition: checked
+        override_notif_replyto_name_field_id:
+            label: abwebdevelopers.forms::lang.models.all.override.label
+            comment: abwebdevelopers.forms::lang.models.all.override.comment
+            tab: abwebdevelopers.forms::lang.tabs.emailing
+            type: checkbox
+            span: right
         _autoReply:
             label: abwebdevelopers.forms::lang.sections.auto_reply.label
             tab: abwebdevelopers.forms::lang.tabs.emailing
