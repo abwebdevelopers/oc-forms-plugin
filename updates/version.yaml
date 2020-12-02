@@ -43,3 +43,5 @@
     - add_replyto_to_forms_table.php
 1.2.7:
     - 'Add German translation'
+1.2.8:
+    - 'Include google recaptcha URL when needed'
