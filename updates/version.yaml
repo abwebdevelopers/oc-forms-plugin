@@ -45,3 +45,5 @@
     - 'Add German translation'
 1.2.8:
     - 'Include google recaptcha URL when needed'
+1.3.0:
+    - 'Update custom form JS to use better jQuery dependency checker'
