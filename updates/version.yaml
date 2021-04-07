@@ -41,3 +41,9 @@
 1.2.6:
     - 'Add notification reply-to fields'
     - add_replyto_to_forms_table.php
+1.2.7:
+    - 'Add German translation'
+1.2.8:
+    - 'Include google recaptcha URL when needed'
+1.3.0:
+    - 'Update custom form JS to use better jQuery dependency checker'

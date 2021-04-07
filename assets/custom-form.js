@@ -1,16 +1,6 @@
-var checkForShittyJqueryAttempt = 0;
-var checkForShittyJquery = window.setInterval(function () {
-  if ($ !== undefined) {
-    clearInterval(checkForShittyJquery);
-
-    bootstrapAbwebForm($);
-  }
-  checkForShittyJqueryAttempt++;
-
-  if (checkForShittyJqueryAttempt > (20 * 15)) { // 15s
-    clearInterval(checkForShittyJquery);
-  }
-}, 50);
+window.jqueryLoaded(function ($) {
+  bootstrapAbwebForm($);
+});
 
 function bootstrapAbwebForm($) {
   $('form.custom-form').each(function () {

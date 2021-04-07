@@ -21,7 +21,6 @@ use Illuminate\Http\JsonResponse;
 
 class CustomForm extends ComponentBase
 {
-
     /**
      * @var string Event namespace
      */
@@ -143,6 +142,8 @@ class CustomForm extends ComponentBase
 
         // Load required CSS
         $this->addCss('/plugins/abwebdevelopers/forms/assets/custom-form.css');
+        // Load required JS
+        $this->addJs('/plugins/abwebdevelopers/forms/assets/jquery-callback.js');
         $this->addJs('/plugins/abwebdevelopers/forms/assets/custom-form.js');
 
         // Fire afterRun event
@@ -612,13 +613,13 @@ class CustomForm extends ComponentBase
                 }
 
                 foreach ($attachments as $key => $attachment) {
-                    $message->attach($attachment, [ 'as' => $key ]);
+                    $message->attach($attachment, ['as' => $key]);
                 }
 
                 if ($this->form->notifReplyto() && !empty($replytoEmail)) {
                     $message->replyTo($replytoEmail, $replytoName);
                 }
-                
+
                 Event::fire(self::EVENTS_PREFIX . 'onSendNotification', [$this, &$message, $to, $attachments]);
             });
 
@@ -656,7 +657,7 @@ class CustomForm extends ComponentBase
         if (empty($toEmail) || empty($toName)) {
             // Fire onAutoReplyValidationFail event
             Event::fire(self::EVENTS_PREFIX . 'onAutoReplyEmailNotProvided', [$this, $data, $toEmail, $toName]);
-            
+
             return false;
         }
 
@@ -700,7 +701,7 @@ class CustomForm extends ComponentBase
             $message->to($toEmail, $toName);
 
             foreach ($attachments as $key => $attachment) {
-                $message->attach($attachment, [ 'as' => $key ]);
+                $message->attach($attachment, ['as' => $key]);
             }
 
             Event::fire(self::EVENTS_PREFIX . 'onSendAutoReply', [$this, &$message, $toEmail, $toName, $attachments]);
