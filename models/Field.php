@@ -1,9 +1,8 @@
 <?php namespace ABWebDevelopers\Forms\Models;
 
 use Model;
-use ABWebDevelopers\Forms\Models\ValidationRule;
-use October\Rain\Database\Traits\Validation;
 use October\Rain\Database\Traits\Sortable;
+use October\Rain\Database\Traits\Validation;
 
 class Field extends Model
 {
@@ -60,7 +59,7 @@ class Field extends Model
     ];
 
     public $belongsTo = [
-        'form' => Form::class
+        'form' => Form::class,
     ];
 
     /**
@@ -147,7 +146,7 @@ class Field extends Model
     {
         $fieldRules = [];
 
-        if (in_array($this->type, ['checkbox','radio','select'])) {
+        if (in_array($this->type, ['checkbox', 'radio', 'select'])) {
             $keys = $this->getOptionKeys();
 
             if (empty($keys)) {
@@ -183,6 +182,7 @@ class Field extends Model
             'image' => 'Image',
             'password' => 'Password',
             'color' => 'Color',
+            'plaintext' => 'PlainText',
         ];
     }
 
@@ -236,7 +236,7 @@ class Field extends Model
      * @param string $key
      * @return string|null The option label
      */
-    public function getOption(string $key): ?string
+    public function getOption(string $key):  ? string
     {
         foreach ($this->options as $option) {
             if ($option['is_optgroup'] ?? false) {

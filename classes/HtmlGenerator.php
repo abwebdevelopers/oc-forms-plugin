@@ -2,21 +2,21 @@
 
 namespace ABWebDevelopers\Forms\Classes;
 
-use ABWebDevelopers\Forms\Models\Form;
 use ABWebDevelopers\Forms\Models\Field;
+use ABWebDevelopers\Forms\Models\Form;
 use ABWebDevelopers\Forms\Models\Settings;
 use YeTii\HtmlElement\Element;
+use YeTii\HtmlElement\Elements\HtmlButton;
 use YeTii\HtmlElement\Elements\HtmlDiv;
-use YeTii\HtmlElement\Elements\HtmlSpan;
 use YeTii\HtmlElement\Elements\HtmlForm;
 use YeTii\HtmlElement\Elements\HtmlInput;
-use YeTii\HtmlElement\Elements\HtmlOption;
-use YeTii\HtmlElement\Elements\HtmlOptgroup;
-use YeTii\HtmlElement\Elements\HtmlSelect;
-use YeTii\HtmlElement\Elements\HtmlTextarea;
 use YeTii\HtmlElement\Elements\HtmlLabel;
-use YeTii\HtmlElement\Elements\HtmlButton;
+use YeTii\HtmlElement\Elements\HtmlOptgroup;
+use YeTii\HtmlElement\Elements\HtmlOption;
 use YeTii\HtmlElement\Elements\HtmlP;
+use YeTii\HtmlElement\Elements\HtmlSelect;
+use YeTii\HtmlElement\Elements\HtmlSpan;
+use YeTii\HtmlElement\Elements\HtmlTextarea;
 
 class HtmlGenerator
 {
@@ -36,9 +36,9 @@ class HtmlGenerator
                         new HtmlSpan([
                             'node' => '.',
                         ]),
-                    ]
-                ])
-            ]
+                    ],
+                ]),
+            ],
         ]);
 
         $fields = [];
@@ -65,10 +65,10 @@ class HtmlGenerator
                         ]),
                         new HtmlDiv([
                             'class' => 'form-field-error-message text-danger',
-                            'style' => 'display:none'
+                            'style' => 'display:none',
                         ]),
-                    ]
-                ])
+                    ],
+                ]),
             ]);
         }
 
@@ -92,9 +92,9 @@ class HtmlGenerator
                             'class' => $form->submitClass(),
                             'node' => $form->submitText(),
                         ]),
-                    ]
-                ])
-            ]
+                    ],
+                ]),
+            ],
         ]);
 
         $dataClasses = [
@@ -113,7 +113,7 @@ class HtmlGenerator
                 $loadingIndicator,
                 $fields,
                 $recaptcha,
-                $buttons
+                $buttons,
             ],
         ]);
 
@@ -141,12 +141,12 @@ class HtmlGenerator
         $label = new HtmlLabel([
             'for' => $fieldId,
             'class' => $form->labelClass($field),
-            'node' => $field->name
+            'node' => $field->name,
         ]);
 
         if ($field->required) {
             $label->addChild(new HtmlSpan([
-                'class' => 'required'
+                'class' => 'required',
             ]));
         }
 
@@ -154,7 +154,7 @@ class HtmlGenerator
 
         $error = new HtmlDiv([
             'class' => 'form-field-error-message text-danger',
-            'style' => 'display:none;'
+            'style' => 'display:none;',
         ]);
 
         $description = '';
@@ -171,8 +171,8 @@ class HtmlGenerator
                 $label,
                 $description,
                 $element,
-                $error
-            ]
+                $error,
+            ],
         ]);
     }
 
@@ -205,6 +205,25 @@ class HtmlGenerator
             'class' => $form->fieldClass($field),
             'required' => $field->required,
         ];
+    }
+
+    /**
+     * resolve HtmlElement for PlainText fields
+     *
+     * @param  Form   $form
+     * @param  Field  $field
+     * @return HtmlElement
+     */
+    public function resolveTypePlainText(Form $form, Field $field)
+    {
+        $el = new HtmlDiv([
+            'id' => $field->getId($form),
+            'class' => $form->fieldClass($field),
+        ]);
+
+        $this->addCustomAttributes($el, $field);
+
+        return $el;
     }
 
     /**
@@ -246,12 +265,12 @@ class HtmlGenerator
                             'name' => $field->code . ($field->type === 'radio' ? '' : '[]'),
                             'id' => $fieldId . '_' . $option2->option_code,
                             'value' => $option2->option_code,
-                            'node' => $option2->option_label
+                            'node' => $option2->option_label,
                         ]);
 
                         if ($field->required && $field->type === 'radio') {
                             $input->set([
-                                'required' => true
+                                'required' => true,
                             ]);
                         } elseif ($field->required) {
                             $input->set([
@@ -269,7 +288,7 @@ class HtmlGenerator
                                 new HtmlSpan([
                                     'node' => $option2->option_label,
                                 ]),
-                            ]
+                            ],
                         ]));
                     }
 
@@ -283,12 +302,12 @@ class HtmlGenerator
                     'name' => $field->code . ($field->type === 'radio' ? '' : '[]'),
                     'id' => $fieldId . '_' . $option->option_code,
                     'value' => $option->option_code,
-                    'node' => $option->option_label
+                    'node' => $option->option_label,
                 ]);
 
                 if ($field->required && $field->type === 'radio') {
                     $input->set([
-                        'required' => true
+                        'required' => true,
                     ]);
                 } elseif ($field->required) {
                     $input->set([
@@ -306,7 +325,7 @@ class HtmlGenerator
                         new HtmlSpan([
                             'node' => $option->option_label,
                         ]),
-                    ]
+                    ],
                 ]));
             }
         } else {
@@ -318,7 +337,7 @@ class HtmlGenerator
 
             if ($field->required) {
                 $el->set([
-                    'required' => true
+                    'required' => true,
                 ]);
             }
 
@@ -340,7 +359,7 @@ class HtmlGenerator
     public function resolveTypeColor(Form $form, Field $field)
     {
         $el = new HtmlInput([
-            'type' => 'color'
+            'type' => 'color',
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
@@ -402,7 +421,7 @@ class HtmlGenerator
     public function resolveTypeFile(Form $form, Field $field)
     {
         $el = new HtmlInput([
-            'type' => 'file'
+            'type' => 'file',
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
@@ -464,7 +483,7 @@ class HtmlGenerator
     public function resolveTypePassword(Form $form, Field $field)
     {
         $el = new HtmlInput([
-            'type' => 'password'
+            'type' => 'password',
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
@@ -546,7 +565,7 @@ class HtmlGenerator
     public function resolveTypeTel(Form $form, Field $field)
     {
         $el = new HtmlInput([
-            'type' => 'tel'
+            'type' => 'tel',
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
@@ -589,7 +608,7 @@ class HtmlGenerator
         $el = new HtmlTextarea();
 
         $el->set($this->resolveTypeGlobal($form, $field));
-        
+
         $this->addCustomAttributes($el, $field);
 
         return $el;
@@ -605,7 +624,7 @@ class HtmlGenerator
     public function resolveTypeUrl(Form $form, Field $field)
     {
         $el = new HtmlInput([
-            'type' => 'url'
+            'type' => 'url',
         ]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
