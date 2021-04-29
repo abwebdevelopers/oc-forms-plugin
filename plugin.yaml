@@ -1,7 +1,7 @@
 plugin:
     name: 'abwebdevelopers.forms::lang.plugin.name'
     description: 'abwebdevelopers.forms::lang.plugin.description'
-    author: 'Bradie Tilley'
+    author: 'AB Web Developers'
     icon: oc-icon-list-alt
     homepage: ''
 navigation:
