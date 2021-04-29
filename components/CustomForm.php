@@ -94,13 +94,7 @@ class CustomForm extends ComponentBase
      */
     public function getFormCodeOptions(): array
     {
-        $options = [];
-
-        foreach (Form::all() as $form) {
-            $options[$form->code] = $form->title;
-        }
-
-        return $options;
+        return Form::all()->pluck('title', 'code')->toArray();
     }
 
     /**

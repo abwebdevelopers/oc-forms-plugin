@@ -1,4 +1,6 @@
-<?php namespace ABWebDevelopers\Forms\Updates;
+<?php
+
+namespace ABWebDevelopers\Forms\Updates;
 
 use Schema;
 use October\Rain\Database\Updates\Migration;
@@ -103,26 +105,16 @@ class InitialiseDatabase extends Migration
             // Add indexes
             $table->index('auto_reply_name_field_id');
             $table->index('auto_reply_email_field_id');
-
-            // Add foreign keys
-            $table->foreign('auto_reply_name_field_id')->references('id')->on('abwebdevelopers_forms_fields')->onDelete('cascade');
-            $table->foreign('auto_reply_email_field_id')->references('id')->on('abwebdevelopers_forms_fields')->onDelete('cascade');
         });
 
         Schema::table('abwebdevelopers_forms_fields', function ($table) {
             // Add indexes
             $table->index('form_id');
-
-            // Add foreign keys
-            $table->foreign('form_id')->references('id')->on('abwebdevelopers_forms_forms')->onDelete('cascade');
         });
 
         Schema::table('abwebdevelopers_forms_submissions', function ($table) {
             // Add indexes
             $table->index('form_id');
-
-            // Add foreign keys
-            $table->foreign('form_id')->references('id')->on('abwebdevelopers_forms_forms')->onDelete('cascade');
         });
 
         // Bootstrap a basic contact form with 3 typical fields
@@ -156,7 +148,7 @@ class InitialiseDatabase extends Migration
             'description' => 'User\'s Comments',
             'sort_order' => 3
         ]);
-        
+
         $form->auto_reply_email_field_id = $email->id;
         $form->auto_reply_name_field_id = $name->id;
         $form->save();
@@ -164,12 +156,8 @@ class InitialiseDatabase extends Migration
 
     public function down()
     {
-        Schema::disableForeignKeyConstraints();
-
         Schema::dropIfExists('abwebdevelopers_forms_forms');
         Schema::dropIfExists('abwebdevelopers_forms_fields');
         Schema::dropIfExists('abwebdevelopers_forms_submissions');
-
-        Schema::enableForeignKeyConstraints();
     }
 }

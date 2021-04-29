@@ -49,3 +49,5 @@
     - 'Update custom form JS to use better jQuery dependency checker'
 1.4.0:
     - 'Added new plain text field type for adding general HTML to forms'
+1.5.0:
+    - '** Remove foreign key constraints from historic migrations **'

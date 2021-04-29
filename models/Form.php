@@ -1,4 +1,6 @@
-<?php namespace ABWebDevelopers\Forms\Models;
+<?php
+
+namespace ABWebDevelopers\Forms\Models;
 
 use Model;
 use ABWebDevelopers\Forms\Models\Submission;
@@ -437,7 +439,7 @@ class Form extends Model
     {
         return $this->auto_reply_name_field;
     }
-    
+
 
     /**
      * Retrieve form's auto reply template
