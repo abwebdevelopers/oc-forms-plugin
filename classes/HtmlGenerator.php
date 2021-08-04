@@ -516,17 +516,19 @@ class HtmlGenerator
      */
     public function resolveTypeSelect(Form $form, Field $field)
     {
-        $el = new HtmlSelect([
-        ]);
+        $el = new HtmlSelect([]);
 
         $el->set($this->resolveTypeGlobal($form, $field));
+        $defaultValue = $field->default_value;
 
-        $el->addChild(new HtmlOption([
-            'value' => '',
-            'selected' => true,
-            'disabled' => $field->required,
-            'node' => $field->placeholder,
-        ]));
+        if (($field->placeholder !== null) && ($defaultValue === null)) {
+            $el->addChild(new HtmlOption([
+                'value' => '',
+                'selected' => true, // Selected by default
+                'disabled' => $field->required, // If the field is required, you cannot select the placeholder
+                'node' => $field->placeholder,
+            ]));
+        }
 
         foreach ($field->getOptions() as $option) {
             if ($option->is_optgroup) {
@@ -536,6 +538,7 @@ class HtmlGenerator
 
                 foreach ($option->options as $option) {
                     $optgroup->addChild(new HtmlOption([
+                        'selected' => ($defaultValue !== null) ? ($option->option_code === $defaultValue) : false,
                         'value' => $option->option_code,
                         'node' => $option->option_label,
                     ]));
@@ -547,6 +550,7 @@ class HtmlGenerator
             }
 
             $el->addChild(new HtmlOption([
+                'selected' => ($defaultValue !== null) ? ($option->option_code === $defaultValue) : false,
                 'value' => $option->option_code,
                 'node' => $option->option_label,
             ]));

@@ -1,4 +1,6 @@
-<?php namespace ABWebDevelopers\Forms\Models;
+<?php
+
+namespace ABWebDevelopers\Forms\Models;
 
 use Model;
 use October\Rain\Database\Traits\Sortable;
@@ -41,6 +43,7 @@ class Field extends Model
         'group_class',
         'label_class',
         'options',
+        'default',
     ];
 
     /**
@@ -236,7 +239,7 @@ class Field extends Model
      * @param string $key
      * @return string|null The option label
      */
-    public function getOption(string $key):  ? string
+    public function getOption(string $key): ?string
     {
         foreach ($this->options as $option) {
             if ($option['is_optgroup'] ?? false) {
@@ -253,5 +256,29 @@ class Field extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Get the placeholder for this field
+     *
+     * @return mixed
+     */
+    public function getPlaceholderAttribute()
+    {
+        return (isset($this->attributes['placeholder']) && ($this->attributes['placeholder'] !== ''))
+            ? $this->attributes['placeholder']
+            : null;
+    }
+
+    /**
+     * Get the default value for this field
+     *
+     * @return mixed
+     */
+    public function getDefaultValueAttribute()
+    {
+        return (isset($this->attributes['default']) && ($this->attributes['default'] !== ''))
+            ? $this->attributes['default']
+            : null;
     }
 }
