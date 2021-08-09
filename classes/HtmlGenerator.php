@@ -108,7 +108,7 @@ class HtmlGenerator
 
         $htmlForm = new HtmlForm([
             'id' => 'form_' . $form->code,
-            'class' => 'custom-form',
+            'class' => 'custom-form ' . $form->formClass(),
             'nodes' => [
                 $loadingIndicator,
                 $fields,

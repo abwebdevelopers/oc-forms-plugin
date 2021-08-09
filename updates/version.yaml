@@ -53,3 +53,5 @@
     - '** Remove foreign key constraints from historic migrations **'
 1.5.1:
     - 'Add default value support for select dropdowns'
+1.6.0:
+    - Fix / Correctly use the Form Class style rules (may break styling in rare situations)
